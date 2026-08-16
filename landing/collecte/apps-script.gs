@@ -1,0 +1,100 @@
+/* ==================================================================
+   Fluent & Forward — collecteur de prospects (Google Apps Script)
+
+   À utiliser quand la landing est hébergée sur un serveur qui n'exécute
+   pas de code : GitHub Pages, Netlify, Cloudflare Pages…
+
+   Le fichier de sauvegarde est alors une feuille Google Sheets, avec
+   un onglet « Prospects » et un onglet « Statistiques ».
+
+   Mise en place : voir LISEZMOI.md.
+   ================================================================== */
+
+var ONGLET_PROSPECTS = 'Prospects';
+var ONGLET_STATS = 'Statistiques';
+
+function doPost(e) {
+  try {
+    var contact = JSON.parse(e.postData.contents);
+
+    var prenom = String(contact.prenom || '').trim();
+    var email = String(contact.email || '').trim();
+
+    if (!prenom || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      return reponse({ erreur: 'Prénom ou email invalide' });
+    }
+
+    var classeur = SpreadsheetApp.getActiveSpreadsheet();
+    var feuille = classeur.getSheetByName(ONGLET_PROSPECTS);
+    if (!feuille) {
+      feuille = classeur.insertSheet(ONGLET_PROSPECTS);
+      feuille.appendRow(['Date', 'Prénom', 'Email', 'Origine', 'Provenance']);
+      feuille.getRange('A1:E1').setFontWeight('bold');
+      feuille.setFrozenRows(1);
+    }
+
+    feuille.appendRow([
+      new Date(),
+      prenom,
+      email,
+      String(contact.origine || 'inconnue').slice(0, 40),
+      String(contact.provenance || 'direct').slice(0, 300)
+    ]);
+
+    majStatistiques(classeur, feuille);
+
+    return reponse({ ok: true });
+  } catch (err) {
+    return reponse({ erreur: String(err) });
+  }
+}
+
+/* Recalcule l'onglet Statistiques à partir des contacts enregistrés. */
+function majStatistiques(classeur, feuilleProspects) {
+  var stats = classeur.getSheetByName(ONGLET_STATS);
+  if (!stats) {
+    stats = classeur.insertSheet(ONGLET_STATS);
+  }
+
+  var lignes = feuilleProspects.getDataRange().getValues();
+  lignes.shift(); // en-tête
+
+  var uniques = {};
+  var parJour = {};
+  var parOrigine = {};
+
+  lignes.forEach(function (l) {
+    var date = l[0] instanceof Date
+      ? Utilities.formatDate(l[0], Session.getScriptTimeZone(), 'yyyy-MM-dd')
+      : String(l[0]).slice(0, 10);
+    uniques[String(l[2]).toLowerCase()] = true;
+    parJour[date] = (parJour[date] || 0) + 1;
+    parOrigine[l[3]] = (parOrigine[l[3]] || 0) + 1;
+  });
+
+  stats.clear();
+  stats.appendRow(['Indicateur', 'Valeur']);
+  stats.appendRow(['Téléchargements', lignes.length]);
+  stats.appendRow(['Adresses uniques', Object.keys(uniques).length]);
+  stats.appendRow(['Dernière mise à jour', new Date()]);
+  stats.appendRow(['', '']);
+
+  stats.appendRow(['Par jour', '']);
+  Object.keys(parJour).sort().forEach(function (j) {
+    stats.appendRow([j, parJour[j]]);
+  });
+
+  stats.appendRow(['', '']);
+  stats.appendRow(['Par emplacement du formulaire', '']);
+  Object.keys(parOrigine).forEach(function (o) {
+    stats.appendRow([o, parOrigine[o]]);
+  });
+
+  stats.getRange('A1:B1').setFontWeight('bold');
+}
+
+function reponse(objet) {
+  return ContentService
+    .createTextOutput(JSON.stringify(objet))
+    .setMimeType(ContentService.MimeType.JSON);
+}

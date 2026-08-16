@@ -1,114 +1,110 @@
 /* ==================================================================
-   Fluent & Forward — landing page « Stop Avoiding »
-   Validation du formulaire et point de branchement du service d'emails.
+   Fluent & Forward — landing « Stop Avoiding - English Essentials »
+
+   Le téléchargement du guide est conditionné au renseignement du
+   prénom et de l'adresse email. À la validation :
+     1. le contact est enregistré (collecteur distant + copie locale) ;
+     2. le PDF est téléchargé immédiatement.
    ================================================================== */
 
 (function () {
   "use strict";
 
   /* ------------------------------------------------------------------
-     POINT DE BRANCHEMENT UNIQUE
+     RÉGLAGES — le seul bloc à modifier
 
-     Tant que `fournisseur` vaut "aucun", le formulaire valide les champs
-     puis affiche un message de démonstration : rien n'est envoyé nulle part.
-
-     Pour brancher le service d'emailing choisi (Brevo, Mailchimp,
-     ConvertKit, Systeme.io, Formspree…), il suffit de renseigner ce bloc.
-     Aucune autre ligne du fichier n'est à modifier.
-
-       fournisseur : "aucun" | "endpoint"
-       endpoint    : URL de collecte fournie par le service
-       methode     : "POST" dans la quasi-totalité des cas
-       format      : "json" ou "form" selon ce qu'attend le service
-       champs      : correspondance entre les noms de champs du formulaire
-                     et ceux attendus par le service. À gauche le nom local,
-                     à droite le nom attendu côté service.
-
-     Exemples de valeurs pour `endpoint` :
-       Formspree   https://formspree.io/f/xxxxxxxx          (format "json")
-       Web3Forms   https://api.web3forms.com/submit          (format "json")
-       Brevo       URL du formulaire double opt-in généré    (format "form")
-       ConvertKit  https://api.convertkit.com/v3/forms/ID/subscribe (format "json")
-
-     L'envoi automatique du guide se règle dans le service lui-même
-     (email de bienvenue avec le PDF en pièce jointe ou en lien).
+     fichier   : le PDF remis au prospect.
+     collecteur: l'adresse qui reçoit et archive les contacts.
+                 Tant qu'elle est vide, rien n'est envoyé : les contacts
+                 sont conservés dans le navigateur et exportables en CSV
+                 depuis prospects.html. Voir collecte/LISEZMOI.md pour
+                 mettre en place le fichier de sauvegarde.
      ------------------------------------------------------------------ */
-  var SERVICE = {
-    fournisseur: "aucun",
-    endpoint: "",
-    methode: "POST",
-    format: "json",
-    champs: {
-      prenom: "prenom",
-      email: "email"
-    }
+  var REGLAGES = {
+    fichier: "assets/stop-avoiding-english-essentials.pdf",
+    nomFichier: "Stop-Avoiding-English-Essentials.pdf",
+    collecteur: ""
   };
 
-  /* ---------- Utilitaires ---------- */
+  var CLE_LOCALE = "ff_prospects";
 
-  function afficherErreur(champ, identifiantErreur, actif) {
-    var message = document.getElementById(identifiantErreur);
-    if (message) message.classList.toggle("visible", actif);
-    if (champ) champ.setAttribute("aria-invalid", actif ? "true" : "false");
-  }
+  /* ---------- Outils ---------- */
 
-  // Contrôle volontairement permissif : on écarte les fautes de frappe
-  // évidentes sans rejeter les adresses exotiques mais valides.
   function emailPlausible(valeur) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(valeur);
   }
 
-  function afficherRetour(element, texte, type) {
-    if (!element) return;
-    element.textContent = texte;
-    element.classList.remove("succes", "echec");
-    element.classList.add("visible", type);
+  function afficherErreur(champ, idMessage, actif) {
+    var message = document.getElementById(idMessage);
+    if (message) message.classList.toggle("visible", actif);
+    if (champ) champ.setAttribute("aria-invalid", actif ? "true" : "false");
   }
 
-  /* ---------- Envoi vers le service ---------- */
+  function afficherRetour(formulaire, texte) {
+    var zone = formulaire.querySelector(".retour-formulaire");
+    if (!zone) return;
+    zone.textContent = texte;
+    zone.classList.add("visible");
+  }
 
-  function envoyerAuService(donnees) {
-    var corps;
-    var options = { method: SERVICE.methode, headers: {} };
+  /* ---------- Copie locale de secours ----------
+     Garantit qu'aucun contact n'est perdu si le collecteur distant
+     est injoignable ou pas encore configuré. Exportable en CSV. */
 
-    if (SERVICE.format === "json") {
-      options.headers["Content-Type"] = "application/json";
-      options.headers["Accept"] = "application/json";
-      corps = JSON.stringify(donnees);
-    } else {
-      corps = new URLSearchParams(donnees).toString();
-      options.headers["Content-Type"] = "application/x-www-form-urlencoded";
+  function enregistrerEnLocal(contact) {
+    try {
+      var liste = JSON.parse(localStorage.getItem(CLE_LOCALE) || "[]");
+      liste.push(contact);
+      localStorage.setItem(CLE_LOCALE, JSON.stringify(liste));
+    } catch (e) {
+      // Navigation privée ou stockage plein : on n'interrompt pas le parcours.
     }
-    options.body = corps;
+  }
 
-    return fetch(SERVICE.endpoint, options).then(function (reponse) {
-      if (!reponse.ok) throw new Error("Réponse " + reponse.status);
-      return reponse;
+  /* ---------- Envoi au collecteur ---------- */
+
+  function envoyerAuCollecteur(contact) {
+    if (!REGLAGES.collecteur) return Promise.resolve(false);
+    return fetch(REGLAGES.collecteur, {
+      method: "POST",
+      // text/plain évite la requête préalable CORS, que Google Apps Script
+      // et la plupart des scripts d'hébergement mutualisé ne gèrent pas.
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(contact)
+    }).then(function (reponse) {
+      return reponse.ok;
+    }).catch(function () {
+      return false;
     });
   }
 
-  /* ---------- Formulaire ---------- */
+  /* ---------- Téléchargement ---------- */
 
-  function initFormulaire() {
-    var formulaire = document.getElementById("formulaire-guide");
-    if (!formulaire) return;
+  function telechargerGuide() {
+    var lien = document.createElement("a");
+    lien.href = REGLAGES.fichier;
+    lien.download = REGLAGES.nomFichier;
+    document.body.appendChild(lien);
+    lien.click();
+    document.body.removeChild(lien);
+  }
 
-    var prenom = document.getElementById("prenom");
-    var email = document.getElementById("email");
-    var consentement = document.getElementById("consentement");
-    var bouton = document.getElementById("bouton-envoi");
-    var retour = document.getElementById("retour-formulaire");
+  /* ---------- Formulaires ---------- */
 
-    // La validation d'un champ déjà signalé se rafraîchit à la saisie.
-    [prenom, email].forEach(function (champ) {
-      champ.addEventListener("input", function () {
-        if (champ.getAttribute("aria-invalid") === "true") {
-          afficherErreur(champ, "erreur-" + champ.id, false);
+  function initFormulaire(formulaire) {
+    var prenom = formulaire.querySelector("input[name=prenom]");
+    var email = formulaire.querySelector("input[name=email]");
+    var bouton = formulaire.querySelector("button[type=submit]");
+    var idErrPrenom = prenom.getAttribute("aria-describedby");
+    var idErrEmail = email.getAttribute("aria-describedby");
+    var libelleBouton = bouton.textContent.trim();
+
+    [[prenom, idErrPrenom], [email, idErrEmail]].forEach(function (paire) {
+      paire[0].addEventListener("input", function () {
+        if (paire[0].getAttribute("aria-invalid") === "true") {
+          afficherErreur(paire[0], paire[1], false);
         }
       });
-    });
-    consentement.addEventListener("change", function () {
-      if (consentement.checked) afficherErreur(null, "erreur-consentement", false);
     });
 
     formulaire.addEventListener("submit", function (evenement) {
@@ -116,50 +112,39 @@
 
       var prenomVide = prenom.value.trim() === "";
       var emailInvalide = !emailPlausible(email.value.trim());
-      var consentementManquant = !consentement.checked;
 
-      afficherErreur(prenom, "erreur-prenom", prenomVide);
-      afficherErreur(email, "erreur-email", emailInvalide);
-      afficherErreur(null, "erreur-consentement", consentementManquant);
+      afficherErreur(prenom, idErrPrenom, prenomVide);
+      afficherErreur(email, idErrEmail, emailInvalide);
 
-      if (prenomVide || emailInvalide || consentementManquant) {
-        (prenomVide ? prenom : emailInvalide ? email : consentement).focus();
+      if (prenomVide || emailInvalide) {
+        (prenomVide ? prenom : email).focus();
         return;
       }
 
-      var donnees = {};
-      donnees[SERVICE.champs.prenom] = prenom.value.trim();
-      donnees[SERVICE.champs.email] = email.value.trim();
+      var contact = {
+        prenom: prenom.value.trim(),
+        email: email.value.trim(),
+        date: new Date().toISOString(),
+        origine: formulaire.getAttribute("data-origine") || "inconnue",
+        provenance: document.referrer || "direct",
+        page: location.href
+      };
 
-      // Aucun service branché : on confirme la validation sans rien envoyer.
-      if (SERVICE.fournisseur === "aucun" || !SERVICE.endpoint) {
-        afficherRetour(retour,
-          "Formulaire valide. Aucun service d'emailing n'est encore branché : " +
-          "renseignez le bloc SERVICE dans assets/script.js pour activer l'envoi réel.",
-          "succes");
-        return;
-      }
+      enregistrerEnLocal(contact);
 
       bouton.disabled = true;
-      bouton.textContent = "Envoi en cours…";
+      bouton.textContent = "Préparation du guide…";
 
-      envoyerAuService(donnees)
-        .then(function () {
-          formulaire.reset();
-          afficherRetour(retour,
-            "C'est envoyé. Le guide arrive dans votre boîte, sous une minute. " +
-            "Pensez à regarder les indésirables si vous ne le voyez pas.",
-            "succes");
-        })
-        .catch(function () {
-          afficherRetour(retour,
-            "L'envoi n'a pas abouti. Réessayez dans un instant.",
-            "echec");
-        })
-        .then(function () {
-          bouton.disabled = false;
-          bouton.textContent = "Envoyez-moi le guide";
-        });
+      envoyerAuCollecteur(contact).then(function (transmis) {
+        telechargerGuide();
+        formulaire.reset();
+        bouton.disabled = false;
+        bouton.textContent = libelleBouton;
+        afficherRetour(formulaire,
+          transmis || !REGLAGES.collecteur
+            ? "C'est parti, " + contact.prenom + " — ton guide est en cours de téléchargement."
+            : "Ton guide est en cours de téléchargement. L'enregistrement du contact n'a pas abouti, il a été conservé localement.");
+      });
     });
   }
 
@@ -172,7 +157,8 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    initFormulaire();
+    var formulaires = document.querySelectorAll(".formulaire-guide");
+    for (var i = 0; i < formulaires.length; i++) initFormulaire(formulaires[i]);
     initAnnee();
   });
 })();

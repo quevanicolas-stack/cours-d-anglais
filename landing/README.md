@@ -1,18 +1,31 @@
-# Landing page « Stop Avoiding »
+# Landing page « Stop Avoiding - English Essentials »
 
-Page de capture d'emails pour Fluent & Forward — Business English Accelerator.
-Le visiteur laisse prénom et email, reçoit en échange le guide « Stop Avoiding ».
+Page de capture pour Fluent & Forward. Le visiteur renseigne **prénom et adresse
+email**, ce qui débloque le **téléchargement immédiat** du guide en PDF. Chaque
+contact est enregistré dans un fichier de sauvegarde avec des statistiques.
+
+Structure et textes conformes au brief `consigne_landing_page.pdf` du 16 août.
+Contenu du guide repris intégralement de
+`Stop Avoiding - English Essentials (modifiable).pptx`.
 
 ## Contenu du dossier
 
 ```
 landing/
-├── index.html            La landing page
-├── stop-avoiding.html    Le guide — source unique, à exporter en PDF
-├── mentions-legales.html Mentions légales (à compléter)
-└── assets/
-    ├── style.css         Charte reprise du support de cours
-    └── script.js         Validation du formulaire + branchement du service d'emails
+├── index.html                La landing (5 sections du brief)
+├── stop-avoiding.html        Le guide — source unique, sert à générer le PDF
+├── prospects.html            Page interne : contacts de secours + export CSV
+├── mentions-legales.html     Mentions légales (à compléter)
+├── assets/
+│   ├── style.css
+│   ├── script.js             Verrou du formulaire + téléchargement + collecte
+│   ├── favicon.svg
+│   ├── aurelie.jpg           Photo issue du brief
+│   └── stop-avoiding-english-essentials.pdf   Le fichier remis au prospect
+└── collecte/
+    ├── LISEZMOI.md           Comment mettre en place le fichier de sauvegarde
+    ├── enregistrer.php       Collecteur pour hébergement PHP → CSV + JSON
+    └── apps-script.gs        Collecteur pour hébergement statique → Google Sheets
 ```
 
 ## Consulter
@@ -21,104 +34,78 @@ landing/
 python3 -m http.server 8000 --directory landing
 ```
 
-puis `http://localhost:8000`.
+## Les 5 sections
 
-## Le guide « Stop Avoiding »
+| Section | Contenu |
+| --- | --- |
+| 1 — Hero | Le chiffre 78 % / 43 %, le sous-titre, prénom + email, bouton, ligne de réassurance |
+| 2 — Dans le guide | Les 4 promesses du guide |
+| 3 — Qui je suis | « Pourquoi m'écouter ? », bio d'Aurélie, photo |
+| 4 — Deuxième appel à l'action | Formulaire identique au hero |
+| 5 — Teasing | Business English Accelerator, prochaine cohorte |
 
-Onze pages A4, construites à partir du Module 1 (séances 1 à 3) :
+## Le guide
 
-1. Couverture
-2. Pourquoi vous évitez — la boucle longue et ses quatre étapes
-3. La règle — School English contre Business English
-4. Situations 1 à 4 — demander, contredire, annoncer une mauvaise nouvelle, avouer qu'on n'a pas compris
-5. Situations 5 à 8 — prendre la parole, proposer, refuser, demander un délai
-6. Situations 9 à 12 — relancer, remercier, reprendre la parole, se présenter
-7. Citation — *Clarity beats vocabulary*
-8. Bonus — les 6 faux-amis structurels
-9. Bonus — le rituel de 2 minutes
-10. Bonus — les 3 questions de contrôle
-11. La suite — le programme
+`stop-avoiding.html` reprend les 7 slides du pptx, sans rien retirer ni ajouter :
+couverture, « Ce n'est pas ton anglais, le problème », les 5 phrases de survie,
+répondre sans paniquer, le mini-script de prise de contact, les 3 réflexes, et la
+page « Et maintenant ? ».
 
-Sept des douze situations et l'intégralité des faux-amis viennent des supports
-existants. Les cinq situations ajoutées (04, 05, 07, 08, 11) traitent
-spécifiquement de l'évitement, qui est l'angle du guide.
+**Régénérer le PDF après toute modification du HTML :**
 
-### Régénérer le PDF
+```
+python3 -m http.server 8000 --directory landing &
+node -e "const{chromium}=require('playwright');(async()=>{
+  const b=await chromium.launch();const p=await b.newPage();
+  await p.goto('http://localhost:8000/stop-avoiding.html',{waitUntil:'networkidle'});
+  await p.pdf({path:'landing/assets/stop-avoiding-english-essentials.pdf',
+    format:'A4',printBackground:true,margin:{top:0,right:0,bottom:0,left:0}});
+  await b.close();})()"
+```
 
-Même convention que les supports de cours : **le HTML est la source, le PDF en est
-l'export.** Ouvrir `stop-avoiding.html` dans Chrome, `Ctrl/Cmd + P`, destination
-« Enregistrer au format PDF », format A4, marges « Aucune », cocher « Graphiques
-d'arrière-plan ».
+Ou à la main : ouvrir le HTML dans Chrome, `Ctrl/Cmd + P`, A4, marges « Aucune »,
+« Graphiques d'arrière-plan » coché.
 
-Le PDF obtenu est le fichier à envoyer aux inscrits.
+## Brancher la collecte — à faire avant la mise en ligne
 
-## Brancher la collecte d'emails
-
-Le formulaire valide les champs mais **n'envoie rien pour l'instant** : il affiche
-un message le signalant. Tout se règle dans un bloc unique en haut de
-`assets/script.js` :
+Une seule ligne à renseigner dans `assets/script.js` :
 
 ```js
-var SERVICE = {
-  fournisseur: "aucun",   // passer à "endpoint" une fois l'URL renseignée
-  endpoint: "",           // URL fournie par le service
-  methode: "POST",
-  format: "json",         // "json" ou "form" selon le service
-  champs: { prenom: "prenom", email: "email" }
-};
+collecteur: ""   // ← l'adresse du collecteur
 ```
 
-Aucune autre ligne n'est à modifier. Exemples d'`endpoint` :
+Deux options, détaillées dans `collecte/LISEZMOI.md` :
 
-| Service | Endpoint | Format |
-| --- | --- | --- |
-| Formspree | `https://formspree.io/f/xxxxxxxx` | `json` |
-| Web3Forms | `https://api.web3forms.com/submit` | `json` |
-| Brevo | URL du formulaire double opt-in généré | `form` |
-| ConvertKit | `https://api.convertkit.com/v3/forms/ID/subscribe` | `json` |
+- **hébergement PHP** → `enregistrer.php` crée `prospects.csv` et `statistiques.json` ;
+- **hébergement statique** (GitHub Pages, Netlify) → `apps-script.gs` remplit une
+  feuille Google Sheets avec un onglet Prospects et un onglet Statistiques.
 
-**L'envoi automatique du guide se règle dans le service lui-même**, pas dans le
-code : email de bienvenue contenant le PDF en pièce jointe ou en lien de
-téléchargement.
+Tant que rien n'est branché, le guide se télécharge quand même et le contact est
+conservé dans le navigateur du visiteur. **Ce n'est pas de la collecte** : ces
+contacts restent chez lui. `prospects.html` ne montre que ce qui a été saisi sur
+votre propre navigateur, et sert aux tests.
 
-Si `champs` doit changer de noms (certains services imposent `first_name`,
-`email_address`…), il suffit de modifier la partie droite de chaque paire.
+## Points à trancher
 
-## Informations à confirmer avant la mise en ligne
-
-Surlignées en doré sur la page, repérables par la classe `a-confirmer` :
-
-```
-grep -rn "a-confirmer" landing/
-```
-
-| Information | Où |
+| Point | Détail |
 | --- | --- |
-| Rythme hebdomadaire (nombre de lives, durée) | `index.html`, encart programme |
-| Nombre de séances individuelles incluses | `index.html`, encart programme |
-| Date de la prochaine cohorte | `index.html`, encart programme |
-| Nombre de places | `index.html`, encart programme |
-| Tarif | `index.html`, encart programme |
-| Fréquence réelle des emails envoyés | `index.html`, questions fréquentes |
-| Financement (CPF, OPCO) | `index.html`, questions fréquentes |
-| Éditeur, hébergeur, prestataire d'emailing | `mentions-legales.html` |
+| **Date de cohorte** | Le brief indique le **14 septembre**, le pptx le **10 septembre**. La landing affiche le 14 en surligné doré, en attente d'arbitrage. Les deux documents doivent s'accorder. |
+| **Chiffres 78 % / 43 %** | Aucune source n'est citée dans le brief. Une statistique affichée en titre doit pouvoir être sourcée si on la conteste. |
+| **Nom du guide** | Le brief l'appelle « Stop Avoiding - English Essentials » mais donne l'URL `…GuideStopAvoidingBusinessEssentials`. |
+| **Lien Systeme.io** | La dernière page du guide contient un bouton « Je réserve ma place » dont le lien reste à renseigner. |
+| **Photo** | Celle du brief. À confirmer qu'il s'agit bien d'une photo d'Aurélie et que les droits sont acquis, puisqu'elle illustre la fondatrice. |
+| **Mentions légales** | Éditeur, hébergeur et prestataire de collecte restent à compléter. |
+| **Ligne de réassurance** | Le brief disait « Reçu directement dans ta boîte mail en moins de 2 minutes ». Le mécanisme étant devenu un téléchargement direct, elle a été adaptée en « Téléchargement immédiat, dès que tes coordonnées sont renseignées ». |
 
-### Points de vigilance
+## URL cible
 
-- **Financement.** Ne mentionner CPF ou OPCO que si l'activité est déclarée en
-  organisme de formation — et Qualiopi pour le CPF. Sinon, supprimer la question.
-- **Nombre de pages annoncé.** La page promet un guide de 11 pages : si le guide
-  est modifié, mettre les deux en accord.
-- **Témoignages.** Il n'y en a volontairement aucun : mieux vaut aucune preuve
-  sociale qu'une preuve sociale inventée. À ajouter dès que de vrais retours
-  d'apprenants sont disponibles, ce qui augmentera nettement la conversion.
+Le brief demande : `FluentandForward_GuideStopAvoidingBusinessEssentials`.
+Le dossier est publiable tel quel ; c'est le chemin d'hébergement qui porte ce nom.
 
 ## Conventions
 
-- Contenus, libellés et commentaires de code en français ; les phrases d'exemple
-  restent en anglais, c'est le sujet.
-- Charte identique au support de cours (bloc `:root` de `module1-seance1.html`) :
-  crème `#FAF7F2`, encre `#2C1810`, vert `#1B6B4A`, or `#C9A96E`.
-- Polices DM Sans et Plus Jakarta Sans, chargées depuis Google Fonts comme dans
-  les supports, avec une pile de repli système si le réseau est indisponible.
-- Aucune autre dépendance externe, aucun framework.
+- Tutoiement, conformément au brief.
+- Charte identique aux slides : crème `#FAF7F2`, encre `#2C1810`, vert `#1B6B4A`,
+  or `#C9A96E`.
+- Polices DM Sans et Plus Jakarta Sans, avec repli système.
+- Aucun framework, aucune dépendance externe hors polices.
