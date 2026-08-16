@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>Stop Avoiding — Fluent &amp; Forward</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --cream:#FAF7F2;
+  --ink:#2C1810;
+  --green:#1B6B4A;
+  --gold:#C9A96E;
+  --sand:#E8DDD0;
+  --deep:#10382A;
+  --deeper:#0B2A20;
+  --muted:rgba(44,24,16,.60);
+  --line:rgba(44,24,16,.13);
+  --red:#A8452F;
+}
+
+@page{ size:A4; margin:0 }
+
+html,body{background:#DDD5CB}
+body{
+  font-family:'DM Sans','Segoe UI',system-ui,sans-serif;
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.6;
+}
+
+/* ---------- pagination ---------- */
+.page{
+  position:relative;
+  width:210mm;height:297mm;
+  background:var(--cream);
+  padding:22mm 20mm 16mm;
+  margin:0 auto 10px;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  page-break-after:always;
+  break-after:page;
+}
+.page:last-child{page-break-after:auto;break-after:auto}
+.page.sombre{background:var(--deep);color:var(--cream)}
+.page.sombre h1,.page.sombre h2,.page.sombre h3{color:#fff}
+
+/* ---------- chrome ---------- */
+.entete-page{
+  display:flex;justify-content:space-between;align-items:center;
+  flex:0 0 auto;margin-bottom:12mm;
+}
+.marque{
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;
+  font-size:12px;color:var(--green);letter-spacing:-.01em;
+}
+.page.sombre .marque{color:var(--gold)}
+.rubrique{
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;
+  font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);
+}
+.page.sombre .rubrique{color:rgba(250,247,242,.55)}
+
+.corps{flex:1 1 auto;min-height:0}
+
+.pied-page{
+  flex:0 0 auto;display:flex;justify-content:space-between;align-items:flex-end;
+  font-size:8.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:rgba(44,24,16,.38);padding-top:6mm;
+}
+.page.sombre .pied-page{color:rgba(250,247,242,.35)}
+.corps{counter-increment:page}
+.numero-page::after{content:counter(page)}
+body{counter-reset:page 0}
+
+/* ---------- typographie ---------- */
+h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;line-height:1.1}
+h1{font-size:40px;font-weight:800}
+h2{font-size:25px;font-weight:800;margin-bottom:5mm}
+h3{font-size:14px;font-weight:700}
+p{font-size:11.5px;margin-bottom:3.5mm}
+p:last-child{margin-bottom:0}
+.intro{font-size:13px;color:var(--muted);line-height:1.62}
+.page.sombre .intro{color:rgba(250,247,242,.70)}
+strong{font-weight:700}
+
+.pastille{
+  display:inline-block;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;
+  font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;
+  padding:4px 11px;border-radius:999px;background:var(--green);color:#fff;
+}
+.pastille.or{background:var(--gold);color:var(--ink)}
+
+/* ---------- couverture ---------- */
+.couverture{justify-content:center}
+.titre-couverture{font-size:66px;font-weight:800;line-height:.98;letter-spacing:-.035em}
+.titre-couverture em{color:var(--gold);font-style:normal}
+.sous-couverture{
+  font-size:15px;color:rgba(250,247,242,.72);margin-top:7mm;max-width:118mm;line-height:1.55;
+}
+.filet{width:26mm;height:3px;background:var(--gold);margin:9mm 0}
+
+/* ---------- blocs ---------- */
+.encart{
+  background:var(--sand);border-radius:4mm;padding:6mm 7mm;margin:5mm 0;
+}
+.encart.vert{background:rgba(27,107,74,.09);border-left:3px solid var(--green)}
+.encart.or{background:rgba(201,169,110,.18);border-left:3px solid var(--gold)}
+.encart h3{margin-bottom:2.5mm}
+.encart p{font-size:11px}
+
+.cle{
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;
+  font-size:17px;line-height:1.3;color:var(--green);margin-bottom:2.5mm;
+}
+.cle-fr{font-size:11px;color:var(--muted)}
+
+/* ---------- étapes ---------- */
+.etapes{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm;margin:6mm 0}
+.etape{background:var(--sand);border-radius:3mm;padding:4mm}
+.etape .rang{
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:9px;
+  color:var(--gold);letter-spacing:.1em;display:block;margin-bottom:2mm;
+}
+.etape .quoi{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:11px}
+
+/* ---------- situations ---------- */
+.situation{
+  border:1px solid var(--line);border-radius:3.5mm;padding:5mm 5.5mm;margin-bottom:4mm;
+  background:#fff;
+}
+.situation .tete{
+  display:flex;align-items:baseline;gap:3mm;margin-bottom:3.5mm;
+}
+.situation .rang{
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:11px;
+  color:var(--gold);flex:0 0 auto;
+}
+.situation .intitule{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:13px}
+
+.ligne{display:flex;gap:3mm;margin-bottom:2.5mm;align-items:flex-start}
+.ligne .signe{
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:11px;
+  flex:0 0 auto;width:4mm;line-height:1.5;
+}
+.ligne.non .signe{color:var(--red)}
+.ligne.oui .signe{color:var(--green)}
+.ligne .phrase{font-size:11px;font-style:italic;line-height:1.5}
+.ligne.non .phrase{color:rgba(44,24,16,.55)}
+.ligne.oui .phrase{color:var(--ink);font-weight:500}
+.pourquoi{
+  font-size:10px;color:var(--muted);border-top:1px solid var(--line);
+  padding-top:2.5mm;margin-top:1mm;
+}
+
+/* ---------- faux-amis ---------- */
+.faux-ami{
+  display:grid;grid-template-columns:44mm 1fr;gap:4mm;
+  padding:3.5mm 0;border-bottom:1px solid var(--line);align-items:baseline;
+}
+.faux-ami:last-child{border-bottom:none}
+.faux-ami .cas{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:11px}
+.faux-ami .paire{font-size:10.5px;line-height:1.55}
+.faux-ami .x{color:var(--red);font-weight:700}
+.faux-ami .v{color:var(--green);font-weight:700}
+.faux-ami .barre{color:rgba(44,24,16,.5);font-style:italic}
+.faux-ami .bonne{font-weight:500;font-style:italic}
+.faux-ami .note{display:block;font-size:9.5px;color:var(--muted);margin-top:1mm;font-style:normal}
+
+/* ---------- rituel ---------- */
+.temps{
+  display:grid;grid-template-columns:22mm 1fr;gap:5mm;
+  padding:5mm 0;border-bottom:1px solid var(--line);
+}
+.temps:last-of-type{border-bottom:none}
+.temps .duree{
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:15px;color:var(--green);
+}
+.temps .duree span{display:block;font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:1mm}
+.temps h3{margin-bottom:2mm}
+.exemple{
+  background:rgba(27,107,74,.08);border-radius:2.5mm;padding:3mm 4mm;margin-top:3mm;
+  font-size:10.5px;font-style:italic;color:var(--deep);
+}
+
+/* ---------- questions de contrôle ---------- */
+.controle{
+  display:flex;gap:4mm;padding:4.5mm 0;border-bottom:1px solid var(--line);align-items:flex-start;
+}
+.controle:last-child{border-bottom:none}
+.controle .rang{
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:10px;color:var(--gold);
+  flex:0 0 auto;width:6mm;padding-top:1mm;
+}
+.controle .en{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:12.5px;margin-bottom:1.5mm}
+.controle .fr{font-size:10.5px;color:var(--muted)}
+
+/* ---------- dernière page ---------- */
+.final{justify-content:center;text-align:center}
+.final .grand{
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:30px;
+  line-height:1.2;letter-spacing:-.025em;max-width:130mm;margin:0 auto;
+}
+.final .traduction{font-size:12px;color:rgba(250,247,242,.68);margin-top:5mm;max-width:110mm;margin-left:auto;margin-right:auto}
+.blocs-programme{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm;margin:9mm auto 0;max-width:140mm}
+.bloc-p{border:1px solid rgba(250,247,242,.18);border-radius:3mm;padding:4mm}
+.bloc-p .t{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:11.5px;color:var(--gold)}
+.bloc-p .d{font-size:9.5px;color:rgba(250,247,242,.62);margin-top:1.5mm;line-height:1.45}
+
+/* ---------- écran seulement ---------- */
+@media screen{
+  body{padding:16px 0}
+  .page{box-shadow:0 4px 24px rgba(11,42,32,.18)}
+}
+@media print{
+  body{padding:0;background:#fff}
+  .page{margin:0;box-shadow:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= 1. COUVERTURE ================= -->
+<section class="page sombre couverture">
+  <div class="entete-page">
+    <span class="marque">Fluent &amp; Forward</span>
+    <span class="rubrique">Guide gratuit</span>
+  </div>
+  <div class="corps" style="display:flex;flex-direction:column;justify-content:center">
+    <div class="titre-couverture"><em>Stop</em><br>Avoiding</div>
+    <div class="filet"></div>
+    <p class="sous-couverture">
+      Les 12 situations professionnelles que vous évitez en anglais —
+      et exactement quoi dire à la place.
+    </p>
+    <p class="sous-couverture" style="font-size:12px;margin-top:5mm">
+      Un guide du Business English Accelerator.
+    </p>
+  </div>
+  <div class="pied-page">
+    <span>Fluent &amp; Forward</span>
+    <span>Stop Avoiding</span>
+  </div>
+</section>
+
+<!-- ================= 2. POURQUOI VOUS ÉVITEZ ================= -->
+<section class="page">
+  <div class="entete-page">
+    <span class="marque">Fluent &amp; Forward</span>
+    <span class="rubrique">Introduction</span>
+  </div>
+  <div class="corps">
+    <span class="pastille">Le point de départ</span>
+    <h2 style="margin-top:5mm">Vous n'avez pas un problème de niveau.<br>Vous avez un problème de chemin.</h2>
+
+    <p class="intro">
+      Vous lisez des rapports en anglais sans difficulté. Vous suivez une réunion
+      du début à la fin. Et pourtant, au moment de prendre la parole, quelque chose
+      se ferme — et vous laissez passer votre tour.
+    </p>
+
+    <p style="margin-top:5mm">
+      Ce n'est pas de la timidité, et ce n'est pas un manque de vocabulaire.
+      C'est mécanique. Quand vous parlez français, l'idée devient un mot :
+      direct, automatique. En anglais, la même idée traverse quatre étapes
+      avant de sortir.
+    </p>
+
+    <div class="etapes">
+      <div class="etape"><span class="rang">01</span><span class="quoi">Penser en français</span></div>
+      <div class="etape"><span class="rang">02</span><span class="quoi">Chercher le mot</span></div>
+      <div class="etape"><span class="rang">03</span><span class="quoi">Traduire</span></div>
+      <div class="etape"><span class="rang">04</span><span class="quoi">Vérifier la grammaire</span></div>
+    </div>
+
+    <p>
+      Quatre étapes, c'est deux à trois secondes. En conversation, deux à trois
+      secondes suffisent pour que quelqu'un d'autre prenne la parole. Vous vous
+      taisez. La fois suivante, vous anticipez le silence — et vous vous taisez plus tôt.
+    </p>
+
+    <p><strong>C'est là que naît l'évitement.</strong> Il ne se présente jamais comme
+    un renoncement : il se déguise en « je le dirai par écrit après », « ce n'était
+    pas si important », « ils ont déjà décidé de toute façon ».</p>
+
+    <div class="encart vert">
+      <div class="cle">This is not a lack of intelligence. It's a lack of automaticity.</div>
+      <p class="cle-fr">
+        Ce n'est pas un manque d'intelligence — c'est un manque d'automatisme.
+        Et un automatisme, contrairement à l'intelligence, ça se construit.
+      </p>
+    </div>
+
+    <p>
+      Ce guide ne va pas vous apprendre de nouveaux mots. Il vous donne, pour les
+      douze situations que les francophones évitent le plus au travail, la phrase
+      courte et directe qui fonctionne — celle qu'un anglophone emploierait
+      réellement à cet endroit.
+    </p>
+
+    <div class="encart or">
+      <h3>Comment l'utiliser</h3>
+      <p>
+        Ne le lisez pas d'une traite pour l'oublier. Repérez les deux ou trois
+        situations qui vous concernent vraiment, apprenez la phrase « ✓ » par cœur,
+        et utilisez-la telle quelle cette semaine. Une phrase installée vaut mieux
+        que douze phrases reconnues.
+      </p>
+    </div>
+  </div>
+  <div class="pied-page">
+    <span>Stop Avoiding</span>
+    <span>Page <span class="numero-page"></span></span>
+  </div>
+</section>
+
+<!-- ================= 3. LA RÈGLE ================= -->
+<section class="page">
+  <div class="entete-page">
+    <span class="marque">Fluent &amp; Forward</span>
+    <span class="rubrique">La règle</span>
+  </div>
+  <div class="corps">
+    <span class="pastille">Avant les 12 situations</span>
+    <h2 style="margin-top:5mm">L'anglais de l'école n'est pas celui du travail</h2>
+
+    <p class="intro">
+      À l'école, l'objectif était d'être correct. On accumulait les formules pour
+      montrer qu'on maîtrisait. Au travail, l'objectif est d'être compris — et tout
+      ce qui ne sert pas le message travaille contre vous.
+    </p>
+
+    <div class="situation" style="margin-top:6mm">
+      <div class="tete">
+        <span class="rang">✕</span>
+        <span class="intitule">School English — objectif : être correct</span>
+      </div>
+      <div class="ligne non">
+        <span class="signe">✕</span>
+        <span class="phrase">
+          “I would like to kindly inform you that, further to our previous conversation,
+          I am writing in order to request some additional information regarding the project.”
+        </span>
+      </div>
+    </div>
+
+    <div class="situation">
+      <div class="tete">
+        <span class="rang">✓</span>
+        <span class="intitule">Business English — objectif : être compris</span>
+      </div>
+      <div class="ligne oui">
+        <span class="signe">✓</span>
+        <span class="phrase">“Following up on our call — can you send me a few more details on the project?”</span>
+      </div>
+    </div>
+
+    <p style="margin-top:5mm">
+      Même intention, moitié moins de mots. Et surtout : une version qui fait
+      attendre, une version qui fait agir.
+    </p>
+
+    <div class="encart vert">
+      <div class="cle">Business English isn't a ‘simpler’ version of English. It's a more efficient one.</div>
+      <p class="cle-fr">
+        Les anglophones natifs, en contexte professionnel, n'utilisent pas de phrases
+        complexes pour paraître intelligents. Ils vont droit au but — parce que le
+        temps, c'est de l'argent.
+      </p>
+    </div>
+
+    <div class="encart">
+      <h3>Les trois réflexes à couper</h3>
+      <p><strong>La politesse en couches.</strong> « I was wondering if it would be
+      possible for you to perhaps… » Chaque précaution ajoutée éloigne la demande.
+      Un simple <em>could you</em> est déjà poli.</p>
+      <p><strong>La justification préalable.</strong> Expliquer avant de demander
+      fait perdre le fil. Demandez d'abord, justifiez après si on vous le demande.</p>
+      <p><strong>Le conditionnel permanent.</strong> <em>Would, might, could,
+      possibly, potentially</em> empilés dans la même phrase : votre interlocuteur
+      ne sait plus si vous demandez quelque chose ou si vous réfléchissez à voix haute.</p>
+    </div>
+  </div>
+  <div class="pied-page">
+    <span>Stop Avoiding</span>
+    <span>Page <span class="numero-page"></span></span>
+  </div>
+</section>
+
+<!-- ================= 4. SITUATIONS 1-3 ================= -->
+<section class="page">
+  <div class="entete-page">
+    <span class="marque">Fluent &amp; Forward</span>
+    <span class="rubrique">Les 12 situations · 1 à 4</span>
+  </div>
+  <div class="corps">
+    <h2>Ce que vous évitez de dire</h2>
+
+    <div class="situation">
+      <div class="tete"><span class="rang">01</span><span class="intitule">Faire une demande</span></div>
+      <div class="ligne non"><span class="signe">✕</span><span class="phrase">
+        “I was wondering if it would be possible for you to perhaps send me the
+        document at your earliest convenience.”</span></div>
+      <div class="ligne oui"><span class="signe">✓</span><span class="phrase">
+        “Could you send me the document by Friday?”</span></div>
+      <p class="pourquoi">
+        Une demande sans date n'est pas une demande, c'est un souhait.
+        <em>By Friday</em> transforme la phrase en action datée — et personne ne
+        trouvera cela impoli.
+      </p>
+    </div>
+
+    <div class="situation">
+      <div class="tete"><span class="rang">02</span><span class="intitule">Exprimer un désaccord</span></div>
+      <div class="ligne non"><span class="signe">✕</span><span class="phrase">
+        “I do not necessarily disagree with your point of view, however I might have
+        a slightly different perspective on this particular matter.”</span></div>
+      <div class="ligne oui"><span class="signe">✓</span><span class="phrase">
+        “I see it differently — here's why.”</span></div>
+      <p class="pourquoi">
+        La version longue cherche à ne froisser personne et finit par ne rien dire.
+        <em>Here's why</em> annonce un argument : vous n'attaquez pas la personne,
+        vous ouvrez la discussion.
+      </p>
+    </div>
+
+    <div class="situation">
+      <div class="tete"><span class="rang">03</span><span class="intitule">Annoncer une mauvaise nouvelle</span></div>
+      <div class="ligne non"><span class="signe">✕</span><span class="phrase">
+        “I regret to inform you that we have unfortunately encountered a certain
+        number of difficulties which may potentially impact the delivery date.”</span></div>
+      <div class="ligne oui"><span class="signe">✓</span><span class="phrase">
+        “We're going to miss Friday's deadline. Here's the new date, and what we're doing about it.”</span></div>
+      <p class="pourquoi">
+        Noyer une mauvaise nouvelle la rend pire : l'interlocuteur doit la décoder,
+        puis se demande ce qu'on lui cache. Le fait, la nouvelle date, le plan.
+        Dans cet ordre.
+      </p>
+    </div>
+
+    <div class="situation">
+      <div class="tete"><span class="rang">04</span><span class="intitule">Dire qu'on n'a pas compris</span></div>
+      <div class="ligne non"><span class="signe">✕</span><span class="phrase">
+        “Yes, yes, of course.” <span style="font-style:normal">(alors que non)</span></span></div>
+      <div class="ligne oui"><span class="signe">✓</span><span class="phrase">
+        “Sorry, could you say that again more slowly?” · “Just to make sure I got it — you mean…?”</span></div>
+      <p class="pourquoi">
+        C'est l'évitement le plus coûteux du lot : il se paie plus tard, en travail
+        refait. Demander une répétition ne signale jamais un mauvais niveau — cela
+        signale quelqu'un qui vérifie avant d'agir.
+      </p>
+    </div>
+  </div>
+  <div class="pied-page">
+    <span>Stop Avoiding</span>
+    <span>Page <span class="numero-page"></span></span>
+  </div>
+</section>
+
+<!-- ================= 5. SITUATIONS 5-8 ================= -->
+<section class="page">
+  <div class="entete-page">
+    <span class="marque">Fluent &amp; Forward</span>
+    <span class="rubrique">Les 12 situations · 5 à 8</span>
+  </div>
+  <div class="corps">
+    <div class="situation">
+      <div class="tete"><span class="rang">05</span><span class="intitule">Prendre la parole en réunion</span></div>
+      <div class="ligne non"><span class="signe">✕</span><span class="phrase">
+        <span style="font-style:normal">Attendre le silence parfait — qui n'arrive jamais.</span></span></div>
+      <div class="ligne oui"><span class="signe">✓</span><span class="phrase">
+        “Can I add something here?” · “Quick point on that —” · “Before we move on…”</span></div>
+      <p class="pourquoi">
+        Trois amorces courtes, apprises par cœur, suffisent. L'enjeu n'est pas la
+        phrase que vous direz ensuite : c'est d'avoir une porte d'entrée disponible
+        sans avoir à la construire.
+      </p>
+    </div>
+
+    <div class="situation">
+      <div class="tete"><span class="rang">06</span><span class="intitule">Proposer une solution</span></div>
+      <div class="ligne non"><span class="signe">✕</span><span class="phrase">
+        “One possible course of action that we could potentially consider would be
+        to explore alternative options moving forward.”</span></div>
+      <div class="ligne oui"><span class="signe">✓</span><span class="phrase">
+        “What if we tried a different approach?”</span></div>
+      <p class="pourquoi">
+        La première version ne propose rien : elle propose de proposer.
+        <em>What if</em> met une idée concrète sur la table sans l'imposer.
+      </p>
+    </div>
+
+    <div class="situation">
+      <div class="tete"><span class="rang">07</span><span class="intitule">Refuser une demande</span></div>
+      <div class="ligne non"><span class="signe">✕</span><span class="phrase">
+        “It would be quite complicated for me to do that, but I will see what I can do.”</span></div>
+      <div class="ligne oui"><span class="signe">✓</span><span class="phrase">
+        “I can't take this on this week. I could do it by the 12th — does that work?”</span></div>
+      <p class="pourquoi">
+        Un refus flou est entendu comme un oui. Refusez la chose, pas la personne :
+        un non net suivi d'une contre-proposition passe mieux qu'un peut-être qui
+        traîne.
+      </p>
+    </div>
+
+    <div class="situation">
+      <div class="tete"><span class="rang">08</span><span class="intitule">Demander un délai</span></div>
+      <div class="ligne non"><span class="signe">✕</span><span class="phrase">
+        “I am not sure I will be able to finish everything for the deadline,
+        it depends on several factors.”</span></div>
+      <div class="ligne oui"><span class="signe">✓</span><span class="phrase">
+        “I need two more days to do this properly. Can we push to Wednesday?”</span></div>
+      <p class="pourquoi">
+        Demandez une durée précise, pas une indulgence vague. <em>To do this
+        properly</em> montre que le délai sert la qualité, pas le confort.
+      </p>
+    </div>
+  </div>
+  <div class="pied-page">
+    <span>Stop Avoiding</span>
+    <span>Page <span class="numero-page"></span></span>
+  </div>
+</section>
+
+<!-- ================= 6. SITUATIONS 9-12 ================= -->
+<section class="page">
+  <div class="entete-page">
+    <span class="marque">Fluent &amp; Forward</span>
+    <span class="rubrique">Les 12 situations · 9 à 12</span>
+  </div>
+  <div class="corps">
+    <div class="situation">
+      <div class="tete"><span class="rang">09</span><span class="intitule">Relancer un client silencieux</span></div>
+      <div class="ligne non"><span class="signe">✕</span><span class="phrase">
+        “I am writing to follow up on my previous correspondence, in the event that
+        it may have been overlooked.”</span></div>
+      <div class="ligne oui"><span class="signe">✓</span><span class="phrase">
+        “Just checking in — did you get my last email?”</span></div>
+      <p class="pourquoi">
+        La relance formelle sonne comme un reproche administratif. La version courte
+        laisse une sortie honorable à votre interlocuteur, ce qui augmente vos chances
+        de réponse.
+      </p>
+    </div>
+
+    <div class="situation">
+      <div class="tete"><span class="rang">10</span><span class="intitule">Remercier après un rendez-vous</span></div>
+      <div class="ligne non"><span class="signe">✕</span><span class="phrase">
+        “I wanted to take this opportunity to express my sincere gratitude for the
+        time you kindly dedicated to our meeting.”</span></div>
+      <div class="ligne oui"><span class="signe">✓</span><span class="phrase">
+        “Thanks for your time today — the part about the timeline was really useful.”</span></div>
+      <p class="pourquoi">
+        Un remerciement générique ne se retient pas. Un détail précis prouve que vous
+        avez écouté, et relance la conversation sans le demander.
+      </p>
+    </div>
+
+    <div class="situation">
+      <div class="tete"><span class="rang">11</span><span class="intitule">Reprendre la parole après avoir été coupé</span></div>
+      <div class="ligne non"><span class="signe">✕</span><span class="phrase">
+        <span style="font-style:normal">Abandonner l'idée et ne jamais y revenir.</span></span></div>
+      <div class="ligne oui"><span class="signe">✓</span><span class="phrase">
+        “Sorry, let me finish my thought.” · “Coming back to what I was saying —”</span></div>
+      <p class="pourquoi">
+        Être coupé n'a rien à voir avec votre anglais : cela arrive à tout le monde.
+        Ce qui change tout, c'est d'avoir la formule prête pour reprendre la main
+        dans la seconde.
+      </p>
+    </div>
+
+    <div class="situation">
+      <div class="tete"><span class="rang">12</span><span class="intitule">Se présenter en une phrase</span></div>
+      <div class="ligne non"><span class="signe">✕</span><span class="phrase">
+        “I am working in the department of… since… and my role consists in the
+        management of several different aspects of…”</span></div>
+      <div class="ligne oui"><span class="signe">✓</span><span class="phrase">
+        “I'm Claire — I help retail teams cut their delivery times.”</span></div>
+      <p class="pourquoi">
+        La formule qui fonctionne : <em>I help [qui] to [quel résultat]</em>.
+        On retient un résultat, jamais un intitulé de poste.
+      </p>
+    </div>
+  </div>
+  <div class="pied-page">
+    <span>Stop Avoiding</span>
+    <span>Page <span class="numero-page"></span></span>
+  </div>
+</section>
+
+<!-- ================= 7. CITATION ================= -->
+<section class="page sombre" style="justify-content:center;text-align:center">
+  <div class="entete-page">
+    <span class="marque">Fluent &amp; Forward</span>
+    <span class="rubrique">À retenir</span>
+  </div>
+  <div class="corps" style="display:flex;flex-direction:column;justify-content:center">
+    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:30px;line-height:1.22;letter-spacing:-.025em;max-width:135mm;margin:0 auto">
+      Clarity beats vocabulary. Every time.
+    </div>
+    <p style="font-size:12.5px;color:rgba(250,247,242,.68);margin-top:7mm;max-width:115mm;margin-left:auto;margin-right:auto">
+      La clarté prime sur le vocabulaire. À chaque fois. Ceux qui réussissent en
+      anglais ne sont pas ceux qui ont le plus de vocabulaire — ce sont ceux qui
+      disent exactement ce qu'ils veulent dire, sans détour et sans surexpliquer.
+    </p>
+    <p style="font-size:12.5px;color:var(--gold);margin-top:8mm;font-style:italic">
+      “You don't need the perfect word. You need the clear one.”
+    </p>
+  </div>
+  <div class="pied-page">
+    <span>Stop Avoiding</span>
+    <span>Page <span class="numero-page"></span></span>
+  </div>
+</section>
+
+<!-- ================= 8. FAUX-AMIS ================= -->
+<section class="page">
+  <div class="entete-page">
+    <span class="marque">Fluent &amp; Forward</span>
+    <span class="rubrique">Bonus 1</span>
+  </div>
+  <div class="corps">
+    <span class="pastille or">Bonus</span>
+    <h2 style="margin-top:5mm">Les 6 faux-amis structurels</h2>
+    <p class="intro">
+      Ce ne sont pas des mots isolés : ce sont des structures entières, parfaitement
+      logiques en français, qui n'existent pas en anglais. C'est le piège le plus
+      fréquent chez les francophones — y compris à très bon niveau.
+    </p>
+
+    <div style="margin-top:6mm">
+      <div class="faux-ami">
+        <div class="cas">Être d'accord</div>
+        <div class="paire">
+          <span class="x">✕</span> <span class="barre">“I am agree with you.”</span><br>
+          <span class="v">✓</span> <span class="bonne">“I agree with you.”</span>
+          <span class="note">En français on <em>est</em> d'accord. En anglais, <em>to agree</em> est un verbe d'action, pas un état.</span>
+        </div>
+      </div>
+
+      <div class="faux-ami">
+        <div class="cas">Participer à une réunion</div>
+        <div class="paire">
+          <span class="x">✕</span> <span class="barre">“I will assist to the meeting.”</span><br>
+          <span class="v">✓</span> <span class="bonne">“I will attend the meeting.”</span>
+          <span class="note"><em>To assist</em> veut dire aider, pas assister à.</span>
+        </div>
+      </div>
+
+      <div class="faux-ami">
+        <div class="cas">Discuter de quelque chose</div>
+        <div class="paire">
+          <span class="x">✕</span> <span class="barre">“I discussed about the project.”</span><br>
+          <span class="v">✓</span> <span class="bonne">“I discussed the project.”</span>
+          <span class="note"><em>To discuss</em> est déjà transitif en anglais : pas de préposition.</span>
+        </div>
+      </div>
+
+      <div class="faux-ami">
+        <div class="cas">Expliquer à quelqu'un</div>
+        <div class="paire">
+          <span class="x">✕</span> <span class="barre">“Explain me the process.”</span><br>
+          <span class="v">✓</span> <span class="bonne">“Explain the process to me.”</span>
+          <span class="note"><em>Explain</em> n'accepte pas de complément d'objet indirect juste après le verbe.</span>
+        </div>
+      </div>
+
+      <div class="faux-ami">
+        <div class="cas">S'ennuyer</div>
+        <div class="paire">
+          <span class="x">✕</span> <span class="barre">“I am boring in this meeting.”</span><br>
+          <span class="v">✓</span> <span class="bonne">“I am bored in this meeting.”</span>
+          <span class="note"><em>Boring</em>, c'est la réunion. <em>Bored</em>, c'est vous. L'adjectif en -ing décrit la chose, celui en -ed ce qu'on ressent.</span>
+        </div>
+      </div>
+
+      <div class="faux-ami">
+        <div class="cas">Être chargé de faire</div>
+        <div class="paire">
+          <span class="x">✕</span> <span class="barre">“I am in charge to manage the team.”</span><br>
+          <span class="v">✓</span> <span class="bonne">“I am in charge of managing the team.”</span>
+          <span class="note">Après <em>in charge of</em>, l'anglais demande un verbe en -ing, jamais un infinitif.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="encart vert" style="margin-top:6mm">
+      <div class="cle" style="font-size:15px">
+        Some French logic simply doesn't translate. Learn the English structure directly.
+      </div>
+      <p class="cle-fr">
+        Quand une structure vous paraît évidente parce qu'elle décalque le français,
+        c'est précisément le moment de vérifier. Ne cherchez pas la traduction —
+        cherchez l'usage.
+      </p>
+    </div>
+  </div>
+  <div class="pied-page">
+    <span>Stop Avoiding</span>
+    <span>Page <span class="numero-page"></span></span>
+  </div>
+</section>
+
+<!-- ================= 9. LE RITUEL ================= -->
+<section class="page">
+  <div class="entete-page">
+    <span class="marque">Fluent &amp; Forward</span>
+    <span class="rubrique">Bonus 2</span>
+  </div>
+  <div class="corps">
+    <span class="pastille or">Bonus</span>
+    <h2 style="margin-top:5mm">Le rituel de 2 minutes</h2>
+    <p class="intro">
+      Connaître les bonnes phrases ne suffit pas si votre cerveau est encore en
+      français quand la réunion commence. Ce rituel coupe la traduction interne
+      avant que vous en ayez besoin. Jamais pendant — toujours avant.
+    </p>
+
+    <div class="temps" style="margin-top:6mm">
+      <div class="duree">1 min<span>Temps 1</span></div>
+      <div>
+        <h3>La bascule sensorielle</h3>
+        <p style="font-size:11px">
+          Désignez trois objets autour de vous. Pour chacun, une phrase simple en
+          anglais, à voix haute : ce que c'est, où il est, à quoi il sert.
+          À voix haute, vraiment — pas dans votre tête.
+        </p>
+        <div class="exemple">
+          “This is a black pen. It is on the wooden desk. I need it for taking notes.”
+        </div>
+      </div>
+    </div>
+
+    <div class="temps">
+      <div class="duree">1 min<span>Temps 2</span></div>
+      <div>
+        <h3>La projection d'intention</h3>
+        <p style="font-size:11px">
+          Formulez en une phrase votre objectif immédiat pour la réunion qui arrive.
+          Directement en anglais, sans brouillon français.
+        </p>
+        <div class="exemple">
+          “In this meeting, I want to present the new timeline and get their agreement on the deadline.”
+        </div>
+      </div>
+    </div>
+
+    <div class="encart" style="margin-top:6mm">
+      <h3>Pourquoi ça fonctionne</h3>
+      <p><strong>Zéro traduction.</strong> Le cerveau traite en boucle courte —
+      visuel vers anglais — au lieu de la boucle longue : visuel, français, anglais.</p>
+      <p><strong>Actionnable immédiatement.</strong> Pas de matériel, pas de
+      préparation, pas d'excuse. Testable dans les deux minutes qui viennent.</p>
+      <p><strong>Répétable à volonté.</strong> Un automatisme se construit par
+      fréquence, pas par intensité. Trois fois par semaine bat une fois par mois.</p>
+    </div>
+  </div>
+  <div class="pied-page">
+    <span>Stop Avoiding</span>
+    <span>Page <span class="numero-page"></span></span>
+  </div>
+</section>
+
+<!-- ================= 10. LES 3 QUESTIONS ================= -->
+<section class="page">
+  <div class="entete-page">
+    <span class="marque">Fluent &amp; Forward</span>
+    <span class="rubrique">Bonus 3</span>
+  </div>
+  <div class="corps">
+    <span class="pastille or">Bonus</span>
+    <h2 style="margin-top:5mm">Les 3 questions de contrôle</h2>
+    <p class="intro">
+      À se repasser en situation réelle, pendant la conversation. Trois questions,
+      trois secondes. C'est la grille qui tient tout le programme.
+    </p>
+
+    <div style="margin-top:7mm">
+      <div class="controle">
+        <span class="rang">01</span>
+        <div>
+          <div class="en">Am I being clear?</div>
+          <div class="fr">
+            Est-ce que je dis exactement ce que je veux dire, ou est-ce que je tourne
+            autour ? Si votre phrase compte plus de deux précautions, coupez-en une.
+          </div>
+        </div>
+      </div>
+
+      <div class="controle">
+        <span class="rang">02</span>
+        <div>
+          <div class="en">Am I practicing instead of waiting?</div>
+          <div class="fr">
+            Est-ce que je parle maintenant, ou est-ce que j'attends d'être prêt ?
+            On ne devient pas bon avant de parler — on devient bon en parlant.
+          </div>
+        </div>
+      </div>
+
+      <div class="controle">
+        <span class="rang">03</span>
+        <div>
+          <div class="en">Am I connecting, not just talking?</div>
+          <div class="fr">
+            Est-ce que la personne en face se sent écoutée, ou est-ce que je récite ?
+            On se souvient de ce que vous avez fait ressentir, pas de la perfection
+            de votre anglais.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="encart vert" style="margin-top:7mm">
+      <div class="cle">You don't need to feel confident to start. You need to start to feel confident.</div>
+      <p class="cle-fr">
+        Vous n'avez pas besoin d'avoir confiance pour commencer. Vous devez commencer
+        pour prendre confiance. Ce n'est pas « fake it until you make it » — c'est
+        <strong>practice it until you own it</strong>.
+      </p>
+    </div>
+
+    <div class="encart or">
+      <h3>Votre exercice de cette semaine</h3>
+      <p>
+        Choisissez une seule situation parmi les douze. Celle que vous évitez le plus.
+        Apprenez la phrase « ✓ » par cœur, et employez-la telle quelle à la première
+        occasion — sans l'améliorer, sans la rallonger.
+      </p>
+      <p>
+        Une phrase utilisée en situation réelle vaut mieux que douze phrases relues
+        dans un PDF.
+      </p>
+    </div>
+  </div>
+  <div class="pied-page">
+    <span>Stop Avoiding</span>
+    <span>Page <span class="numero-page"></span></span>
+  </div>
+</section>
+
+<!-- ================= 11. LA SUITE ================= -->
+<section class="page sombre final">
+  <div class="entete-page">
+    <span class="marque">Fluent &amp; Forward</span>
+    <span class="rubrique">La suite</span>
+  </div>
+  <div class="corps" style="display:flex;flex-direction:column;justify-content:center">
+    <div class="grand">
+      Stop trying to sound impressive.<br>Start trying to be understood.
+    </div>
+    <p class="traduction">
+      Ce guide règle douze situations. Le Business English Accelerator s'attaque à
+      ce qui les produit : la boucle de traduction elle-même. Huit semaines,
+      100 % en ligne, sessions live en groupe et séances individuelles.
+    </p>
+
+    <div class="blocs-programme">
+      <div class="bloc-p">
+        <div class="t">Clarity</div>
+        <div class="d">Dire exactement ce qu'on veut dire, sans détour.</div>
+      </div>
+      <div class="bloc-p">
+        <div class="t">Confidence</div>
+        <div class="d">Construite par la pratique, pas par la perfection.</div>
+      </div>
+      <div class="bloc-p">
+        <div class="t">Connection</div>
+        <div class="d">Le relationnel, qui crée la confiance et fait avancer.</div>
+      </div>
+    </div>
+
+    <p style="font-size:11px;color:rgba(250,247,242,.55);margin-top:9mm">
+      Les inscriptions à la prochaine cohorte sont annoncées en priorité aux
+      personnes qui ont reçu ce guide.
+    </p>
+  </div>
+  <div class="pied-page">
+    <span>Fluent &amp; Forward · Business English Accelerator</span>
+    <span>Page <span class="numero-page"></span></span>
+  </div>
+</section>
+
+</body>
+</html>
