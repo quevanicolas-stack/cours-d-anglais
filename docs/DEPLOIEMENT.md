@@ -1,9 +1,48 @@
-# Mise en ligne — Cloudflare Pages
+# Mise en ligne — Cloudflare
 
 Hébergement gratuit, `fluentandforward` dans l'adresse, HTTPS et protection
 réseau incluses. Aucun domaine à acheter pour démarrer.
 
-Adresse obtenue : **`https://fluentandforward.pages.dev`**
+Adresse en ligne : **`https://fluentandforward.queva-nicolas.workers.dev`**
+
+## Ce qui a réellement été déployé
+
+Cloudflare a utilisé son parcours **Workers** (`npx wrangler deploy`) plutôt que
+Pages. Le résultat est un Worker servant des fichiers statiques : le
+fonctionnement est le même, seule l'adresse diffère — `.workers.dev` au lieu de
+`.pages.dev`. Le nom `fluentandforward` est bien présent.
+
+Un domaine personnalisé pourra être branché dessus de la même façon.
+
+### Vérifier que les en-têtes de sécurité sont bien appliqués
+
+Le journal de déploiement lit 16 fichiers dans `landing/` mais n'en téléverse
+que 15 : `_headers` est absent de la liste, signe qu'il a été consommé comme
+configuration et non servi comme fichier. C'est le comportement attendu.
+
+Pour le confirmer, ouvrir la console du navigateur sur le site en ligne, onglet
+**Réseau**, cliquer sur la requête de la page, section **En-têtes de réponse**.
+`Content-Security-Policy` et `Strict-Transport-Security` doivent y figurer.
+
+En ligne de commande :
+
+```
+curl -sI https://fluentandforward.queva-nicolas.workers.dev/ | grep -i "content-security\|strict-transport"
+```
+
+Si ces en-têtes sont absents, c'est que le parcours Workers n'a pas pris
+`_headers` en compte : il faut alors recréer le projet en **Pages** plutôt qu'en
+Workers, ou déclarer les en-têtes dans `wrangler.jsonc`.
+
+## Ne jamais mettre autre chose que du public dans `landing/`
+
+**Tout fichier présent dans `landing/` est servi en ligne.** Le premier
+déploiement publiait ainsi `README.md`, `DEPLOIEMENT.md` et les collecteurs, y
+compris le numéro de téléphone qui y figurait en clair.
+
+La documentation et les collecteurs vivent désormais dans `docs/`, qui n'est
+jamais publié. Avant tout ajout de fichier, se demander : « est-ce que
+j'accepte que n'importe qui le télécharge ? »
 
 ## Pourquoi Cloudflare Pages plutôt que GitHub Pages
 
@@ -125,7 +164,7 @@ vers HTTPS à activer dans **SSL/TLS → Edge Certificates → Always Use HTTPS*
 ## Le collecteur
 
 Cloudflare Pages n'exécute pas de PHP : `enregistrer.php` est inutilisable ici.
-Il faut donc l'option Google Apps Script décrite dans `collecte/LISEZMOI.md`,
+Il faut donc l'option Google Apps Script décrite dans `docs/collecte/LISEZMOI.md`,
 qui écrit dans une feuille Google Sheets.
 
 L'adresse du déploiement Apps Script est déjà autorisée par la politique de

@@ -10,21 +10,28 @@ Contenu du guide repris intégralement de
 
 ## Contenu du dossier
 
+**`landing/` est publié tel quel : tout ce qui s'y trouve est accessible en
+ligne.** La documentation et les collecteurs vivent donc dans `docs/`, hors du
+dossier servi.
+
 ```
-landing/
+landing/                      ← publié
 ├── index.html                La landing (5 sections du brief)
 ├── stop-avoiding.html        Le guide — source unique, sert à générer le PDF
 ├── prospects.html            Page interne : contacts de secours + export CSV
 ├── mentions-legales.html     Mentions légales (à compléter)
-├── DEPLOIEMENT.md            Mise en ligne sur Cloudflare Pages
-├── _headers                  En-têtes de sécurité appliqués au déploiement
-├── assets/
-│   ├── style.css
-│   ├── script.js             Verrou du formulaire + téléchargement + collecte
-│   ├── prospects.js          Script de la page interne
-│   ├── favicon.svg
-│   ├── aurelie.jpg           Photo issue du brief
-│   └── stop-avoiding-english-essentials.pdf   Le fichier remis au prospect
+├── _headers                  En-têtes de sécurité, lu au déploiement
+└── assets/
+    ├── style.css
+    ├── script.js             Verrou du formulaire + téléchargement + collecte
+    ├── prospects.js          Script de la page interne
+    ├── favicon.svg
+    ├── aurelie.jpg           Photo issue du brief
+    └── stop-avoiding-english-essentials.pdf   Le fichier remis au prospect
+
+docs/                         ← jamais publié
+├── README.md                 Ce fichier
+├── DEPLOIEMENT.md            Mise en ligne
 └── collecte/
     ├── LISEZMOI.md           Comment mettre en place le fichier de sauvegarde
     ├── enregistrer.php       Collecteur pour hébergement PHP → CSV + JSON
@@ -39,7 +46,7 @@ python3 -m http.server 8000 --directory landing
 
 ## Mettre en ligne
 
-Voir `DEPLOIEMENT.md` : hébergement gratuit sur Cloudflare Pages, adresse
+Voir `docs/DEPLOIEMENT.md` : hébergement gratuit sur Cloudflare Pages, adresse
 `https://fluentandforward.pages.dev`, en-têtes de sécurité via `_headers`.
 Le collecteur doit alors être branché sur Google Apps Script — Cloudflare
 Pages n'exécute pas de PHP.
@@ -82,13 +89,13 @@ Ou à la main : ouvrir le HTML dans Chrome, `Ctrl/Cmd + P`, A4, marges « Aucune
 
 ## Brancher la collecte — à faire avant la mise en ligne
 
-Une seule ligne à renseigner dans `assets/script.js` :
+Une seule ligne à renseigner dans `landing/assets/script.js` :
 
 ```js
 collecteur: ""   // ← l'adresse du collecteur
 ```
 
-Deux options, détaillées dans `collecte/LISEZMOI.md` :
+Deux options, détaillées dans `docs/collecte/LISEZMOI.md` :
 
 - **hébergement PHP** → `enregistrer.php` crée `prospects.csv` et `statistiques.json` ;
 - **hébergement statique** (GitHub Pages, Netlify) → `apps-script.gs` remplit une
@@ -117,7 +124,9 @@ demandes de rappel.
 
 ## Contact WhatsApp
 
-Numéro d'Aurélie : **+262 693 44 18 35** (`262693441835` dans les liens).
+Le numéro d'Aurélie ne figure **que dans l'attribut `href` des boutons**, dans
+`landing/index.html` et `landing/stop-avoiding.html`. Il n'est écrit en clair
+nulle part, ni sur les pages, ni dans cette documentation.
 
 Deux boutons ouvrent WhatsApp avec un message pré-rempli, prêt à envoyer depuis
 le compte du visiteur :
@@ -141,8 +150,9 @@ Dans le PDF, aucun script n'est possible : il n'y a donc pas de repli
 automatique. Un lecteur PDF qui refuse d'ouvrir un lien hors `http` ne fera
 rien au clic. C'est la contrepartie assumée de ne pas afficher le numéro.
 
-Pour changer le numéro ou le message : chercher `262693441835` dans
-`index.html` et `stop-avoiding.html`, puis régénérer le PDF.
+Pour changer le numéro ou le message : ouvrir `landing/index.html` et
+`landing/stop-avoiding.html`, modifier le paramètre `phone=` des liens
+`whatsapp://` (et `data-repli` sur la landing), puis régénérer le PDF.
 
 ## Points à trancher
 
