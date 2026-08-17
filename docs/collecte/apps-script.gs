@@ -13,6 +13,20 @@
 var ONGLET_PROSPECTS = 'Prospects';
 var ONGLET_STATS = 'Statistiques';
 
+/* Ouvrir l'adresse de déploiement dans un navigateur affiche cette réponse.
+   C'est le moyen le plus simple de vérifier que le collecteur est en ligne. */
+function doGet() {
+  var total = 0;
+  try {
+    var f = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(ONGLET_PROSPECTS);
+    if (f) total = Math.max(0, f.getLastRow() - 1);
+  } catch (err) {}
+
+  return ContentService
+    .createTextOutput('Collecteur Fluent & Forward en ligne. Contacts enregistrés : ' + total)
+    .setMimeType(ContentService.MimeType.TEXT);
+}
+
 function doPost(e) {
   try {
     var contact = JSON.parse(e.postData.contents);

@@ -66,8 +66,12 @@ fichier de sauvegarde.
 3. **Déployer → Nouveau déploiement → Application Web** :
    - Exécuter en tant que : *moi* ;
    - Accès : *tout le monde*.
-4. Copier l'URL de déploiement (`https://script.google.com/macros/s/…/exec`) et
-   la renseigner dans `landing/assets/script.js` :
+4. Copier l'URL de déploiement (`https://script.google.com/macros/s/…/exec`).
+5. **Vérifier avant d'aller plus loin** : coller cette URL dans un navigateur.
+   Elle doit afficher `Collecteur Fluent & Forward en ligne. Contacts
+   enregistrés : 0`. Si une erreur d'autorisation s'affiche, c'est que l'accès
+   n'est pas réglé sur *tout le monde* à l'étape 3.
+6. Renseigner l'URL dans `landing/assets/script.js` :
 
    ```js
    collecteur: "https://script.google.com/macros/s/XXXXX/exec"
