@@ -87,24 +87,36 @@ node -e "const{chromium}=require('playwright');(async()=>{
 Ou à la main : ouvrir le HTML dans Chrome, `Ctrl/Cmd + P`, A4, marges « Aucune »,
 « Graphiques d'arrière-plan » coché.
 
-## Brancher la collecte — à faire avant la mise en ligne
+## La collecte — branchée
 
-Une seule ligne à renseigner dans `landing/assets/script.js` :
+Le formulaire envoie chaque contact à un script Google Apps Script, qui remplit
+une feuille Google Sheets privée : un onglet **Prospects** (une ligne par
+demande, avec les trois consentements) et un onglet **Statistiques**, recalculé
+à chaque envoi.
+
+L'adresse du collecteur est renseignée dans `landing/assets/script.js` :
 
 ```js
-collecteur: ""   // ← l'adresse du collecteur
+collecteur: "https://script.google.com/macros/s/…/exec"
 ```
 
-Deux options, détaillées dans `docs/collecte/LISEZMOI.md` :
+Le code du script est dans `docs/collecte/apps-script.gs`, la mise en place dans
+`docs/collecte/LISEZMOI.md`. Ouvrir l'adresse `/exec` dans un navigateur affiche
+le nombre de contacts enregistrés : c'est le moyen le plus rapide de vérifier que
+le collecteur répond.
 
-- **hébergement PHP** → `enregistrer.php` crée `prospects.csv` et `statistiques.json` ;
-- **hébergement statique** (GitHub Pages, Netlify) → `apps-script.gs` remplit une
-  feuille Google Sheets avec un onglet Prospects et un onglet Statistiques.
+**Changer le code du script impose de redéployer** : dans Apps Script, *Déployer
+→ Gérer les déploiements → crayon → Version : nouvelle version*. Modifier le code
+sans redéployer ne change rien à ce que reçoit la landing. Tant que l'adresse
+`/exec` reste la même, il n'y a rien à modifier ici.
 
-Tant que rien n'est branché, le guide se télécharge quand même et le contact est
-conservé dans le navigateur du visiteur. **Ce n'est pas de la collecte** : ces
-contacts restent chez lui. `prospects.html` ne montre que ce qui a été saisi sur
-votre propre navigateur, et sert aux tests.
+Une variante PHP existe aussi (`docs/collecte/enregistrer.php`), pour un
+hébergement mutualisé classique. Elle n'est pas utilisée aujourd'hui.
+
+En secours, chaque contact est également conservé dans le navigateur du visiteur,
+au cas où le collecteur serait injoignable. **Ce n'est pas de la collecte** : ces
+copies restent chez lui. `prospects.html` ne montre que ce qui a été saisi sur
+votre propre navigateur, et sert aux tests — la source de vérité est le tableur.
 
 ## Les trois consentements
 

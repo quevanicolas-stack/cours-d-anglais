@@ -23,7 +23,7 @@
   var REGLAGES = {
     fichier: "assets/stop-avoiding-english-essentials.pdf",
     nomFichier: "Stop-Avoiding-English-Essentials.pdf",
-    collecteur: ""
+    collecteur: "https://script.google.com/macros/s/AKfycbwg_-N5wG5108h1O2mqxfWmsFOeUDO_cp8XDzdzyCTCBQ3PZn7zTqqC6006yeAm1rh7/exec"
   };
 
   var CLE_LOCALE = "ff_prospects";
