@@ -26,19 +26,43 @@ d'un site statique, et Cloudflare est le seul des deux à l'autoriser.
 1. Créer un compte sur `dash.cloudflare.com` (gratuit, sans carte bancaire).
 2. **Workers & Pages → Create → Pages → Connect to Git**, autoriser GitHub et
    choisir le dépôt `cours-d-anglais`.
-3. Réglages de construction :
+3. Réglages de construction. **Les trois champs de commande doivent rester
+   vides** : le site est déjà construit, il n'y a rien à compiler.
 
    | Champ | Valeur |
    | --- | --- |
    | Project name | `fluentandforward` |
-   | Production branch | `main` |
+   | Production branch | la branche qui contient le dossier `landing/` |
    | Framework preset | *None* |
-   | Build command | *(laisser vide)* |
+   | Build command | **vide** |
+   | Deploy command | **vide** |
+   | Root directory | **vide** |
    | Build output directory | `landing` |
 
-4. **Save and Deploy.** Le site est en ligne en une minute environ.
+4. Cliquer sur **Save and Deploy**, puis attendre. Le déploiement prend
+   généralement moins d'une minute.
 5. Dans **Settings → Custom domains**, rien à faire tant qu'aucun domaine
    n'est acheté.
+
+## Si le déploiement échoue
+
+**`/bin/sh: 1: <un mot> : not found`**
+
+Du texte a été saisi dans **Build command** ou **Deploy command**. Cloudflare
+tente de l'exécuter comme une commande shell. Vider les deux champs dans
+**Settings → Builds & deployments → Build configurations**, puis relancer avec
+**Retry deployment**.
+
+**`No build output directory found` ou site vide**
+
+Le dossier `landing/` n'existe pas sur la branche de production. Vérifier que
+**Production branch** pointe bien sur une branche qui le contient, et que
+**Build output directory** vaut exactement `landing`.
+
+**Le site s'affiche sans styles**
+
+`Build output directory` a été laissé vide ou mis à `/`. Cloudflare sert alors
+la racine du dépôt, où `index.html` n'existe pas.
 
 Le nom du projet devient le sous-domaine : il doit donc être exactement
 `fluentandforward` pour obtenir l'adresse voulue. S'il est déjà pris par un
