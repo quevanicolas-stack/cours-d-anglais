@@ -11,11 +11,19 @@ fichier de sauvegarde ; il faut en choisir **une**.
 | `date` | Horodatage de la demande |
 | `prenom` | Prénom saisi |
 | `email` | Adresse email saisie |
+| `consentement_rgpd` | Toujours `oui` : une demande sans cet accord est refusée |
+| `accepte_prospection` | `oui` / `non` — accord pour les informations commerciales |
+| `demande_rappel` | `oui` / `non` — le prospect demande à être recontacté |
 | `origine` | `hero` ou `bas-de-page`, selon le formulaire utilisé |
 | `provenance` | Page depuis laquelle le visiteur est arrivé (`direct` si aucune) |
 
-Statistiques calculées automatiquement : nombre de téléchargements, nombre
-d'adresses uniques, répartition par jour et par formulaire.
+Statistiques calculées automatiquement : nombre de téléchargements, adresses
+uniques, acceptations de prospection, demandes de rappel, répartition par jour
+et par formulaire.
+
+Les trois consentements sont conservés séparément : c'est ce qui permet de
+prouver, contact par contact, ce qui a été accepté et ce qui ne l'a pas été.
+Une personne qui n'a pas coché la prospection ne doit recevoir que le guide.
 
 ## Option A — Hébergement qui exécute PHP
 

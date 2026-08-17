@@ -23,13 +23,17 @@ function doPost(e) {
     if (!prenom || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
       return reponse({ erreur: 'Prénom ou email invalide' });
     }
+    if (!contact.consentementRgpd) {
+      return reponse({ erreur: 'Consentement au traitement manquant' });
+    }
 
     var classeur = SpreadsheetApp.getActiveSpreadsheet();
     var feuille = classeur.getSheetByName(ONGLET_PROSPECTS);
     if (!feuille) {
       feuille = classeur.insertSheet(ONGLET_PROSPECTS);
-      feuille.appendRow(['Date', 'Prénom', 'Email', 'Origine', 'Provenance']);
-      feuille.getRange('A1:E1').setFontWeight('bold');
+      feuille.appendRow(['Date', 'Prénom', 'Email', 'Consentement RGPD',
+                         'Accepte prospection', 'Demande rappel', 'Origine', 'Provenance']);
+      feuille.getRange('A1:H1').setFontWeight('bold');
       feuille.setFrozenRows(1);
     }
 
@@ -37,6 +41,9 @@ function doPost(e) {
       new Date(),
       prenom,
       email,
+      'oui',
+      contact.accepteProspection ? 'oui' : 'non',
+      contact.demandeRappel ? 'oui' : 'non',
       String(contact.origine || 'inconnue').slice(0, 40),
       String(contact.provenance || 'direct').slice(0, 300)
     ]);
@@ -62,6 +69,8 @@ function majStatistiques(classeur, feuilleProspects) {
   var uniques = {};
   var parJour = {};
   var parOrigine = {};
+  var prospection = 0;
+  var rappels = 0;
 
   lignes.forEach(function (l) {
     var date = l[0] instanceof Date
@@ -69,13 +78,17 @@ function majStatistiques(classeur, feuilleProspects) {
       : String(l[0]).slice(0, 10);
     uniques[String(l[2]).toLowerCase()] = true;
     parJour[date] = (parJour[date] || 0) + 1;
-    parOrigine[l[3]] = (parOrigine[l[3]] || 0) + 1;
+    if (l[4] === 'oui') prospection++;
+    if (l[5] === 'oui') rappels++;
+    parOrigine[l[6]] = (parOrigine[l[6]] || 0) + 1;
   });
 
   stats.clear();
   stats.appendRow(['Indicateur', 'Valeur']);
   stats.appendRow(['Téléchargements', lignes.length]);
   stats.appendRow(['Adresses uniques', Object.keys(uniques).length]);
+  stats.appendRow(['Acceptent la prospection', prospection]);
+  stats.appendRow(['Demandent à être rappelés', rappels]);
   stats.appendRow(['Dernière mise à jour', new Date()]);
   stats.appendRow(['', '']);
 

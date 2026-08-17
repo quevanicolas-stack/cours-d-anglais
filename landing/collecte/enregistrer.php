@@ -61,6 +61,18 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email) > 160) {
 $origineForm = substr((string)($contact['origine'] ?? 'inconnue'), 0, 40);
 $provenance  = substr((string)($contact['provenance'] ?? 'direct'), 0, 300);
 
+// Consentements. Le traitement est obligatoire côté formulaire ; la prospection
+// et la demande de rappel sont facultatives et doivent être tracées séparément,
+// c'est ce qui fait preuve en cas de contrôle.
+$rgpd        = !empty($contact['consentementRgpd']) ? 'oui' : 'non';
+$prospection = !empty($contact['accepteProspection']) ? 'oui' : 'non';
+$rappel      = !empty($contact['demandeRappel']) ? 'oui' : 'non';
+
+if ($rgpd !== 'oui') {
+    http_response_code(422);
+    exit(json_encode(['erreur' => 'Consentement au traitement manquant']));
+}
+
 // --- Écriture du fichier de sauvegarde -----------------------------
 if (!is_dir(DOSSIER) && !mkdir(DOSSIER, 0750, true) && !is_dir(DOSSIER)) {
     http_response_code(500);
@@ -80,13 +92,16 @@ flock($fp, LOCK_EX);
 if ($nouveau) {
     // BOM UTF-8 : sans lui, Excel affiche les accents de travers.
     fwrite($fp, "\xEF\xBB\xBF");
-    fputcsv($fp, ['date', 'prenom', 'email', 'origine', 'provenance'], ';');
+    fputcsv($fp, ['date', 'prenom', 'email', 'consentement_rgpd', 'accepte_prospection', 'demande_rappel', 'origine', 'provenance'], ';');
 }
 
 fputcsv($fp, [
     date('Y-m-d H:i:s'),
     $prenom,
     $email,
+    $rgpd,
+    $prospection,
+    $rappel,
     $origineForm,
     $provenance,
 ], ';');
@@ -95,7 +110,8 @@ flock($fp, LOCK_UN);
 fclose($fp);
 
 // --- Statistiques ---------------------------------------------------
-$stats = ['total' => 0, 'par_jour' => [], 'par_origine' => [], 'emails_uniques' => 0];
+$stats = ['total' => 0, 'par_jour' => [], 'par_origine' => [], 'emails_uniques' => 0,
+          'accepte_prospection' => 0, 'demande_rappel' => 0];
 if (file_exists(STATS)) {
     $lu = json_decode((string)file_get_contents(STATS), true);
     if (is_array($lu)) { $stats = $lu + $stats; }
@@ -105,6 +121,8 @@ $jour = date('Y-m-d');
 $stats['total'] = ($stats['total'] ?? 0) + 1;
 $stats['par_jour'][$jour] = ($stats['par_jour'][$jour] ?? 0) + 1;
 $stats['par_origine'][$origineForm] = ($stats['par_origine'][$origineForm] ?? 0) + 1;
+if ($prospection === 'oui') { $stats['accepte_prospection'] = ($stats['accepte_prospection'] ?? 0) + 1; }
+if ($rappel === 'oui')      { $stats['demande_rappel'] = ($stats['demande_rappel'] ?? 0) + 1; }
 $stats['derniere_maj'] = date('c');
 
 // Compte les adresses distinctes en relisant le fichier de sauvegarde.

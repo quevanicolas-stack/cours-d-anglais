@@ -14,7 +14,8 @@
   thead th { background: var(--sand); font-family: var(--titre); font-weight: 700; font-size: .76rem; letter-spacing: .06em; text-transform: uppercase; }
   tbody tr:last-child td { border-bottom: none; }
   td.date { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--muted); }
-  .tuiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 28px; }
+  .tuiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 28px; }
+  td.oui-non { font-weight: 600; }
   .tuile { background: var(--sand); border-radius: var(--rayon); padding: 20px 22px; }
   .tuile .valeur { font-family: var(--titre); font-weight: 800; font-size: 2rem; color: var(--green); font-variant-numeric: tabular-nums; }
   .tuile .libelle { font-size: .88rem; color: var(--muted); margin-top: 2px; }
@@ -90,16 +91,19 @@
     var zone = document.getElementById("zone-tableau");
 
     var uniques = {};
-    var parOrigine = {};
+    var prospection = 0;
+    var rappels = 0;
     liste.forEach(function (c) {
       uniques[String(c.email).toLowerCase()] = true;
-      parOrigine[c.origine] = (parOrigine[c.origine] || 0) + 1;
+      if (c.accepteProspection) prospection++;
+      if (c.demandeRappel) rappels++;
     });
 
     tuiles.innerHTML =
       tuile(liste.length, "téléchargements") +
       tuile(Object.keys(uniques).length, "adresses uniques") +
-      tuile(parOrigine["hero"] || 0, "depuis le formulaire du haut");
+      tuile(prospection, "acceptent la prospection") +
+      tuile(rappels, "demandent à être rappelés");
 
     if (!liste.length) {
       zone.innerHTML = '<div class="vide">Aucun contact enregistré sur ce navigateur pour le moment.</div>';
@@ -111,6 +115,8 @@
         '<td class="date">' + echapper((c.date || "").replace("T", " ").slice(0, 16)) + "</td>" +
         "<td>" + echapper(c.prenom) + "</td>" +
         "<td>" + echapper(c.email) + "</td>" +
+        '<td class="oui-non">' + (c.accepteProspection ? "oui" : "non") + "</td>" +
+        '<td class="oui-non">' + (c.demandeRappel ? "oui" : "non") + "</td>" +
         "<td>" + echapper(c.origine) + "</td>" +
         "<td>" + echapper(c.provenance) + "</td>" +
         "</tr>";
@@ -118,7 +124,7 @@
 
     zone.innerHTML =
       '<div class="tableau-enveloppe"><table>' +
-      "<thead><tr><th>Date</th><th>Prénom</th><th>Email</th><th>Formulaire</th><th>Provenance</th></tr></thead>" +
+      "<thead><tr><th>Date</th><th>Prénom</th><th>Email</th><th>Prospection</th><th>Rappel</th><th>Formulaire</th><th>Provenance</th></tr></thead>" +
       "<tbody>" + lignes + "</tbody></table></div>";
   }
 
@@ -131,10 +137,13 @@
     var liste = lire();
     if (!liste.length) { alert("Aucun contact à exporter."); return; }
 
-    var champs = ["date", "prenom", "email", "origine", "provenance"];
+    var champs = ["date", "prenom", "email", "consentementRgpd", "accepteProspection", "demandeRappel", "origine", "provenance"];
     var lignes = [champs.join(";")].concat(liste.map(function (c) {
       return champs.map(function (f) {
-        return '"' + String(c[f] == null ? "" : c[f]).replace(/"/g, '""') + '"';
+        var v = c[f];
+        // Les booléens sont exportés en oui/non, lisibles dans un tableur.
+        if (typeof v === "boolean") v = v ? "oui" : "non";
+        return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
       }).join(";");
     }));
 

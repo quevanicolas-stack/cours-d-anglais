@@ -38,11 +38,11 @@ python3 -m http.server 8000 --directory landing
 
 | Section | Contenu |
 | --- | --- |
-| 1 — Hero | Le chiffre 78 % / 43 %, le sous-titre, prénom + email, bouton, ligne de réassurance |
+| 1 — Hero | Les deux statistiques en blocs distincts sur toute la largeur, le sous-titre, prénom + email, les trois consentements, bouton, ligne de réassurance |
 | 2 — Dans le guide | Les 4 promesses du guide |
 | 3 — Qui je suis | « Pourquoi m'écouter ? », bio d'Aurélie, photo |
 | 4 — Deuxième appel à l'action | Formulaire identique au hero |
-| 5 — Teasing | Business English Accelerator, prochaine cohorte |
+| 5 — Teasing | Business English Accelerator, cohorte du 14 septembre, bouton WhatsApp « Contactez-moi » |
 
 ## Le guide
 
@@ -85,13 +85,38 @@ conservé dans le navigateur du visiteur. **Ce n'est pas de la collecte** : ces
 contacts restent chez lui. `prospects.html` ne montre que ce qui a été saisi sur
 votre propre navigateur, et sert aux tests.
 
+## Les trois consentements
+
+Le formulaire recueille trois accords séparés, tous enregistrés avec le contact :
+
+| Case | Statut | Effet |
+| --- | --- | --- |
+| Conservation des données pour la remise du guide | **Obligatoire** | Sans elle, le téléchargement est bloqué |
+| Réception d'informations commerciales (prospection) | Facultatif | Enregistré en `oui`/`non` |
+| Demande à être recontacté par Aurélie | Facultatif | Enregistré en `oui`/`non` |
+
+Seule la première est bloquante : le RGPD interdit de conditionner la remise d'un
+contenu à l'acceptation de la prospection. Les deux autres sont tracées
+séparément dans le fichier de sauvegarde — c'est ce qui fait preuve en cas de
+contrôle. Les statistiques comptent les acceptations de prospection et les
+demandes de rappel.
+
+## Contact WhatsApp
+
+Le bouton « Contactez-moi » de la section 5 ouvre WhatsApp avec un message
+pré-rempli, prêt à envoyer depuis le compte du visiteur. Le numéro se trouve
+**dans le `href` du bouton, dans `index.html`** — c'est le seul endroit à
+modifier. Format international, sans « + » ni espaces (`262692000000` par
+exemple). Une ligne d'avertissement surlignée est affichée sous le bouton :
+la supprimer une fois le vrai numéro renseigné.
+
 ## Points à trancher
 
 | Point | Détail |
 | --- | --- |
-| **Date de cohorte** | Le brief indique le **14 septembre**, le pptx le **10 septembre**. La landing affiche le 14 en surligné doré, en attente d'arbitrage. Les deux documents doivent s'accorder. |
 | **Chiffres 78 % / 43 %** | Aucune source n'est citée dans le brief. Une statistique affichée en titre doit pouvoir être sourcée si on la conteste. |
 | **Nom du guide** | Le brief l'appelle « Stop Avoiding - English Essentials » mais donne l'URL `…GuideStopAvoidingBusinessEssentials`. |
+| **Numéro WhatsApp** | Placeholder `262692000000` dans `index.html`, à remplacer. |
 | **Lien Systeme.io** | La dernière page du guide contient un bouton « Je réserve ma place » dont le lien reste à renseigner. |
 | **Photo** | Celle du brief. À confirmer qu'il s'agit bien d'une photo d'Aurélie et que les droits sont acquis, puisqu'elle illustre la fondatrice. |
 | **Mentions légales** | Éditeur, hébergeur et prestataire de collecte restent à compléter. |
