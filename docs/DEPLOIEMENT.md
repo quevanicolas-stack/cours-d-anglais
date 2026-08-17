@@ -3,36 +3,46 @@
 Hébergement gratuit, `fluentandforward` dans l'adresse, HTTPS et protection
 réseau incluses. Aucun domaine à acheter pour démarrer.
 
-Adresse en ligne : **`https://fluentandforward.queva-nicolas.workers.dev`**
+Adresse visée : **`https://fluentandforward.pages.dev`**
 
-## Ce qui a réellement été déployé
+## Important : créer un projet « Pages », pas « Workers »
 
-Cloudflare a utilisé son parcours **Workers** (`npx wrangler deploy`) plutôt que
-Pages. Le résultat est un Worker servant des fichiers statiques : le
-fonctionnement est le même, seule l'adresse diffère — `.workers.dev` au lieu de
-`.pages.dev`. Le nom `fluentandforward` est bien présent.
+Cloudflare propose deux parcours. Le choix décide de l'adresse obtenue.
 
-Un domaine personnalisé pourra être branché dessus de la même façon.
+| Parcours | Adresse |
+| --- | --- |
+| **Pages** | `fluentandforward.pages.dev` |
+| Workers | `fluentandforward.<nom-du-compte>.workers.dev` |
 
-### Vérifier que les en-têtes de sécurité sont bien appliqués
+Une adresse `.workers.dev` intercale **toujours** le nom du compte Cloudflare.
+Ce n'est pas un réglage : c'est la structure de ces adresses. Le seul moyen de
+l'éviter est de passer par Pages, ou de brancher un domaine acheté.
 
-Le journal de déploiement lit 16 fichiers dans `landing/` mais n'en téléverse
-que 15 : `_headers` est absent de la liste, signe qu'il a été consommé comme
-configuration et non servi comme fichier. C'est le comportement attendu.
+Le premier déploiement est parti sur Workers et a produit
+`fluentandforward.queva-nicolas.workers.dev`, où apparaît un nom de personne
+sans rapport avec la marque. Il faut donc recréer le projet en Pages.
 
-Pour le confirmer, ouvrir la console du navigateur sur le site en ligne, onglet
-**Réseau**, cliquer sur la requête de la page, section **En-têtes de réponse**.
-`Content-Security-Policy` et `Strict-Transport-Security` doivent y figurer.
+### Recréer proprement
 
-En ligne de commande :
+1. **Workers & Pages → Overview**, ouvrir le projet `fluentandforward`,
+   **Settings → Delete project**.
+2. **Create → Pages → Connect to Git** — bien cliquer sur l'onglet **Pages**,
+   pas sur Workers.
+3. Choisir le dépôt `cours-d-anglais`, puis renseigner :
 
-```
-curl -sI https://fluentandforward.queva-nicolas.workers.dev/ | grep -i "content-security\|strict-transport"
-```
+   | Champ | Valeur |
+   | --- | --- |
+   | Project name | `fluentandforward` |
+   | Production branch | `main` |
+   | Framework preset | *None* |
+   | Build command | **vide** |
+   | Build output directory | `landing` |
 
-Si ces en-têtes sont absents, c'est que le parcours Workers n'a pas pris
-`_headers` en compte : il faut alors recréer le projet en **Pages** plutôt qu'en
-Workers, ou déclarer les en-têtes dans `wrangler.jsonc`.
+4. **Save and Deploy.**
+
+Si l'interface ne propose que le parcours Workers, l'autre solution est
+d'acheter `fluentandforward.com` et de le brancher sur le projet existant :
+l'adresse `.workers.dev` cesse alors d'être celle qu'on communique.
 
 ## Ne jamais mettre autre chose que du public dans `landing/`
 
