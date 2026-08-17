@@ -16,9 +16,12 @@ landing/
 ├── stop-avoiding.html        Le guide — source unique, sert à générer le PDF
 ├── prospects.html            Page interne : contacts de secours + export CSV
 ├── mentions-legales.html     Mentions légales (à compléter)
+├── DEPLOIEMENT.md            Mise en ligne sur Cloudflare Pages
+├── _headers                  En-têtes de sécurité appliqués au déploiement
 ├── assets/
 │   ├── style.css
 │   ├── script.js             Verrou du formulaire + téléchargement + collecte
+│   ├── prospects.js          Script de la page interne
 │   ├── favicon.svg
 │   ├── aurelie.jpg           Photo issue du brief
 │   └── stop-avoiding-english-essentials.pdf   Le fichier remis au prospect
@@ -33,6 +36,13 @@ landing/
 ```
 python3 -m http.server 8000 --directory landing
 ```
+
+## Mettre en ligne
+
+Voir `DEPLOIEMENT.md` : hébergement gratuit sur Cloudflare Pages, adresse
+`https://fluentandforward.pages.dev`, en-têtes de sécurité via `_headers`.
+Le collecteur doit alors être branché sur Google Apps Script — Cloudflare
+Pages n'exécute pas de PHP.
 
 ## Les 5 sections
 

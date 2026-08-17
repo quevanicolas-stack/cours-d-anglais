@@ -1,0 +1,45 @@
+# ==================================================================
+# En-têtes de sécurité — format Cloudflare Pages (et Netlify).
+# Ce fichier n'est pas servi : il est lu au déploiement et transformé
+# en en-têtes HTTP. Il n'a aucun effet en local.
+# ==================================================================
+
+/*
+  # Interdit tout ce qui n'est pas explicitement autorisé.
+  # style-src accepte 'unsafe-inline' car la page utilise des attributs
+  # style= et un bloc <style> ; l'injection de style est sans commune
+  # mesure avec l'injection de script, qui reste, elle, verrouillée.
+  # connect-src n'ouvre que le collecteur Google Apps Script.
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; form-action 'none'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests
+
+  # Force HTTPS pendant un an, y compris sur les sous-domaines.
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+  # Empêche le navigateur de deviner un type de fichier différent
+  # de celui annoncé — parade classique contre les uploads piégés.
+  X-Content-Type-Options: nosniff
+
+  # Interdit l'affichage du site dans une iframe tierce (clickjacking).
+  # frame-ancestors ci-dessus fait le travail ; ceci couvre les vieux
+  # navigateurs qui l'ignorent.
+  X-Frame-Options: DENY
+
+  # Ne transmet l'adresse complète de la page qu'en navigation interne.
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # Coupe l'accès aux capteurs : la page n'en a aucun usage.
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+
+  # Isole la page des autres onglets du navigateur.
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+
+# La page de suivi des prospects est interne : elle ne doit jamais
+# remonter dans un moteur de recherche.
+/prospects.html
+  X-Robots-Tag: noindex, nofollow, noarchive
+
+# Le guide en version web n'a pas vocation à être indexé non plus :
+# c'est le PDF qui est remis aux inscrits.
+/stop-avoiding.html
+  X-Robots-Tag: noindex, nofollow
