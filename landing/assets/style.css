@@ -426,7 +426,6 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .bouton-whatsapp svg { width: 20px; height: 20px; flex: 0 0 auto; }
 
-.aide-numero { font-size: .84rem; margin-top: 12px; display: inline-block; }
 
 @media (max-width: 760px) {
   .accroche { grid-template-columns: 1fr; gap: 24px; }

@@ -103,12 +103,25 @@ demandes de rappel.
 
 ## Contact WhatsApp
 
-Le bouton « Contactez-moi » de la section 5 ouvre WhatsApp avec un message
-pré-rempli, prêt à envoyer depuis le compte du visiteur. Le numéro se trouve
-**dans le `href` du bouton, dans `index.html`** — c'est le seul endroit à
-modifier. Format international, sans « + » ni espaces (`262692000000` par
-exemple). Une ligne d'avertissement surlignée est affichée sous le bouton :
-la supprimer une fois le vrai numéro renseigné.
+Numéro d'Aurélie : **+262 693 44 18 35** (`262693441835` dans les liens).
+
+Deux boutons « Contactez-moi » ouvrent WhatsApp avec un message pré-rempli,
+prêt à envoyer depuis le compte du visiteur : un dans la section 5 de la
+landing, un sur la dernière page du guide — donc aussi dans le PDF.
+
+Les liens utilisent le schéma **`whatsapp://send?phone=…&text=…`**, qui bascule
+directement dans l'application. L'adresse `https://wa.me/…` affichait une page
+de redirection intermédiaire ; elle ne sert plus que de secours.
+
+Sur la landing, ce secours est automatique : `assets/script.js` détecte que
+l'application ne s'est pas ouverte au bout de 1,4 seconde et bascule alors sur
+`wa.me`. L'adresse de repli est portée par l'attribut `data-repli` du bouton.
+
+Dans le PDF, aucun script n'est possible : le numéro est donc écrit en clair
+sous les boutons, pour les lecteurs qui refusent d'ouvrir un lien hors `http`.
+
+Pour changer le numéro ou le message : chercher `262693441835` dans
+`index.html` et `stop-avoiding.html`, puis régénérer le PDF.
 
 ## Points à trancher
 
@@ -116,7 +129,6 @@ la supprimer une fois le vrai numéro renseigné.
 | --- | --- |
 | **Chiffres 78 % / 43 %** | Aucune source n'est citée dans le brief. Une statistique affichée en titre doit pouvoir être sourcée si on la conteste. |
 | **Nom du guide** | Le brief l'appelle « Stop Avoiding - English Essentials » mais donne l'URL `…GuideStopAvoidingBusinessEssentials`. |
-| **Numéro WhatsApp** | Placeholder `262692000000` dans `index.html`, à remplacer. |
 | **Lien Systeme.io** | La dernière page du guide contient un bouton « Je réserve ma place » dont le lien reste à renseigner. |
 | **Photo** | Celle du brief. À confirmer qu'il s'agit bien d'une photo d'Aurélie et que les droits sont acquis, puisqu'elle illustre la fondatrice. |
 | **Mentions légales** | Éditeur, hébergeur et prestataire de collecte restent à compléter. |

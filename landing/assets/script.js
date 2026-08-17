@@ -163,6 +163,37 @@
     });
   }
 
+
+  /* ---------- Bascule WhatsApp ----------
+     Le lien pointe sur whatsapp:// pour ouvrir l'application sans passer par
+     la page de redirection de wa.me. Si l'application n'est pas installée,
+     rien ne se produit : on bascule alors sur l'adresse web de secours. */
+
+  function initWhatsApp() {
+    var liens = document.querySelectorAll("a[data-repli]");
+
+    for (var i = 0; i < liens.length; i++) {
+      liens[i].addEventListener("click", function (evenement) {
+        var lien = evenement.currentTarget;
+        var repli = lien.getAttribute("data-repli");
+        if (!repli) return;
+
+        var bascule = false;
+        // Si l'application s'ouvre, l'onglet passe en arrière-plan :
+        // c'est le signal qu'aucun repli n'est nécessaire.
+        function onQuitte() { bascule = true; }
+        window.addEventListener("blur", onQuitte, { once: true });
+        document.addEventListener("visibilitychange", onQuitte, { once: true });
+
+        setTimeout(function () {
+          window.removeEventListener("blur", onQuitte);
+          document.removeEventListener("visibilitychange", onQuitte);
+          if (!bascule && !document.hidden) window.location.href = repli;
+        }, 1400);
+      });
+    }
+  }
+
   /* ---------- Année du pied de page ---------- */
 
   function initAnnee() {
@@ -174,6 +205,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     var formulaires = document.querySelectorAll(".formulaire-guide");
     for (var i = 0; i < formulaires.length; i++) initFormulaire(formulaires[i]);
+    initWhatsApp();
     initAnnee();
   });
 })();
