@@ -13,18 +13,94 @@
 var ONGLET_PROSPECTS = 'Prospects';
 var ONGLET_STATS = 'Statistiques';
 
-/* Ouvrir l'adresse de déploiement dans un navigateur affiche cette réponse.
-   C'est le moyen le plus simple de vérifier que le collecteur est en ligne. */
-function doGet() {
-  var total = 0;
-  try {
-    var f = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(ONGLET_PROSPECTS);
-    if (f) total = Math.max(0, f.getLastRow() - 1);
-  } catch (err) {}
+/* Laisser vide si le script a été créé DEPUIS le tableur
+   (Extensions > Apps Script) : il retrouve le tableur tout seul.
 
-  return ContentService
-    .createTextOutput('Collecteur Fluent & Forward en ligne. Contacts enregistrés : ' + total)
-    .setMimeType(ContentService.MimeType.TEXT);
+   À renseigner si le script a été créé à part, depuis script.google.com :
+   dans ce cas il n'est rattaché à aucun tableur et ne peut rien écrire.
+   L'identifiant se lit dans l'adresse du tableur, entre /d/ et /edit :
+   docs.google.com/spreadsheets/d/[ICI]/edit */
+var ID_CLASSEUR = '';
+
+/* Ouvre le tableur, ou explique précisément pourquoi il ne peut pas.
+   C'est la panne la plus fréquente : un script créé à part écrit dans
+   le vide, sans qu'aucun message ne le signale. */
+function ouvrirClasseur() {
+  if (ID_CLASSEUR) return SpreadsheetApp.openById(ID_CLASSEUR);
+
+  var actif = SpreadsheetApp.getActiveSpreadsheet();
+  if (!actif) {
+    throw new Error(
+      "Ce script n'est rattaché à aucun tableur : il ne peut donc rien " +
+      "enregistrer. Deux solutions — recréer le script depuis le tableur " +
+      "(Extensions > Apps Script), ou renseigner ID_CLASSEUR en haut de ce " +
+      "fichier puis redéployer une nouvelle version.");
+  }
+  return actif;
+}
+
+/* ------------------------------------------------------------------
+   Ouvrir l'adresse de déploiement dans un navigateur affiche l'état réel
+   du collecteur. C'est le moyen le plus simple de vérifier qu'il marche
+   AVANT de tester depuis la landing.
+
+   Ajouter ?essai=1 à la fin de l'adresse enregistre un contact d'essai :
+   si la ligne apparaît dans le tableur, la chaîne complète fonctionne et
+   la panne est forcément côté site. La ligne est marquée ESSAI, elle se
+   supprime à la main.
+   ------------------------------------------------------------------ */
+function doGet(e) {
+  var lignes = ['Collecteur Fluent & Forward', ''];
+  var classeur;
+
+  try {
+    classeur = ouvrirClasseur();
+  } catch (err) {
+    lignes.push('Rattachement au tableur : ÉCHEC');
+    lignes.push('');
+    lignes.push(String(err.message || err));
+    return texte(lignes.join('\n'));
+  }
+
+  lignes.push('Rattachement au tableur : OK — « ' + classeur.getName() + ' »');
+
+  var feuille = classeur.getSheetByName(ONGLET_PROSPECTS);
+  if (!feuille) {
+    lignes.push('Onglet Prospects : pas encore créé');
+    lignes.push("  (normal tant qu'aucun contact n'est arrivé : il se crée au premier envoi)");
+  } else {
+    var total = Math.max(0, feuille.getLastRow() - 1);
+    lignes.push('Onglet Prospects : ' + total + ' contact(s) enregistré(s)');
+    if (total > 0) {
+      lignes.push('Dernier enregistrement : ' +
+                  feuille.getRange(feuille.getLastRow(), 1).getValue());
+    }
+  }
+
+  if (e && e.parameter && e.parameter.essai) {
+    try {
+      enregistrer(classeur, {
+        prenom: 'ESSAI',
+        email: 'essai@fluentandforward.test',
+        consentementRgpd: true,
+        accepteProspection: false,
+        demandeRappel: false,
+        origine: 'essai-direct',
+        provenance: "ouverture manuelle de l'adresse du script"
+      });
+      lignes.push('');
+      lignes.push("Contact d'essai enregistré. Ouvrez le tableur : une ligne");
+      lignes.push('ESSAI doit y figurer. Vous pouvez la supprimer ensuite.');
+    } catch (err) {
+      lignes.push('');
+      lignes.push("Écriture du contact d'essai : ÉCHEC — " + String(err.message || err));
+    }
+  } else {
+    lignes.push('');
+    lignes.push("Pour tester l'écriture, ajoutez ?essai=1 à la fin de cette adresse.");
+  }
+
+  return texte(lignes.join('\n'));
 }
 
 function doPost(e) {
@@ -41,33 +117,38 @@ function doPost(e) {
       return reponse({ erreur: 'Consentement au traitement manquant' });
     }
 
-    var classeur = SpreadsheetApp.getActiveSpreadsheet();
-    var feuille = classeur.getSheetByName(ONGLET_PROSPECTS);
-    if (!feuille) {
-      feuille = classeur.insertSheet(ONGLET_PROSPECTS);
-      feuille.appendRow(['Date', 'Prénom', 'Email', 'Consentement RGPD',
-                         'Accepte prospection', 'Demande rappel', 'Origine', 'Provenance']);
-      feuille.getRange('A1:H1').setFontWeight('bold');
-      feuille.setFrozenRows(1);
-    }
-
-    feuille.appendRow([
-      new Date(),
-      prenom,
-      email,
-      'oui',
-      contact.accepteProspection ? 'oui' : 'non',
-      contact.demandeRappel ? 'oui' : 'non',
-      String(contact.origine || 'inconnue').slice(0, 40),
-      String(contact.provenance || 'direct').slice(0, 300)
-    ]);
-
-    majStatistiques(classeur, feuille);
+    enregistrer(ouvrirClasseur(), contact);
 
     return reponse({ ok: true });
   } catch (err) {
-    return reponse({ erreur: String(err) });
+    return reponse({ erreur: String(err.message || err) });
   }
+}
+
+/* Ajoute une ligne dans l'onglet Prospects, en le créant au besoin,
+   puis recalcule les statistiques. */
+function enregistrer(classeur, contact) {
+  var feuille = classeur.getSheetByName(ONGLET_PROSPECTS);
+  if (!feuille) {
+    feuille = classeur.insertSheet(ONGLET_PROSPECTS);
+    feuille.appendRow(['Date', 'Prénom', 'Email', 'Consentement RGPD',
+                       'Accepte prospection', 'Demande rappel', 'Origine', 'Provenance']);
+    feuille.getRange('A1:H1').setFontWeight('bold');
+    feuille.setFrozenRows(1);
+  }
+
+  feuille.appendRow([
+    new Date(),
+    String(contact.prenom || '').trim(),
+    String(contact.email || '').trim(),
+    'oui',
+    contact.accepteProspection ? 'oui' : 'non',
+    contact.demandeRappel ? 'oui' : 'non',
+    String(contact.origine || 'inconnue').slice(0, 40),
+    String(contact.provenance || 'direct').slice(0, 300)
+  ]);
+
+  majStatistiques(classeur, feuille);
 }
 
 /* Recalcule l'onglet Statistiques à partir des contacts enregistrés. */
@@ -118,6 +199,12 @@ function majStatistiques(classeur, feuilleProspects) {
   });
 
   stats.getRange('A1:B1').setFontWeight('bold');
+}
+
+function texte(contenu) {
+  return ContentService
+    .createTextOutput(contenu)
+    .setMimeType(ContentService.MimeType.TEXT);
 }
 
 function reponse(objet) {

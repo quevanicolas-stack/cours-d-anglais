@@ -32,6 +32,7 @@ landing/                      ← publié
 docs/                         ← jamais publié
 ├── README.md                 Ce fichier
 ├── DEPLOIEMENT.md            Mise en ligne
+├── TRANSFERT.md              Passage du projet sur les comptes d'Aurélie
 └── collecte/
     ├── LISEZMOI.md           Comment mettre en place le fichier de sauvegarde
     ├── enregistrer.php       Collecteur pour hébergement PHP → CSV + JSON
