@@ -379,33 +379,34 @@ img { max-width: 100%; height: auto; display: block; }
 /* ---------- Accroche du hero ----------
    Les deux statistiques sont traitées comme deux blocs distincts, côte à côte
    sur la largeur utile de la page, empilés en dessous de 760 px. */
+/* Les deux statistiques sont empilées, chacune sur toute la largeur.
+   Le pourcentage ouvre la phrase, en ligne, pour que le texte occupe
+   vraiment la largeur au lieu de se casser en colonne. */
 .accroche {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 28px 44px;
+  display: block;
   max-width: none;
-  margin: 26px 0 30px;
-  text-align: left;
+  margin: 26px 0 32px;
 }
 .phrase-stat {
   display: block;
-  font-size: clamp(1.05rem, 1.5vw, 1.32rem);
+  font-size: clamp(1.15rem, 2vw, 1.65rem);
   font-weight: 700;
-  line-height: 1.35;
+  line-height: 1.4;
   color: #fff;
+  text-wrap: pretty;
 }
 .phrase-stat + .phrase-stat {
-  border-left: 1px solid var(--line-clair);
-  padding-left: 44px;
+  margin-top: 26px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line-clair);
 }
 .pourcentage {
-  display: block;
-  font-size: clamp(2.6rem, 5vw, 4rem);
+  font-size: 1.7em;
   font-weight: 800;
   line-height: 1;
   letter-spacing: -.03em;
   color: var(--gold);
-  margin-bottom: 12px;
+  margin-right: .12em;
 }
 
 /* ---------- Ligne cohorte + contact WhatsApp ---------- */
@@ -428,13 +429,6 @@ img { max-width: 100%; height: auto; display: block; }
 
 
 @media (max-width: 760px) {
-  .accroche { grid-template-columns: 1fr; gap: 24px; }
-  .phrase-stat + .phrase-stat {
-    border-left: none;
-    padding-left: 0;
-    border-top: 1px solid var(--line-clair);
-    padding-top: 24px;
-  }
   .ligne-cohorte { flex-direction: column; align-items: flex-start; }
   .bouton-whatsapp { width: 100%; justify-content: center; }
 }
@@ -464,15 +458,6 @@ img { max-width: 100%; height: auto; display: block; }
   accent-color: var(--gold);
   cursor: pointer;
 }
-.case em {
-  font-style: normal;
-  font-size: .78rem;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  color: var(--gold);
-  white-space: nowrap;
-}
-.section-sable .case em, .section-claire .case em { color: var(--green); }
 .case input[aria-invalid="true"] { outline: 2px solid var(--red); outline-offset: 2px; }
 
 /* La règle .heros h1 plus haut est plus spécifique que .accroche : on la
