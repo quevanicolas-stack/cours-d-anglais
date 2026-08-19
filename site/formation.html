@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Formation — Fluent &amp; Forward</title>
+<meta name="description" content="Le calendrier des sessions de formation en anglais professionnel sur les trois prochains mois, avec les disponibilités.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div class="contenu barre">
+    <button class="bouton-menu" id="ouvrir-menu" aria-label="Ouvrir le menu"
+            aria-expanded="false" aria-controls="menu-lateral">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="marque" href="index.html">Fluent &amp; Forward</a>
+  </div>
+</header>
+
+<nav class="menu-lateral" id="menu-lateral" aria-hidden="true" aria-label="Menu principal">
+  <div class="menu-tete">
+    <span class="marque">Fluent &amp; Forward</span>
+    <button class="fermer-menu" id="fermer-menu" aria-label="Fermer le menu">&times;</button>
+  </div>
+  <ul class="menu-liens">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="formation.html">Formation</a></li>
+    <li><a href="a-propos.html">À propos de moi</a></li>
+    <li><a href="programme.html">Mon programme</a></li>
+  </ul>
+  <div class="menu-pied">
+    <a class="bouton bouton-or" href="connexion.html">Connexion</a>
+    <p class="note">L'accès aux modules sera réservé aux comptes validés.</p>
+  </div>
+</nav>
+<button class="voile" id="voile-menu" hidden aria-label="Fermer le menu"></button>
+
+<main>
+
+  <section class="section section-serree">
+    <div class="contenu">
+      <span class="oeil">Formation</span>
+      <h2>La formation en quelques lignes</h2>
+      <p class="chapeau" style="margin-top:16px">
+        Un accompagnement à l'anglais professionnel oral, en visio et en petit
+        groupe. On part de situations de travail réelles — réunions, appels,
+        présentations, emails — et on répète jusqu'à ce que les bons réflexes
+        viennent sans y penser. Aucun prérequis de niveau : ce qui compte, c'est
+        d'avoir besoin de l'anglais au travail et d'accepter de parler dès la
+        première séance.
+      </p>
+
+      <div class="grille grille-3">
+        <article class="carte">
+          <h3>Format</h3>
+          <p>
+            En visio, en petit groupe. Les cohortes durent huit semaines à raison
+            de deux rendez-vous hebdomadaires ; les ateliers tiennent en une
+            séance de deux heures.
+          </p>
+        </article>
+        <article class="carte">
+          <h3>Contenu</h3>
+          <p>
+            Prise de parole, gestion des blancs, relances, vocabulaire de
+            réunion et de négociation, écrit professionnel. Le détail des modules
+            est présenté dans <a href="programme.html">Mon programme</a>.
+          </p>
+        </article>
+        <article class="carte">
+          <h3>Tarifs et inscription</h3>
+          <p class="a-confirmer">
+            À compléter avec Aurélie : tarif des cohortes, tarif des ateliers,
+            conditions pour les entreprises, modalités de règlement et politique
+            d'annulation.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-sable">
+    <div class="contenu">
+      <div class="calendrier-tete">
+        <div>
+          <span class="oeil">Disponibilités</span>
+          <h2>Les trois prochains mois</h2>
+        </div>
+        <p class="legende">
+          <span><i class="jeton jeton-vert"></i> Places disponibles</span>
+          <span><i class="jeton jeton-rouge"></i> Session complète</span>
+        </p>
+      </div>
+
+      <p class="chapeau" style="margin-bottom:26px">
+        Le jour de démarrage de chaque session est en couleur pleine ; les jours
+        suivants, plus clairs, indiquent la durée de la session. Survolez une date
+        pour en connaître l'intitulé.
+      </p>
+
+      <!-- Le calendrier et la liste sont dessinés par calendrier.js à partir
+           de assets/donnees/sessions.js. -->
+      <div id="calendrier"></div>
+      <div id="liste-sessions"></div>
+
+      <noscript>
+        <p class="encart" style="margin-top:30px">
+          Le calendrier a besoin de JavaScript pour s'afficher. Les prochaines
+          dates peuvent être demandées directement par email.
+        </p>
+      </noscript>
+
+      <p class="encart a-confirmer" style="margin-top:34px">
+        Les sessions affichées sont des exemples, mis en place pour montrer le
+        fonctionnement du calendrier. Elles seront remplacées par les vraies dates
+        d'Aurélie, puis mises à jour automatiquement depuis son agenda.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="contenu contenu-etroit centre">
+      <h2>Une session vous intéresse ?</h2>
+      <p class="chapeau" style="margin-top:16px">
+        Les inscriptions se font après un premier échange, pour vérifier que le
+        format correspond à votre besoin. Les sessions complètes disposent d'une
+        liste d'attente.
+      </p>
+      <p style="margin-top:28px">
+        <a class="bouton bouton-vert" href="connexion.html">Demander un accès</a>
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pied">
+  <div class="contenu">
+    <span class="marque">Fluent &amp; Forward</span>
+    <div class="pied-liens">
+      <a href="index.html">Accueil</a>
+      <a href="formation.html">Formation</a>
+      <a href="a-propos.html">À propos de moi</a>
+      <a href="programme.html">Mon programme</a>
+      <a href="connexion.html">Connexion</a>
+    </div>
+    <div class="pied-bas">
+      <span>&copy; <span class="annee-courante">2026</span> Fluent &amp; Forward. Tous droits réservés.</span>
+      <span><a href="mentions-legales.html">Mentions légales</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/donnees/sessions.js"></script>
+<script src="assets/calendrier.js"></script>
+<script src="assets/menu.js"></script>
+</body>
+</html>

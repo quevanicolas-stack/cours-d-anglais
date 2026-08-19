@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Connexion — Fluent &amp; Forward</title>
+<meta name="description" content="Se connecter à son espace, ou demander un accès aux modules du programme.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div class="contenu barre">
+    <button class="bouton-menu" id="ouvrir-menu" aria-label="Ouvrir le menu"
+            aria-expanded="false" aria-controls="menu-lateral">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="marque" href="index.html">Fluent &amp; Forward</a>
+  </div>
+</header>
+
+<nav class="menu-lateral" id="menu-lateral" aria-hidden="true" aria-label="Menu principal">
+  <div class="menu-tete">
+    <span class="marque">Fluent &amp; Forward</span>
+    <button class="fermer-menu" id="fermer-menu" aria-label="Fermer le menu">&times;</button>
+  </div>
+  <ul class="menu-liens">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="formation.html">Formation</a></li>
+    <li><a href="a-propos.html">À propos de moi</a></li>
+    <li><a href="programme.html">Mon programme</a></li>
+  </ul>
+  <div class="menu-pied">
+    <a class="bouton bouton-or" href="connexion.html">Connexion</a>
+    <p class="note">L'accès aux modules sera réservé aux comptes validés.</p>
+  </div>
+</nav>
+<button class="voile" id="voile-menu" hidden aria-label="Fermer le menu"></button>
+
+<main>
+
+  <section class="section">
+    <div class="contenu">
+      <div style="max-width:720px">
+        <span class="oeil">Espace participants</span>
+        <h2>Connexion et demande d'accès</h2>
+        <p class="chapeau" style="margin-top:16px">
+          Les comptes ne se créent pas tout seuls : chaque demande est validée à
+          la main par Aurélie avant qu'un accès soit ouvert. C'est plus lent
+          qu'une inscription automatique, et c'est voulu — elle sait ainsi qui
+          entre dans son espace.
+        </p>
+      </div>
+
+      <div class="colonnes-compte" style="margin-top:44px">
+
+        <section class="bloc-formulaire">
+          <h2>J'ai déjà un compte</h2>
+          <p>Se connecter pour retrouver ses modules.</p>
+
+          <form id="formulaire-connexion" novalidate>
+            <div class="champ">
+              <label for="identifiant">Adresse email</label>
+              <input type="email" id="identifiant" name="identifiant"
+                     autocomplete="username" disabled>
+            </div>
+            <div class="champ">
+              <label for="motdepasse">Mot de passe</label>
+              <input type="password" id="motdepasse" name="motdepasse"
+                     autocomplete="current-password" disabled>
+            </div>
+            <p style="margin-top:22px">
+              <button type="submit" class="bouton bouton-vert" disabled
+                      aria-disabled="true" style="width:100%">Se connecter</button>
+            </p>
+          </form>
+
+          <div class="encart" style="margin-top:24px">
+            <h3>Pas encore actif</h3>
+            <p>
+              La connexion suppose un serveur capable de vérifier un mot de passe.
+              Tant qu'il n'existe pas, ce formulaire reste volontairement inactif
+              plutôt que de faire semblant de fonctionner. En attendant,
+              <strong>tous les modules sont consultables librement</strong> depuis
+              <a href="programme.html">Mon programme</a>.
+            </p>
+          </div>
+        </section>
+
+        <section class="bloc-formulaire">
+          <h2>Demander un accès</h2>
+          <p>
+            Quelques informations suffisent. Aurélie valide la demande, puis
+            envoie les identifiants par email.
+          </p>
+
+          <form id="formulaire-acces" novalidate>
+            <div class="champ">
+              <label for="prenom">Prénom</label>
+              <input type="text" id="prenom" name="prenom" autocomplete="given-name"
+                     aria-describedby="erreur-prenom">
+              <p class="erreur" id="erreur-prenom">Merci d'indiquer ton prénom.</p>
+            </div>
+
+            <div class="champ">
+              <label for="nom">Nom</label>
+              <input type="text" id="nom" name="nom" autocomplete="family-name"
+                     aria-describedby="erreur-nom">
+              <p class="erreur" id="erreur-nom">Merci d'indiquer ton nom.</p>
+            </div>
+
+            <div class="champ">
+              <label for="email">Adresse email</label>
+              <input type="email" id="email" name="email" autocomplete="email"
+                     aria-describedby="erreur-email">
+              <p class="erreur" id="erreur-email">Cette adresse ne semble pas valide.</p>
+              <p class="aide">C'est à cette adresse que les identifiants seront envoyés.</p>
+            </div>
+
+            <div class="champ">
+              <label for="motivation">En deux mots, ton besoin (facultatif)</label>
+              <textarea id="motivation" name="motivation"
+                        placeholder="Réunions en anglais, appels clients, présentations…"></textarea>
+            </div>
+
+            <div class="case">
+              <input type="checkbox" id="rgpd" name="rgpd" aria-describedby="erreur-rgpd">
+              <label for="rgpd">
+                J'accepte que ces informations soient conservées pour traiter ma
+                demande d'accès.
+              </label>
+            </div>
+            <p class="erreur" id="erreur-rgpd">
+              Cette autorisation est nécessaire pour enregistrer la demande.
+            </p>
+
+            <p style="margin-top:24px">
+              <button type="submit" class="bouton bouton-vert" style="width:100%">
+                Envoyer ma demande
+              </button>
+            </p>
+
+            <p class="retour-formulaire" id="retour-acces" role="status"></p>
+          </form>
+
+          <p class="aide" style="margin-top:18px">
+            Aucun mot de passe n'est demandé ici : tant qu'il n'y a pas de serveur
+            pour le protéger, il ne serait stocké nulle part en sécurité. Aurélie
+            transmet les identifiants au moment où elle valide la demande.
+          </p>
+        </section>
+
+      </div>
+
+      <p class="encart a-confirmer" style="margin-top:40px; max-width:900px">
+        À décider avant la mise en ligne : où arrivent les demandes d'accès. Le
+        plus simple est de les diriger vers le même tableur Google que les
+        contacts de la landing, dans un onglet séparé. Il suffira d'indiquer
+        l'adresse du script dans <code>assets/compte.js</code>. En attendant,
+        chaque demande est conservée dans le navigateur qui l'a envoyée — ce qui
+        permet de tester le formulaire, mais ne remonte rien à Aurélie.
+      </p>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="pied">
+  <div class="contenu">
+    <span class="marque">Fluent &amp; Forward</span>
+    <div class="pied-liens">
+      <a href="index.html">Accueil</a>
+      <a href="formation.html">Formation</a>
+      <a href="a-propos.html">À propos de moi</a>
+      <a href="programme.html">Mon programme</a>
+      <a href="connexion.html">Connexion</a>
+    </div>
+    <div class="pied-bas">
+      <span>&copy; <span class="annee-courante">2026</span> Fluent &amp; Forward. Tous droits réservés.</span>
+      <span><a href="mentions-legales.html">Mentions légales</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/compte.js"></script>
+<script src="assets/menu.js"></script>
+</body>
+</html>
