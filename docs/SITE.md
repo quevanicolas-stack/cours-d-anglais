@@ -28,30 +28,69 @@ site/
 docs/relecture/            Un PDF par page, pour les corrections d'Aurélie
 ```
 
-## Une seule page qui défile
+## Le défilement en escalier
 
 Les quatre entrées du menu — Accueil, Formation, À propos de moi, Mon programme —
-ne sont plus quatre fichiers mais quatre sections du même document, parcourues en
-descendant. Le menu ne charge plus de page : il fait glisser jusqu'à la bonne
-section.
+ne sont plus quatre fichiers mais quatre sections du même document. Chacune
+occupe **sa propre colonne**, décalée d'un écran vers la droite par rapport à la
+précédente, comme des plages de cellules en diagonale dans un tableur :
 
-Entre deux sections, la suivante entre décalée sur le côté puis se remet d'aplomb
-à mesure qu'on descend : **à droite** pour Formation, **à gauche** pour À propos,
-**à droite** pour Mon programme. Le décalage suit la position de défilement, il
-n'a pas de durée propre : il s'inverse si l'on remonte, et se rattrape sur la
-hauteur d'un écran, c'est-à-dire pendant la fin de la section précédente.
+```
+        colonne 1     colonne 2     colonne 3     colonne 4
+        ┌─────────┐
+        │ Accueil │
+        │    ↓    │
+        └─────────┘──▶┌───────────┐
+                      │ Formation │
+                      │     ↓     │
+                      └───────────┘──▶┌──────────┐
+                                      │ À propos │
+                                      │    ↓     │  ──▶  Mon programme
+                                      └──────────┘
+```
 
-Deux garde-fous : `overflow-x: clip` empêche le décalage de créer une barre de
-défilement horizontale, et le réglage système « réduire les animations » le
-neutralise entièrement — les sections restent alors simplement les unes sous les
-autres.
+On descend la page 1 normalement. Arrivé en bas, **le défilement part sur le côté
+au lieu de continuer vers le bas** : la page 1 sort par la gauche pendant que la
+page 2 entre par la droite. Puis la descente reprend. Et ainsi de suite jusqu'à
+la dernière page, après laquelle le pied de page apparaît.
+
+La molette n'est jamais confisquée : c'est le défilement normal du document qui
+avance, `defilement.js` se contente de traduire sa position en déplacement
+horizontal ou vertical. Conséquences utiles : la barre de défilement reste juste,
+remonter refait le chemin en sens inverse, et rien ne se bloque si un script
+tombe en panne.
+
+Le raccord dure 85 % d'une hauteur d'écran — c'est la quantité de molette
+pendant laquelle on va sur le côté. Une valeur à ajuster d'un chiffre dans
+`defilement.js` (`RACCORD`) si l'effet paraît trop long ou trop bref.
+
+**L'effet est écarté sur écran étroit (moins de 900 px) et si le système demande
+moins d'animations.** Les pages redeviennent alors de simples sections empilées,
+ce qu'elles sont déjà dans le HTML : sur téléphone, on descend tout droit. C'est
+volontaire — l'escalier suppose une souris ou un pavé tactile, et un écran assez
+large pour que le mouvement latéral se lise.
 
 Connexion et mentions légales restent des fichiers distincts : la première est
 détachée en bas du menu, la seconde n'a pas vocation à être parcourue.
 
-Pour ajouter une section, il suffit d'écrire un `<section class="ecran"
-id="…" data-sens="droite|gauche">` dans `index.html` et une entrée dans le menu :
-le décalage et le suivi de la page courante s'appliquent tout seuls.
+Pour ajouter une page : écrire une `<section class="ecran" id="…">` de plus dans
+`index.html` et une entrée dans le menu. La colonne, le raccord et le suivi de la
+page courante s'appliquent tout seuls.
+
+### Ce que l'escalier coûte
+
+À savoir avant de le garder :
+
+- la navigation au clavier peut amener le focus sur une page qui n'est pas à
+  l'écran, sans que le parcours suive ;
+- la fonction « rechercher dans la page » du navigateur peut trouver un mot dans
+  une colonne voisine sans pouvoir y aller ;
+- le parcours est plus long qu'un empilement classique — environ onze écrans de
+  molette pour tout voir.
+
+Rien de rédhibitoire pour un site vitrine, mais ce sont les raisons pour
+lesquelles peu de sites font ça, et il vaut mieux le savoir maintenant qu'après
+la mise en ligne.
 
 ## Les PDF de relecture
 

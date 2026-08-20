@@ -76,32 +76,42 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .saut-contenu:focus { left: 0; }
 
-/* ---------- Défilement d'une page à l'autre ----------
-   Les quatre pages du menu sont réunies dans un seul document. Chacune
-   arrive décalée sur le côté, puis se remet en place au fil du défilement.
-   Le sens alterne : droite, gauche, droite…
+/* ---------- Défilement en escalier ----------
+   Chaque page occupe sa propre colonne, décalée d'un écran vers la droite
+   par rapport à la précédente — comme des plages de cellules en diagonale
+   dans un tableur. On descend la page 1 ; arrivé en bas, le défilement
+   part sur le côté jusqu'à la colonne de la page 2 ; puis la descente
+   reprend. Et ainsi de suite.
 
-   overflow-x: clip empêche le décalage de créer une barre horizontale,
-   sans transformer le conteneur en zone défilante — ce que ferait hidden. */
-#defilement {
-  overflow-x: hidden;
-  overflow-x: clip;
-}
+   L'ossature est posée par defilement.js. Sans JavaScript, sur écran
+   étroit ou si le système demande moins d'animations, rien de tout ceci
+   ne s'applique : les pages redeviennent de simples sections empilées.
 
-/* La barre supérieure est collante : sans cette marge, une ancre
-   amènerait le haut de la page juste dessous, à moitié masqué. */
+   La barre supérieure est collante : sans scroll-margin, une ancre
+   amènerait le haut d'une page juste dessous, à moitié masqué. */
 .ecran { position: relative; scroll-margin-top: 68px; }
-/* Position de départ, avant que defilement.js ne prenne la main : évite
-   que la page apparaisse en place puis saute au premier défilement. */
-.ecran[data-sens="droite"] { transform: translate3d(16vw, 0, 0); }
-.ecran[data-sens="gauche"] { transform: translate3d(-16vw, 0, 0); }
 
-/* Sans JavaScript, ou si l'utilisateur a demandé moins d'animations,
-   les pages restent simplement les unes sous les autres. */
-.sans-effet .ecran[data-sens] { transform: none !important; }
+.cadre-escalier { position: relative; }
 
-@media (prefers-reduced-motion: reduce) {
-  .ecran[data-sens] { transform: none !important; }
+body.mode-escalier #defilement {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  /* Les pages voisines dépassent de chaque côté : on les masque. */
+  overflow: hidden;
+}
+body.mode-escalier .piste {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+body.mode-escalier .ecran {
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  will-change: transform;
+  scroll-margin-top: 0;
 }
 
 /* ---------- Structure ---------- */

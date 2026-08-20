@@ -1,61 +1,220 @@
 /* ==================================================================
-   Fluent & Forward — passage d'une page à l'autre
+   Fluent & Forward — défilement en escalier
 
-   Les quatre pages du menu sont réunies dans un seul document et se
-   parcourent en descendant. Entre deux pages, la suivante entre décalée
-   sur le côté puis se remet d'aplomb à mesure qu'on descend : à droite
-   pour la deuxième page, à gauche pour la troisième, et ainsi de suite.
+   Chaque page occupe sa propre colonne, décalée d'un écran vers la
+   droite par rapport à la précédente. La molette pilote un parcours en
+   marches d'escalier :
 
-   Le décalage est piloté par la position de défilement, pas par une
-   animation à durée fixe : il suit le mouvement de la molette et
-   s'inverse si l'on remonte.
+       page 1 : on descend
+       raccord : le défilement part sur le côté, sans descendre
+       page 2 : on descend
+       raccord : à nouveau sur le côté
+       page 3 : on descend…
+
+   La molette n'est jamais confisquée : c'est le défilement normal du
+   document qui avance, on se contente de traduire sa position en
+   déplacement horizontal ou vertical. Remonter refait le chemin en sens
+   inverse, et la barre de défilement reste juste.
+
+   L'effet est écarté sur écran étroit et si le système demande moins
+   d'animations : les pages redeviennent alors de simples sections
+   empilées, ce qu'elles sont déjà dans le HTML.
    ================================================================== */
 
 (function () {
   "use strict";
 
-  var ecrans = document.querySelectorAll(".ecran[data-sens]");
-  var liens = document.querySelectorAll('#menu-lateral a[href^="#"]');
+  var scene = document.getElementById("defilement");
+  if (!scene) return;
 
-  /* ---------- Décalage latéral ---------- */
+  var ecrans = Array.prototype.slice.call(scene.querySelectorAll(".ecran"));
+  if (ecrans.length < 2) return;
 
+  var liensAncres = document.querySelectorAll('a[href^="#"]');
   var moinsAnime = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var etroit = window.matchMedia("(max-width: 900px)");
 
-  // Décalage maximal, en pourcentage de la largeur de la fenêtre.
-  var AMPLITUDE = 16;
+  /* Longueur du raccord, en fraction de la hauteur de l'écran : c'est la
+     quantité de défilement pendant laquelle on part sur le côté. */
+  var RACCORD = 0.85;
+
+  var actif = false;
+  var cadre = null;
+  var piste = null;
+  var segments = [];
+  var hauteurs = [];
+  var totalParcours = 0;
+  var hautCadre = 0;
 
   function adoucir(p) {
-    // Sortie cubique : le gros du rattrapage se fait tôt, la fin est douce.
-    return 1 - Math.pow(1 - p, 3);
+    // Entrée et sortie douces : le déplacement latéral démarre et
+    // s'achève sans à-coup, l'essentiel se joue au milieu.
+    return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
   }
+
+  /* ---------- Mise en place et retrait ---------- */
+
+  function monter() {
+    if (actif) return;
+
+    cadre = document.createElement("div");
+    cadre.className = "cadre-escalier";
+    scene.parentNode.insertBefore(cadre, scene);
+    cadre.appendChild(scene);
+
+    piste = document.createElement("div");
+    piste.className = "piste";
+    while (scene.firstChild) piste.appendChild(scene.firstChild);
+    scene.appendChild(piste);
+
+    document.body.classList.add("mode-escalier");
+    actif = true;
+    mesurer();
+  }
+
+  function demonter() {
+    if (!actif) return;
+
+    document.body.classList.remove("mode-escalier");
+    while (piste.firstChild) scene.appendChild(piste.firstChild);
+    piste.parentNode.removeChild(piste);
+    cadre.parentNode.insertBefore(scene, cadre);
+    cadre.parentNode.removeChild(cadre);
+
+    ecrans.forEach(function (e) {
+      e.style.transform = "";
+      e.style.left = "";
+    });
+    scene.style.height = "";
+    piste = null;
+    cadre = null;
+    actif = false;
+  }
+
+  /* ---------- Découpage du parcours ---------- */
+
+  function mesurer() {
+    if (!actif) return;
+
+    var largeur = window.innerWidth;
+    var hauteurEcran = window.innerHeight;
+
+    // Chaque page est posée dans sa colonne : une par écran de large.
+    ecrans.forEach(function (ecran, i) {
+      ecran.style.left = (i * largeur) + "px";
+      ecran.style.transform = "none";
+    });
+
+    hauteurs = ecrans.map(function (ecran) {
+      return Math.max(0, ecran.offsetHeight - hauteurEcran);
+    });
+
+    segments = [];
+    var position = 0;
+    ecrans.forEach(function (ecran, i) {
+      segments.push({ type: "descente", page: i, debut: position, longueur: hauteurs[i] });
+      position += hauteurs[i];
+      if (i < ecrans.length - 1) {
+        var longueur = Math.round(hauteurEcran * RACCORD);
+        segments.push({ type: "raccord", page: i, debut: position, longueur: longueur });
+        position += longueur;
+      }
+    });
+    totalParcours = position;
+
+    // Le cadre réserve la hauteur de défilement ; la scène y reste
+    // collée le temps du parcours, puis se décolle et laisse venir le
+    // pied de page.
+    cadre.style.height = (totalParcours + hauteurEcran) + "px";
+    hautCadre = cadre.getBoundingClientRect().top + window.pageYOffset;
+
+    placer();
+  }
+
+  /* ---------- Position à un instant donné ---------- */
 
   function placer() {
-    var hauteur = window.innerHeight;
+    if (!actif) return;
 
-    Array.prototype.forEach.call(ecrans, function (ecran) {
-      var sens = ecran.getAttribute("data-sens") === "droite" ? 1 : -1;
-      var boite = ecran.getBoundingClientRect();
+    var largeur = window.innerWidth;
+    var avance = Math.max(0, Math.min(totalParcours, window.pageYOffset - hautCadre));
 
-      var decalage;
-      if (boite.top >= hauteur) {
-        // Pas encore en vue : on la garde au maximum de son décalage.
-        decalage = AMPLITUDE;
-      } else if (boite.bottom <= 0) {
-        // Déjà passée : en place, plus rien à corriger.
-        decalage = 0;
+    var segment = segments[segments.length - 1];
+    for (var i = 0; i < segments.length; i++) {
+      var s = segments[i];
+      if (avance < s.debut + s.longueur || i === segments.length - 1) { segment = s; break; }
+    }
+
+    var colonne, pageActive;
+    if (segment.type === "descente") {
+      colonne = segment.page;
+      pageActive = segment.page;
+    } else {
+      var p = segment.longueur ? (avance - segment.debut) / segment.longueur : 1;
+      colonne = segment.page + adoucir(Math.max(0, Math.min(1, p)));
+      // On considère la page suivante atteinte à mi-parcours du raccord.
+      pageActive = segment.page + (p >= 0.5 ? 1 : 0);
+    }
+
+    piste.style.transform = "translate3d(" + (-colonne * largeur) + "px, 0, 0)";
+
+    // Chaque page garde sa propre position verticale : celles déjà
+    // parcourues restent en bas, celles à venir attendent en haut.
+    ecrans.forEach(function (ecran, i) {
+      var y;
+      if (segment.type === "descente" && i === segment.page) {
+        y = avance - segment.debut;
+      } else if (i < (segment.type === "raccord" ? segment.page + 1 : segment.page)) {
+        y = hauteurs[i];
       } else {
-        // 0 quand le haut de la page entre par le bas de l'écran,
-        // 1 quand il atteint le haut : le rattrapage se fait sur une
-        // hauteur d'écran, donc pendant la fin de la page précédente.
-        var avancement = Math.max(0, Math.min(1, (hauteur - boite.top) / hauteur));
-        decalage = (1 - adoucir(avancement)) * AMPLITUDE;
+        y = 0;
       }
+      ecran.style.transform = "translate3d(0, " + (-y) + "px, 0)";
+    });
 
-      ecran.style.transform = decalage
-        ? "translate3d(" + (sens * decalage) + "vw, 0, 0)"
-        : "none";
+    marquerMenu(pageActive);
+  }
+
+  /* ---------- Page courante dans le menu ---------- */
+
+  var liensMenu = document.querySelectorAll('#menu-lateral a[href^="#"]');
+  var derniereMarque = -1;
+
+  function marquerMenu(index) {
+    if (index === derniereMarque) return;
+    derniereMarque = index;
+    Array.prototype.forEach.call(liensMenu, function (lien) {
+      var id = lien.getAttribute("href").slice(1);
+      if (ecrans[index] && ecrans[index].id === id) lien.setAttribute("aria-current", "page");
+      else lien.removeAttribute("aria-current");
     });
   }
+
+  /* ---------- Les ancres visent une position du parcours ---------- */
+
+  function debutDePage(id) {
+    for (var i = 0; i < ecrans.length; i++) {
+      if (ecrans[i].id !== id) continue;
+      for (var j = 0; j < segments.length; j++) {
+        if (segments[j].type === "descente" && segments[j].page === i) {
+          return hautCadre + segments[j].debut;
+        }
+      }
+    }
+    return null;
+  }
+
+  Array.prototype.forEach.call(liensAncres, function (lien) {
+    lien.addEventListener("click", function (e) {
+      if (!actif) return; // hors mode escalier, l'ancre native suffit
+      var cible = debutDePage(lien.getAttribute("href").slice(1));
+      if (cible === null) return;
+      e.preventDefault();
+      window.scrollTo({ top: cible, behavior: "smooth" });
+    });
+  });
+
+  /* ---------- Suivi du défilement ---------- */
 
   var enAttente = false;
   function auDefilement() {
@@ -67,65 +226,58 @@
     });
   }
 
-  function activerEffet() {
-    if (moinsAnime.matches) {
-      document.body.classList.add("sans-effet");
-      window.removeEventListener("scroll", auDefilement);
-      window.removeEventListener("resize", auDefilement);
-      Array.prototype.forEach.call(ecrans, function (e) { e.style.transform = ""; });
-      return;
-    }
-    document.body.classList.remove("sans-effet");
-    window.addEventListener("scroll", auDefilement, { passive: true });
-    window.addEventListener("resize", auDefilement);
-    placer();
+  var minuterie = null;
+  function auRedimensionnement() {
+    clearTimeout(minuterie);
+    minuterie = setTimeout(function () {
+      arbitrer();
+      if (actif) mesurer();
+    }, 150);
   }
 
-  if (ecrans.length) {
-    activerEffet();
-    // Le réglage système peut changer en cours de route.
-    if (moinsAnime.addEventListener) {
-      moinsAnime.addEventListener("change", activerEffet);
-    }
+  /* ---------- Activation selon le contexte ---------- */
+
+  function arbitrer() {
+    if (moinsAnime.matches || etroit.matches) demonter();
+    else monter();
   }
 
-  /* ---------- Page courante dans le menu ----------
-     Les pages ne sont plus des fichiers distincts : c'est la position de
-     défilement qui dit où l'on se trouve. */
+  window.addEventListener("scroll", auDefilement, { passive: true });
+  window.addEventListener("resize", auRedimensionnement);
+  if (moinsAnime.addEventListener) moinsAnime.addEventListener("change", arbitrer);
+  if (etroit.addEventListener) etroit.addEventListener("change", arbitrer);
 
-  if (liens.length && "IntersectionObserver" in window) {
-    var cibles = [];
-    Array.prototype.forEach.call(liens, function (lien) {
-      var cible = document.querySelector(lien.getAttribute("href"));
-      if (cible) cibles.push({ lien: lien, cible: cible });
-    });
+  arbitrer();
 
-    var visibles = {};
+  // Les images et le calendrier changent la hauteur des pages après coup :
+  // on remesure une fois tout chargé, sinon le parcours serait faux.
+  window.addEventListener("load", function () { if (actif) mesurer(); });
 
-    var observateur = new IntersectionObserver(function (entrees) {
-      entrees.forEach(function (e) {
-        visibles[e.target.id] = e.isIntersecting ? e.intersectionRatio : 0;
+  if ("ResizeObserver" in window) {
+    var observateur = new ResizeObserver(function () { if (actif) mesurer(); });
+    ecrans.forEach(function (e) { observateur.observe(e); });
+  }
+
+  /* ---------- Repli : suivi du menu hors mode escalier ----------
+     Sur écran étroit, les pages redeviennent de simples sections : c'est
+     leur passage devant la fenêtre qui dit où l'on se trouve. */
+
+  if ("IntersectionObserver" in window) {
+    var veille = new IntersectionObserver(function (entrees) {
+      if (actif) return;
+      entrees.forEach(function (entree) {
+        if (!entree.isIntersecting) return;
+        derniereMarque = -1;
+        Array.prototype.forEach.call(liensMenu, function (lien) {
+          if (lien.getAttribute("href").slice(1) === entree.target.id) {
+            lien.setAttribute("aria-current", "page");
+          } else {
+            lien.removeAttribute("aria-current");
+          }
+        });
       });
+    }, { threshold: .25, rootMargin: "-68px 0px -50% 0px" });
 
-      var meilleur = null;
-      cibles.forEach(function (c) {
-        var part = visibles[c.cible.id] || 0;
-        if (!meilleur || part > meilleur.part) meilleur = { c: c, part: part };
-      });
-
-      cibles.forEach(function (c) {
-        if (meilleur && meilleur.part > 0 && c === meilleur.c) {
-          c.lien.setAttribute("aria-current", "page");
-        } else {
-          c.lien.removeAttribute("aria-current");
-        }
-      });
-    }, {
-      // Le seuil multiple permet de comparer les parts visibles entre elles.
-      threshold: [0, .1, .25, .5, .75, 1],
-      rootMargin: "-68px 0px 0px 0px" // hauteur de la barre supérieure
-    });
-
-    cibles.forEach(function (c) { observateur.observe(c.cible); });
+    ecrans.forEach(function (ecran) { veille.observe(ecran); });
   }
 })();
