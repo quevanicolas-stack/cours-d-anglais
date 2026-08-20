@@ -13,28 +13,28 @@
 </head>
 <body>
 
+<a class="saut-contenu" href="#accueil">Aller au contenu</a>
+
 <header class="entete">
   <div class="contenu barre">
     <button class="bouton-menu" id="ouvrir-menu" aria-label="Ouvrir le menu"
             aria-expanded="false" aria-controls="menu-lateral">
       <span></span><span></span><span></span>
     </button>
-    <a class="marque" href="index.html">Fluent &amp; Forward</a>
+    <a class="marque" href="#accueil">Fluent &amp; Forward</a>
   </div>
 </header>
 
-<!-- Le menu est écrit en clair dans chaque page : sans JavaScript, il reste
-     une liste de liens utilisable. menu.js ne gère que l'ouverture. -->
 <nav class="menu-lateral" id="menu-lateral" aria-hidden="true" aria-label="Menu principal">
   <div class="menu-tete">
     <span class="marque">Fluent &amp; Forward</span>
     <button class="fermer-menu" id="fermer-menu" aria-label="Fermer le menu">&times;</button>
   </div>
   <ul class="menu-liens">
-    <li><a href="index.html">Accueil</a></li>
-    <li><a href="formation.html">Formation</a></li>
-    <li><a href="a-propos.html">À propos de moi</a></li>
-    <li><a href="programme.html">Mon programme</a></li>
+    <li><a href="#accueil">Accueil</a></li>
+    <li><a href="#formation">Formation</a></li>
+    <li><a href="#a-propos">À propos de moi</a></li>
+    <li><a href="#programme">Mon programme</a></li>
   </ul>
   <div class="menu-pied">
     <a class="bouton bouton-or" href="connexion.html">Connexion</a>
@@ -43,150 +43,411 @@
 </nav>
 <button class="voile" id="voile-menu" hidden aria-label="Fermer le menu"></button>
 
-<main>
-
+<main id="defilement">
+  <!-- ================= ACCUEIL ================= -->
+  <section class="ecran" id="accueil" aria-label="Accueil">
   <section class="heros">
-    <div class="contenu heros-grille">
-      <div>
-        <span class="oeil" style="color:var(--gold)">Anglais professionnel · La Réunion et en visio</span>
-        <h1>Tu comprends l'anglais. Il est temps de le parler.</h1>
-        <p class="chapeau">
-          Des formations pensées pour les professionnels qui ont le vocabulaire,
-          les diplômes, parfois même des années de cours derrière eux — et qui se
-          taisent quand même en réunion. On ne travaille pas la grammaire : on
-          travaille le passage à l'acte.
+      <div class="contenu heros-grille">
+        <div>
+          <span class="oeil" style="color:var(--gold)">Anglais professionnel · La Réunion et en visio</span>
+          <h1>Tu comprends l'anglais. Il est temps de le parler.</h1>
+          <p class="chapeau">
+            Des formations pensées pour les professionnels qui ont le vocabulaire,
+            les diplômes, parfois même des années de cours derrière eux — et qui se
+            taisent quand même en réunion. On ne travaille pas la grammaire : on
+            travaille le passage à l'acte.
+          </p>
+          <div class="heros-actions">
+            <a class="bouton bouton-or" href="#formation">Voir les prochaines sessions</a>
+            <a class="bouton bouton-clair" href="#programme">Découvrir le programme</a>
+          </div>
+        </div>
+        <img class="portrait" src="assets/aurelie.jpg"
+             alt="Aurélie Queva, coach en anglais professionnel">
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="contenu">
+        <span class="oeil">Ce que je propose</span>
+        <h2>Trois formats, une même méthode</h2>
+        <p class="chapeau" style="margin-top:16px">
+          Tout se fait en visio, en petit groupe, avec de vraies situations de
+          travail — pas des dialogues de manuel.
         </p>
-        <div class="heros-actions">
-          <a class="bouton bouton-or" href="formation.html">Voir les prochaines sessions</a>
-          <a class="bouton bouton-clair" href="programme.html">Découvrir le programme</a>
+
+        <div class="grille grille-3">
+          <article class="carte">
+            <span class="numero">1</span>
+            <h3>Les cohortes</h3>
+            <p>
+              Le format principal : huit semaines, un petit groupe qui avance
+              ensemble, deux rendez-vous par semaine. C'est là que les réflexes
+              s'installent, parce qu'on répète assez longtemps pour que ça tienne.
+            </p>
+          </article>
+          <article class="carte">
+            <span class="numero">2</span>
+            <h3>Les ateliers courts</h3>
+            <p>
+              Deux heures sur un point précis : mener une réunion, écrire un email
+              qui obtient une réponse, se présenter sans réciter. Utile quand une
+              échéance approche et qu'il faut débloquer une situation.
+            </p>
+          </article>
+          <article class="carte">
+            <span class="numero">3</span>
+            <h3>Le sur-mesure en entreprise</h3>
+            <p>
+              Un programme construit à partir de vos situations réelles, pour une
+              équipe ou un service. Contenu, rythme et durée définis ensemble après
+              un premier échange.
+            </p>
+          </article>
         </div>
       </div>
-      <img class="portrait" src="assets/aurelie.jpg"
-           alt="Aurélie Queva, coach en anglais professionnel">
-    </div>
-  </section>
+    </section>
 
-  <section class="section">
-    <div class="contenu">
-      <span class="oeil">Ce que je propose</span>
-      <h2>Trois formats, une même méthode</h2>
-      <p class="chapeau" style="margin-top:16px">
-        Tout se fait en visio, en petit groupe, avec de vraies situations de
-        travail — pas des dialogues de manuel.
-      </p>
+    <section class="section section-verte">
+      <div class="contenu">
+        <span class="oeil">La méthode</span>
+        <h2>Ce qui bloque n'est presque jamais le niveau</h2>
+        <p class="chapeau" style="margin-top:16px">
+          La plupart des personnes que j'accompagne ont un anglais correct. Ce qui
+          leur manque, c'est l'aisance sous pression : trouver ses mots en direct,
+          oser demander une répétition, reprendre la parole après une hésitation.
+        </p>
 
-      <div class="grille grille-3">
-        <article class="carte">
-          <span class="numero">1</span>
-          <h3>Les cohortes</h3>
-          <p>
-            Le format principal : huit semaines, un petit groupe qui avance
-            ensemble, deux rendez-vous par semaine. C'est là que les réflexes
-            s'installent, parce qu'on répète assez longtemps pour que ça tienne.
-          </p>
-        </article>
-        <article class="carte">
-          <span class="numero">2</span>
-          <h3>Les ateliers courts</h3>
-          <p>
-            Deux heures sur un point précis : mener une réunion, écrire un email
-            qui obtient une réponse, se présenter sans réciter. Utile quand une
-            échéance approche et qu'il faut débloquer une situation.
-          </p>
-        </article>
-        <article class="carte">
-          <span class="numero">3</span>
-          <h3>Le sur-mesure en entreprise</h3>
-          <p>
-            Un programme construit à partir de vos situations réelles, pour une
-            équipe ou un service. Contenu, rythme et durée définis ensemble après
-            un premier échange.
-          </p>
-        </article>
+        <div class="grille grille-3">
+          <article class="carte">
+            <h3>On parle dès la première séance</h3>
+            <p>
+              Pas de tour de table théorique. Tu prends la parole tout de suite, et
+              on corrige à partir de ce que tu produis vraiment.
+            </p>
+          </article>
+          <article class="carte">
+            <h3>On travaille tes situations</h3>
+            <p>
+              Tes réunions, tes clients, tes présentations. Le contenu vient de ton
+              quotidien professionnel, pas d'un programme générique.
+            </p>
+          </article>
+          <article class="carte">
+            <h3>On répète jusqu'à l'automatisme</h3>
+            <p>
+              Une phrase apprise s'oublie. Une phrase répétée en situation reste
+              disponible le jour où la pression monte.
+            </p>
+          </article>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="section section-verte">
-    <div class="contenu">
-      <span class="oeil">La méthode</span>
-      <h2>Ce qui bloque n'est presque jamais le niveau</h2>
-      <p class="chapeau" style="margin-top:16px">
-        La plupart des personnes que j'accompagne ont un anglais correct. Ce qui
-        leur manque, c'est l'aisance sous pression : trouver ses mots en direct,
-        oser demander une répétition, reprendre la parole après une hésitation.
-      </p>
-
-      <div class="grille grille-3">
-        <article class="carte">
-          <h3>On parle dès la première séance</h3>
-          <p>
-            Pas de tour de table théorique. Tu prends la parole tout de suite, et
-            on corrige à partir de ce que tu produis vraiment.
-          </p>
-        </article>
-        <article class="carte">
-          <h3>On travaille tes situations</h3>
-          <p>
-            Tes réunions, tes clients, tes présentations. Le contenu vient de ton
-            quotidien professionnel, pas d'un programme générique.
-          </p>
-        </article>
-        <article class="carte">
-          <h3>On répète jusqu'à l'automatisme</h3>
-          <p>
-            Une phrase apprise s'oublie. Une phrase répétée en situation reste
-            disponible le jour où la pression monte.
-          </p>
-        </article>
+    <section class="section">
+      <div class="contenu centre">
+        <span class="oeil">Prochaines dates</span>
+        <h2>Les sessions des trois prochains mois</h2>
+        <p class="chapeau" style="margin-top:16px">
+          Le calendrier indique en un coup d'œil les sessions qui ont encore des
+          places et celles qui sont complètes.
+        </p>
+        <p style="margin-top:30px">
+          <a class="bouton bouton-vert" href="#formation">Consulter le calendrier</a>
+        </p>
       </div>
-    </div>
+    </section>
+
+    <section class="section section-sable">
+      <div class="contenu contenu-etroit centre">
+        <span class="oeil">Pour commencer</span>
+        <h2>Le guide « Stop Avoiding » est gratuit</h2>
+        <p class="chapeau" style="margin-top:16px">
+          Cinq phrases de survie, un mini-script pour les réunions et trois réflexes
+          à installer cette semaine. De quoi tester la méthode avant de s'engager.
+        </p>
+        <p style="margin-top:28px">
+          <a class="bouton bouton-vert"
+             href="https://fluentandforward.pages.dev"
+             rel="noopener">Recevoir le guide gratuitement</a>
+        </p>
+        <p style="margin-top:16px; font-size:.88rem; color:var(--muted)">
+          Ce bouton renvoie vers la page de capture existante. À confirmer :
+          faut-il la garder séparée, ou l'intégrer un jour dans ce site ?
+        </p>
+      </div>
+    </section>
   </section>
 
-  <section class="section">
-    <div class="contenu centre">
-      <span class="oeil">Prochaines dates</span>
-      <h2>Les sessions des trois prochains mois</h2>
-      <p class="chapeau" style="margin-top:16px">
-        Le calendrier indique en un coup d'œil les sessions qui ont encore des
-        places et celles qui sont complètes.
-      </p>
-      <p style="margin-top:30px">
-        <a class="bouton bouton-vert" href="formation.html">Consulter le calendrier</a>
-      </p>
-    </div>
+  <!-- ================= FORMATION ================= -->
+  <section class="ecran" id="formation" aria-label="Formation" data-sens="droite">
+  <section class="section section-serree">
+      <div class="contenu">
+        <span class="oeil">Formation</span>
+        <h2>La formation en quelques lignes</h2>
+        <p class="chapeau" style="margin-top:16px">
+          Un accompagnement à l'anglais professionnel oral, en visio et en petit
+          groupe. On part de situations de travail réelles — réunions, appels,
+          présentations, emails — et on répète jusqu'à ce que les bons réflexes
+          viennent sans y penser. Aucun prérequis de niveau : ce qui compte, c'est
+          d'avoir besoin de l'anglais au travail et d'accepter de parler dès la
+          première séance.
+        </p>
+
+        <div class="grille grille-3">
+          <article class="carte">
+            <h3>Format</h3>
+            <p>
+              En visio, en petit groupe. Les cohortes durent huit semaines à raison
+              de deux rendez-vous hebdomadaires ; les ateliers tiennent en une
+              séance de deux heures.
+            </p>
+          </article>
+          <article class="carte">
+            <h3>Contenu</h3>
+            <p>
+              Prise de parole, gestion des blancs, relances, vocabulaire de
+              réunion et de négociation, écrit professionnel. Le détail des modules
+              est présenté dans <a href="#programme">Mon programme</a>.
+            </p>
+          </article>
+          <article class="carte">
+            <h3>Tarifs et inscription</h3>
+            <p class="a-confirmer">
+              À compléter avec Aurélie : tarif des cohortes, tarif des ateliers,
+              conditions pour les entreprises, modalités de règlement et politique
+              d'annulation.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-sable">
+      <div class="contenu">
+        <div class="calendrier-tete">
+          <div>
+            <span class="oeil">Disponibilités</span>
+            <h2>Les trois prochains mois</h2>
+          </div>
+          <p class="legende">
+            <span><i class="jeton jeton-vert"></i> Places disponibles</span>
+            <span><i class="jeton jeton-rouge"></i> Session complète</span>
+          </p>
+        </div>
+
+        <p class="chapeau" style="margin-bottom:26px">
+          Le jour de démarrage de chaque session est en couleur pleine ; les jours
+          suivants, plus clairs, indiquent la durée de la session. Survolez une date
+          pour en connaître l'intitulé.
+        </p>
+
+        <!-- Le calendrier et la liste sont dessinés par calendrier.js à partir
+             de assets/donnees/sessions.js. -->
+        <div id="calendrier"></div>
+        <div id="liste-sessions"></div>
+
+        <noscript>
+          <p class="encart" style="margin-top:30px">
+            Le calendrier a besoin de JavaScript pour s'afficher. Les prochaines
+            dates peuvent être demandées directement par email.
+          </p>
+        </noscript>
+
+        <p class="encart a-confirmer" style="margin-top:34px">
+          Les sessions affichées sont des exemples, mis en place pour montrer le
+          fonctionnement du calendrier. Elles seront remplacées par les vraies dates
+          d'Aurélie, puis mises à jour automatiquement depuis son agenda.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="contenu contenu-etroit centre">
+        <h2>Une session vous intéresse ?</h2>
+        <p class="chapeau" style="margin-top:16px">
+          Les inscriptions se font après un premier échange, pour vérifier que le
+          format correspond à votre besoin. Les sessions complètes disposent d'une
+          liste d'attente.
+        </p>
+        <p style="margin-top:28px">
+          <a class="bouton bouton-vert" href="connexion.html">Demander un accès</a>
+        </p>
+      </div>
+    </section>
   </section>
 
-  <section class="section section-sable">
-    <div class="contenu contenu-etroit centre">
-      <span class="oeil">Pour commencer</span>
-      <h2>Le guide « Stop Avoiding » est gratuit</h2>
-      <p class="chapeau" style="margin-top:16px">
-        Cinq phrases de survie, un mini-script pour les réunions et trois réflexes
-        à installer cette semaine. De quoi tester la méthode avant de s'engager.
-      </p>
-      <p style="margin-top:28px">
-        <a class="bouton bouton-vert"
-           href="https://fluentandforward.pages.dev"
-           rel="noopener">Recevoir le guide gratuitement</a>
-      </p>
-      <p style="margin-top:16px; font-size:.88rem; color:var(--muted)">
-        Ce bouton renvoie vers la page de capture existante. À confirmer :
-        faut-il la garder séparée, ou l'intégrer un jour dans ce site ?
-      </p>
-    </div>
+  <!-- ================= À PROPOS DE MOI ================= -->
+  <section class="ecran" id="a-propos" aria-label="À propos de moi" data-sens="gauche">
+  <section class="heros">
+      <div class="contenu heros-grille">
+        <div>
+          <span class="oeil" style="color:var(--gold)">À propos de moi</span>
+          <h1>Aurélie Queva</h1>
+          <p class="chapeau">
+            Coach en anglais professionnel, installée à Saint-Pierre, à La Réunion.
+            J'accompagne des professionnels qui comprennent l'anglais depuis des
+            années sans réussir à le parler quand ça compte.
+          </p>
+        </div>
+        <img class="portrait" src="assets/aurelie.jpg" alt="Portrait d'Aurélie Queva">
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="contenu contenu-etroit">
+        <span class="oeil">Mon parcours</span>
+        <h2>D'où je viens</h2>
+        <p class="chapeau a-confirmer" style="margin-top:18px">
+          Section à écrire avec Aurélie. Ce qu'il faut y trouver : sa formation,
+          ses expériences d'enseignement ou en entreprise, ce qui l'a menée à se
+          spécialiser dans l'anglais professionnel, et depuis combien de temps elle
+          accompagne des professionnels. Deux ou trois paragraphes suffisent — c'est
+          la page que les prospects lisent avant de s'inscrire, elle doit sonner
+          juste plutôt qu'impressionner.
+        </p>
+
+        <h3 style="margin-top:40px">Ce que je crois</h3>
+        <p style="margin-top:12px">
+          Que le blocage à l'oral n'est presque jamais un problème de niveau. On
+          peut avoir un excellent anglais écrit, comprendre un film sans
+          sous-titres, et rester muet dans une réunion parce qu'on a peur de la
+          faute. Ce que je travaille, c'est cette peur-là, avec des outils
+          concrets : des phrases prêtes à l'emploi, des façons de gagner du temps,
+          des manières de reprendre la parole après un blanc.
+        </p>
+        <p>
+          Que la répétition compte plus que la théorie. On ne progresse pas en
+          apprenant une règle de plus, mais en produisant la même phrase assez
+          souvent pour qu'elle sorte toute seule le jour où la pression monte.
+        </p>
+        <p>
+          Que le petit groupe fait la différence. À huit maximum, chacun parle
+          vraiment, et personne ne peut se cacher derrière les autres — c'est
+          inconfortable les deux premières séances, et c'est exactement pour ça que
+          ça marche.
+        </p>
+      </div>
+    </section>
+
+    <section class="section section-sable">
+      <div class="contenu">
+        <span class="oeil">En pratique</span>
+        <h2>Comment je travaille</h2>
+
+        <div class="grille grille-2">
+          <article class="carte">
+            <h3>En visio, principalement</h3>
+            <p>
+              Ce qui permet de travailler avec des personnes partout à La Réunion et
+              en métropole, sans temps de trajet. Les séances se font en direct :
+              rien n'est préenregistré.
+            </p>
+          </article>
+          <article class="carte">
+            <h3>En présentiel, ponctuellement</h3>
+            <p class="a-confirmer">
+              À confirmer : Aurélie propose-t-elle des séances en présentiel dans le
+              sud de La Réunion, et à quelles conditions ? Si non, cette carte est à
+              supprimer.
+            </p>
+          </article>
+          <article class="carte">
+            <h3>Avec les entreprises</h3>
+            <p>
+              Programmes construits sur mesure à partir des situations réelles de
+              l'équipe. Un premier échange sert à cadrer le besoin avant toute
+              proposition.
+            </p>
+          </article>
+          <article class="carte">
+            <h3>Langues et niveaux</h3>
+            <p class="a-confirmer">
+              À confirmer : niveaux acceptés (débutant réel ou faux débutant
+              uniquement ?), et si les séances se déroulent entièrement en anglais
+              ou en français au début.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-verte">
+      <div class="contenu contenu-etroit centre">
+        <h2>On en discute ?</h2>
+        <p class="chapeau" style="margin-top:16px">
+          Le meilleur moyen de savoir si le format te convient est d'en parler
+          quelques minutes. Aucun engagement à la clé.
+        </p>
+        <p style="margin-top:28px">
+          <a class="bouton bouton-or" href="connexion.html">Me contacter</a>
+        </p>
+      </div>
+    </section>
   </section>
 
+  <!-- ================= MON PROGRAMME ================= -->
+  <section class="ecran" id="programme" aria-label="Mon programme" data-sens="droite">
+  <section class="section section-serree">
+      <div class="contenu">
+        <span class="oeil">Mon programme</span>
+        <h2>Business English Accelerator</h2>
+        <p class="chapeau" style="margin-top:16px">
+          Huit modules, huit semaines. Chacun installe un réflexe précis, et
+          s'appuie sur le précédent. Les modules se construisent au fur et à mesure :
+          ceux qui sont prêts s'ouvrent pour montrer le détail de leurs séances.
+        </p>
+
+        <div class="encart" style="margin-top:30px">
+          <h3>Accès libre pour le moment</h3>
+          <p>
+            Le contenu est consultable sans compte, le temps de la mise au point.
+            L'accès sera ensuite réservé aux personnes inscrites, après validation
+            de leur demande par Aurélie.
+          </p>
+        </div>
+
+        <!-- Les modules sont dessinés par programme.js à partir de
+             assets/donnees/modules.js. -->
+        <div id="liste-modules"></div>
+
+        <noscript>
+          <p class="encart" style="margin-top:30px">
+            La liste des modules a besoin de JavaScript pour s'afficher.
+          </p>
+        </noscript>
+
+        <p class="encart a-confirmer" style="margin-top:34px">
+          Les intitulés des modules 1 à 3 reprennent les thèmes du guide
+          « Stop Avoiding ». Les modules 4 à 8 sont des propositions, à valider et
+          à réécrire avec Aurélie.
+        </p>
+      </div>
+    </section>
+
+    <section class="section section-verte">
+      <div class="contenu contenu-etroit centre">
+        <h2>Rejoindre une prochaine cohorte</h2>
+        <p class="chapeau" style="margin-top:16px">
+          Le programme se suit en groupe, sur huit semaines. Les dates d'ouverture
+          sont indiquées sur la page Formation.
+        </p>
+        <p style="margin-top:28px">
+          <a class="bouton bouton-or" href="#formation">Voir les dates</a>
+        </p>
+      </div>
+    </section>
+  </section>
 </main>
 
 <footer class="pied">
   <div class="contenu">
     <span class="marque">Fluent &amp; Forward</span>
     <div class="pied-liens">
-      <a href="index.html">Accueil</a>
-      <a href="formation.html">Formation</a>
-      <a href="a-propos.html">À propos de moi</a>
-      <a href="programme.html">Mon programme</a>
+      <a href="#accueil">Accueil</a>
+      <a href="#formation">Formation</a>
+      <a href="#a-propos">À propos de moi</a>
+      <a href="#programme">Mon programme</a>
       <a href="connexion.html">Connexion</a>
     </div>
     <div class="pied-bas">
@@ -196,6 +457,11 @@
   </div>
 </footer>
 
+<script src="assets/donnees/sessions.js"></script>
+<script src="assets/donnees/modules.js"></script>
+<script src="assets/calendrier.js"></script>
+<script src="assets/programme.js"></script>
+<script src="assets/defilement.js"></script>
 <script src="assets/menu.js"></script>
 </body>
 </html>

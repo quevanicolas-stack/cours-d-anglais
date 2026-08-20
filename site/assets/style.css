@@ -63,6 +63,47 @@ img { max-width: 100%; height: auto; display: block; }
 
 :focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
 
+/* Lien d'évitement, visible seulement au clavier. */
+.saut-contenu {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--deep);
+  color: var(--cream);
+  padding: 12px 20px;
+  border-radius: 0 0 10px 0;
+}
+.saut-contenu:focus { left: 0; }
+
+/* ---------- Défilement d'une page à l'autre ----------
+   Les quatre pages du menu sont réunies dans un seul document. Chacune
+   arrive décalée sur le côté, puis se remet en place au fil du défilement.
+   Le sens alterne : droite, gauche, droite…
+
+   overflow-x: clip empêche le décalage de créer une barre horizontale,
+   sans transformer le conteneur en zone défilante — ce que ferait hidden. */
+#defilement {
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+/* La barre supérieure est collante : sans cette marge, une ancre
+   amènerait le haut de la page juste dessous, à moitié masqué. */
+.ecran { position: relative; scroll-margin-top: 68px; }
+/* Position de départ, avant que defilement.js ne prenne la main : évite
+   que la page apparaisse en place puis saute au premier défilement. */
+.ecran[data-sens="droite"] { transform: translate3d(16vw, 0, 0); }
+.ecran[data-sens="gauche"] { transform: translate3d(-16vw, 0, 0); }
+
+/* Sans JavaScript, ou si l'utilisateur a demandé moins d'animations,
+   les pages restent simplement les unes sous les autres. */
+.sans-effet .ecran[data-sens] { transform: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ecran[data-sens] { transform: none !important; }
+}
+
 /* ---------- Structure ---------- */
 .contenu { width: 100%; max-width: var(--largeur); margin: 0 auto; padding: 0 24px; }
 .contenu-etroit { max-width: 720px; }

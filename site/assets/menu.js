@@ -39,10 +39,20 @@
     }
   });
 
-  /* Signale la page courante dans le menu, à partir du nom du fichier :
-     une seule source de vérité, aucun risque d'oubli en ajoutant une page. */
+  /* Un clic sur une entrée referme le menu. Indispensable depuis que les
+     pages sont des ancres : sans changement de document, rien ne le
+     fermerait tout seul. */
+  if (menu) {
+    menu.addEventListener("click", function (e) {
+      if (e.target.closest("a[href]")) basculer(false);
+    });
+  }
+
+  /* Signale la page courante pour les entrées qui restent des fichiers —
+     Connexion, mentions légales. Les quatre pages réunies dans l'accueil
+     sont suivies au défilement par defilement.js. */
   var page = location.pathname.split("/").pop() || "index.html";
-  var liens = document.querySelectorAll("#menu-lateral a[href]");
+  var liens = document.querySelectorAll('#menu-lateral a[href$=".html"]');
   Array.prototype.forEach.call(liens, function (lien) {
     if (lien.getAttribute("href") === page) {
       lien.setAttribute("aria-current", "page");
