@@ -18,19 +18,36 @@ const serveur = http.createServer((q,r)=>{
 
 // fichier, ancre de la section à isoler (null = toute la page), nom du PDF
 const PAGES = [
-  ['index.html', 'accueil',   '1-Accueil',          'Accueil'],
-  ['index.html', 'formation', '2-Formation',        'Formation'],
-  ['index.html', 'a-propos',  '3-A-propos-de-moi',  'À propos de moi'],
-  ['index.html', 'programme', '4-Mon-programme',    'Mon programme'],
-  ['connexion.html', null,    '5-Connexion',        'Connexion'],
-  ['mentions-legales.html', null, '6-Mentions-legales', 'Mentions légales'],
+  ['index.html', 'accueil',          '1-Accueil',                     'Accueil'],
+  ['index.html', 'formation',        '2-Business-English-Accelerator','Business English Accelerator'],
+  ['index.html', 'a-propos',         '3-A-propos-de-moi',             'À propos de moi'],
+  ['index.html', 'mon-accelerateur', '4-Mon-Accelerateur',            'Mon Accélérateur'],
+  ['mentions-legales.html', null,    '5-Mentions-legales',            'Mentions légales'],
 ];
 
 const STYLE_RELECTURE = `
   /* Habillage propre à la relecture : rien de tout ceci n'existe sur le site. */
-  .entete, .menu-lateral, .voile, .pied, .saut-contenu { display: none !important; }
-  .ecran[data-sens] { transform: none !important; }
-  body { background: #FAF7F2 !important; }
+  .entete, .menu-lateral, .voile, .pied, .saut-contenu,
+  .bande, .fenetre { display: none !important; }
+  body { padding-top: 0 !important; background: #FAF7F2 !important; }
+
+  /* Le défilement en escalier positionne les pages en absolu et les
+     décale latéralement : à l'impression, elles sortiraient blanches.
+     On remet tout dans le flux normal, le temps du PDF. */
+  .cadre-escalier { height: auto !important; }
+  body.mode-escalier #defilement {
+    position: static !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  body.mode-escalier .piste { height: auto !important; transform: none !important; }
+  body.mode-escalier .ecran {
+    position: static !important;
+    width: auto !important;
+    left: auto !important;
+    transform: none !important;
+  }
+  .heros-plein { min-height: 0 !important; }
 
   .bloc-repere { position: relative; }
   .bloc-repere > .ref-bloc {
@@ -67,8 +84,10 @@ const STYLE_RELECTURE = `
     await page.goto('http://localhost:8092/' + fichier);
     // Le calendrier et les modules sont dessinés par script : on attend
     // qu'ils soient là, sinon le PDF sortirait avec des trous.
-    if (ancre === 'formation') await page.waitForSelector('.session');
-    if (ancre === 'programme') await page.waitForSelector('.module');
+    if (ancre === 'formation') {
+      await page.waitForSelector('.session');
+      await page.waitForSelector('.module');
+    }
     await page.waitForTimeout(600);
 
     const blocs = await page.evaluate(({ style, ancre }) => {

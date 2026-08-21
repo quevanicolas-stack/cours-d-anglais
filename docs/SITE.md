@@ -1,4 +1,4 @@
-# Le site — première proposition
+# Le site
 
 Le site vit dans `site/`, **à côté** de `landing/` et sans aucun lien technique
 avec lui : sa propre feuille de style, ses propres scripts. Modifier l'un ne peut
@@ -7,26 +7,73 @@ pas casser l'autre, et la landing n'a été touchée en rien.
 Rien n'est publié. La branche `main` n'a pas bougé, donc Cloudflare continue de
 servir uniquement la landing.
 
+Contenu et structure conformes à la consigne d'Aurélie. Les quatre pages du
+menu vivent dans `index.html` ; seules les mentions légales restent un fichier
+à part.
+
 ```
 site/
 ├── index.html            Les quatre pages du menu, à la suite
-├── connexion.html        Connexion + demande d'accès
-├── mentions-legales.html Reprises de la landing, adaptées au site
+├── mentions-legales.html
 └── assets/
     ├── style.css         Charte identique à la landing
-    ├── menu.js           Ouverture du menu, page courante, année
-    ├── defilement.js     Décalage latéral entre les pages
+    ├── menu.js           Ouverture du panneau, page courante, année
+    ├── defilement.js     Défilement en escalier
+    ├── bandeau.js        Bande d'appel, fenêtre de rentrée, contacts
     ├── calendrier.js     Dessine le calendrier et la liste des sessions
-    ├── programme.js      Dessine les modules
+    ├── programme.js      Dessine les 8 modules
     ├── compte.js         Formulaire de demande d'accès
     ├── aurelie.jpg
     ├── favicon.svg
     └── donnees/
         ├── sessions.js   ← les dates de formation
-        └── modules.js    ← les modules du programme
+        └── modules.js    ← les 8 modules du programme
 
 docs/relecture/            Un PDF par page, pour les corrections d'Aurélie
 ```
+
+## Les quatre pages
+
+| | Page | Contenu |
+|---|---|---|
+| 1 | Accueil | La question d'ouverture, la promesse en 8 semaines, le cadran « Voir les prochaines sessions » |
+| 2 | Business English Accelerator | Le format, les 8 modules, pour qui, le calendrier, tarif et inscription |
+| 3 | À propos de moi | Le parcours, la photo, la méthode, les deux cadrans « Pour qui » |
+| 4 | Mon Accélérateur | L'espace membres : connexion et demande d'accès |
+
+Le bouton **Connexion**, en bas du panneau, mène à la page 4 — c'est la même
+chose, mis à portée de clic depuis n'importe où.
+
+## La bande et la barre
+
+**La bande d'appel** occupe toute la largeur, tout en haut : « Inscris-toi à la
+formation ». Elle ne bouge pas tant qu'on est sur la première page — raccord
+compris —, s'efface ensuite quand on descend, et revient dès qu'on remonte.
+
+**La barre** reste fixe sous elle : la marque à gauche, les trois traits à
+droite. Le panneau glisse depuis la droite, du côté du bouton qui l'ouvre.
+
+Quand la bande s'efface, la barre **ne remonte pas** : sa place reste réservée
+et se remplit du fond de page, crème comme la barre. Faire remonter la barre
+laisserait sa ligne de séparation flotter au-dessus d'un vide — c'est laid, et
+ça obligerait à recalculer tout le parcours en plein défilement.
+
+## La fenêtre de la rentrée
+
+« −50 % pour la rentrée septembre 2026 ». Elle s'affiche au bout de deux
+secondes, une seule fois par navigateur : refermée, elle ne revient pas. Le
+texte se change dans `index.html`, la temporisation dans `bandeau.js`.
+
+## Les contacts du pied de page
+
+Trois boutons ronds : email, LinkedIn, Instagram. **L'adresse email n'est écrite
+nulle part dans le code de la page** — elle est recomposée au moment du clic,
+pour ne pas être moissonnée par les robots qui lisent le code source. Vérifié :
+la chaîne `aurelieeflcoach` n'apparaît pas dans le HTML servi.
+
+Les adresses LinkedIn et Instagram ont été débarrassées de leurs paramètres de
+suivi (`utm_source`, `igsi`…), qui ne servent qu'à Instagram et LinkedIn pour
+savoir d'où vient le clic.
 
 ## Le défilement en escalier
 

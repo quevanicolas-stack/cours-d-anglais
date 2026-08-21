@@ -13,13 +13,17 @@
 </head>
 <body>
 
+<div class="bande" id="bande-inscription">
+  <a href="index.html#formation">Inscris-toi à la formation</a>
+</div>
+
 <header class="entete">
   <div class="contenu barre">
+    <a class="marque" href="index.html">Fluent &amp; Forward</a>
     <button class="bouton-menu" id="ouvrir-menu" aria-label="Ouvrir le menu"
             aria-expanded="false" aria-controls="menu-lateral">
       <span></span><span></span><span></span>
     </button>
-    <a class="marque" href="index.html">Fluent &amp; Forward</a>
   </div>
 </header>
 
@@ -30,13 +34,13 @@
   </div>
   <ul class="menu-liens">
     <li><a href="index.html">Accueil</a></li>
-    <li><a href="index.html#formation">Formation</a></li>
+    <li><a href="index.html#formation">Business English Accelerator</a></li>
     <li><a href="index.html#a-propos">À propos de moi</a></li>
-    <li><a href="index.html#programme">Mon programme</a></li>
+    <li><a href="index.html#mon-accelerateur">Mon Accélérateur</a></li>
   </ul>
   <div class="menu-pied">
-    <a class="bouton bouton-or" href="connexion.html">Connexion</a>
-    <p class="note">L'accès aux modules sera réservé aux comptes validés.</p>
+    <a class="bouton bouton-or" href="index.html#mon-accelerateur">Connexion</a>
+    <p class="note">L'espace membres du programme.</p>
   </div>
 </nav>
 <button class="voile" id="voile-menu" hidden aria-label="Fermer le menu"></button>
@@ -161,21 +165,49 @@
 
 <footer class="pied">
   <div class="contenu">
-    <span class="marque">Fluent &amp; Forward</span>
-    <div class="pied-liens">
-      <a href="index.html">Accueil</a>
-      <a href="index.html#formation">Formation</a>
-      <a href="index.html#a-propos">À propos de moi</a>
-      <a href="index.html#programme">Mon programme</a>
-      <a href="connexion.html">Connexion</a>
+    <div class="pied-haut">
+      <div>
+        <span class="marque">Fluent &amp; Forward</span>
+        <p class="pied-guide">
+          <a class="bouton bouton-or" href="https://fluentandforward.pages.dev"
+             rel="noopener">Télécharge ton guide gratuit</a>
+        </p>
+      </div>
+      <div class="pied-contact">
+        <span class="pied-titre">Contact</span>
+        <div class="ronds">
+          <button class="rond" type="button" data-email
+                  data-objet="Renseignement — Fluent &amp; Forward"
+                  aria-label="Écrire un email à Aurélie" title="Écrire un email">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M21.4 2.6 2.9 9.4c-.9.3-.9 1.6 0 1.9l6.4 2.2 2.2 6.4c.3.9 1.6.9 1.9 0l6.8-18.5c.3-.7-.4-1.4-1.1-1.1z"/>
+            </svg>
+          </button>
+          <a class="rond" href="https://www.linkedin.com/in/ameer-aurelie"
+             rel="noopener" aria-label="Le profil LinkedIn d'Aurélie" title="LinkedIn">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M4.98 3.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.76-1.95 4.02 0 4.76 2.5 4.76 5.76V21h-4v-5.6c0-1.34-.03-3.06-1.9-3.06-1.9 0-2.2 1.45-2.2 2.96V21h-4z"/>
+            </svg>
+          </a>
+          <a class="rond" href="https://www.instagram.com/businessenglish_byaurelie"
+             rel="noopener" aria-label="Le compte Instagram d'Aurélie" title="Instagram">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8.2a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4z"/>
+              <path d="M12 4c-2.6 0-2.9 0-3.9.06-1 .05-1.6.2-2 .37-.5.2-.85.43-1.2.79-.36.35-.6.7-.79 1.2-.16.4-.32 1-.37 2C3.7 9.4 3.7 9.7 3.7 12s0 2.6.06 3.6c.05 1 .2 1.6.37 2 .2.5.43.85.79 1.2.35.36.7.6 1.2.79.4.16 1 .32 2 .37 1 .06 1.3.06 3.9.06s2.9 0 3.9-.06c1-.05 1.6-.2 2-.37.5-.2.85-.43 1.2-.79.36-.35.6-.7.79-1.2.16-.4.32-1 .37-2 .06-1 .06-1.3.06-3.6s0-2.6-.06-3.6c-.05-1-.2-1.6-.37-2a3.3 3.3 0 0 0-.79-1.2 3.3 3.3 0 0 0-1.2-.79c-.4-.16-1-.32-2-.37C14.9 4 14.6 4 12 4zm0-1.8c2.7 0 3 0 4 .07 1 .05 1.7.2 2.3.44.6.24 1.1.55 1.6 1.05.5.5.81 1 1.05 1.6.24.6.39 1.3.44 2.3.07 1 .07 1.3.07 4s0 3-.07 4c-.05 1-.2 1.7-.44 2.3-.24.6-.55 1.1-1.05 1.6-.5.5-1 .81-1.6 1.05-.6.24-1.3.39-2.3.44-1 .07-1.3.07-4 .07s-3 0-4-.07c-1-.05-1.7-.2-2.3-.44-.6-.24-1.1-.55-1.6-1.05-.5-.5-.81-1-1.05-1.6-.24-.6-.39-1.3-.44-2.3-.07-1-.07-1.3-.07-4s0-3 .07-4c.05-1 .2-1.7.44-2.3.24-.6.55-1.1 1.05-1.6.5-.5 1-.81 1.6-1.05.6-.24 1.3-.39 2.3-.44 1-.07 1.3-.07 4-.07z"/>
+              <circle cx="17.2" cy="6.8" r="1.2"/>
+            </svg>
+          </a>
+        </div>
+      </div>
     </div>
     <div class="pied-bas">
       <span>&copy; <span class="annee-courante">2026</span> Fluent &amp; Forward. Tous droits réservés.</span>
-      <span><a href="mentions-legales.html">Mentions légales</a></span>
+      <span><a href="index.html">Retour à l'accueil</a></span>
     </div>
   </div>
 </footer>
 
+<script src="assets/bandeau.js"></script>
 <script src="assets/menu.js"></script>
 </body>
 </html>

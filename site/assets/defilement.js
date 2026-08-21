@@ -46,6 +46,17 @@
   var totalParcours = 0;
   var hautCadre = 0;
 
+  /* Hauteur réellement disponible sous le bandeau fixe : c'est elle qui
+     sert d'unité de mesure, pas la hauteur de la fenêtre. */
+  function hauteurUtile() {
+    // La bande garde sa hauteur même quand elle s'efface — elle glisse,
+    // elle ne se replie pas — donc la mesure reste stable au défilement.
+    var bande = document.querySelector(".bande");
+    var barre = document.querySelector(".entete");
+    var chrome = (bande ? bande.offsetHeight : 0) + (barre ? barre.offsetHeight : 0);
+    return Math.max(200, window.innerHeight - chrome);
+  }
+
   function adoucir(p) {
     // Entrée et sortie douces : le déplacement latéral démarre et
     // s'achève sans à-coup, l'essentiel se joue au milieu.
@@ -85,6 +96,7 @@
       e.style.transform = "";
       e.style.left = "";
     });
+    delete document.body.dataset.colonne;
     scene.style.height = "";
     piste = null;
     cadre = null;
@@ -97,7 +109,7 @@
     if (!actif) return;
 
     var largeur = window.innerWidth;
-    var hauteurEcran = window.innerHeight;
+    var hauteurEcran = hauteurUtile();
 
     // Chaque page est posée dans sa colonne : une par écran de large.
     ecrans.forEach(function (ecran, i) {
@@ -157,6 +169,11 @@
     }
 
     piste.style.transform = "translate3d(" + (-colonne * largeur) + "px, 0, 0)";
+
+    // Position exacte dans le parcours, en colonnes : 0 = première page,
+    // 0,5 = à mi-raccord, 1 = deuxième page. La bande d'appel s'en sert
+    // pour savoir si l'on a vraiment quitté la première page.
+    document.body.dataset.colonne = colonne.toFixed(3);
 
     // Chaque page garde sa propre position verticale : celles déjà
     // parcourues restent en bas, celles à venir attendent en haut.

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fluent &amp; Forward — l'anglais professionnel qui se parle</title>
-<meta name="description" content="Cours et formations d'anglais professionnel en visio, en petit groupe. Pour les professionnels qui comprennent l'anglais mais n'osent pas le parler.">
+<title>Fluent &amp; Forward — Business English Accelerator</title>
+<meta name="description" content="Un programme intensif de 8 semaines pour cadres et indépendants francophones qui veulent défendre leur expertise en anglais avec la même autorité qu'en français.">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,16 +15,23 @@
 
 <a class="saut-contenu" href="#accueil">Aller au contenu</a>
 
+<!-- Bande d'appel : fixe sur la première page, réapparaît dès qu'on remonte. -->
+<div class="bande" id="bande-inscription">
+  <a href="#formation">Inscris-toi à la formation</a>
+</div>
+
 <header class="entete">
   <div class="contenu barre">
+    <a class="marque" href="#accueil">Fluent &amp; Forward</a>
     <button class="bouton-menu" id="ouvrir-menu" aria-label="Ouvrir le menu"
             aria-expanded="false" aria-controls="menu-lateral">
       <span></span><span></span><span></span>
     </button>
-    <a class="marque" href="#accueil">Fluent &amp; Forward</a>
   </div>
 </header>
 
+<!-- Le menu est écrit en clair dans chaque page : sans JavaScript, il reste
+     une liste de liens utilisable. menu.js ne gère que l'ouverture. -->
 <nav class="menu-lateral" id="menu-lateral" aria-hidden="true" aria-label="Menu principal">
   <div class="menu-tete">
     <span class="marque">Fluent &amp; Forward</span>
@@ -32,194 +39,112 @@
   </div>
   <ul class="menu-liens">
     <li><a href="#accueil">Accueil</a></li>
-    <li><a href="#formation">Formation</a></li>
+    <li><a href="#formation">Business English Accelerator</a></li>
     <li><a href="#a-propos">À propos de moi</a></li>
-    <li><a href="#programme">Mon programme</a></li>
+    <li><a href="#mon-accelerateur">Mon Accélérateur</a></li>
   </ul>
   <div class="menu-pied">
-    <a class="bouton bouton-or" href="connexion.html">Connexion</a>
-    <p class="note">L'accès aux modules sera réservé aux comptes validés.</p>
+    <a class="bouton bouton-or" href="#mon-accelerateur">Connexion</a>
+    <p class="note">L'espace membres du programme.</p>
   </div>
 </nav>
 <button class="voile" id="voile-menu" hidden aria-label="Fermer le menu"></button>
 
 <main id="defilement">
-  <!-- ================= ACCUEIL ================= -->
+
+  <!-- ================= PAGE 1 — HÉROS ================= -->
   <section class="ecran" id="accueil" aria-label="Accueil">
-  <section class="heros">
-      <div class="contenu heros-grille">
-        <div>
-          <span class="oeil" style="color:var(--gold)">Anglais professionnel · La Réunion et en visio</span>
-          <h1>Tu comprends l'anglais. Il est temps de le parler.</h1>
-          <p class="chapeau">
-            Des formations pensées pour les professionnels qui ont le vocabulaire,
-            les diplômes, parfois même des années de cours derrière eux — et qui se
-            taisent quand même en réunion. On ne travaille pas la grammaire : on
-            travaille le passage à l'acte.
-          </p>
-          <div class="heros-actions">
-            <a class="bouton bouton-or" href="#formation">Voir les prochaines sessions</a>
-            <a class="bouton bouton-clair" href="#programme">Découvrir le programme</a>
-          </div>
+    <section class="heros heros-plein">
+      <div class="contenu contenu-etroit centre">
+        <h1>
+          Combien d'opportunités professionnelles vous ont échappé parce que
+          l'anglais vous a manqué au moment décisif ?
+        </h1>
+        <p class="chapeau">
+          En 8 semaines, parlez business en anglais avec la même aisance qu'en
+          français et ne laissez plus jamais une réunion, un client ou une
+          opportunité filer à cause de la langue.
+        </p>
+        <p class="appel-programme">
+          Rejoins le <strong>Business English Accelerator Program</strong>.
+        </p>
+
+        <div class="cadran-sessions">
+          <a class="bouton bouton-or" href="#formation">Voir les prochaines sessions</a>
         </div>
-        <img class="portrait" src="assets/aurelie.jpg"
-             alt="Aurélie Queva, coach en anglais professionnel">
       </div>
     </section>
+  </section>
+
+  <!-- ================= PAGE 2 — LE PROGRAMME ================= -->
+  <section class="ecran" id="formation" aria-label="Business English Accelerator">
 
     <section class="section">
       <div class="contenu">
-        <span class="oeil">Ce que je propose</span>
-        <h2>Trois formats, une même méthode</h2>
-        <p class="chapeau" style="margin-top:16px">
-          Tout se fait en visio, en petit groupe, avec de vraies situations de
-          travail — pas des dialogues de manuel.
-        </p>
-
-        <div class="grille grille-3">
-          <article class="carte">
-            <span class="numero">1</span>
-            <h3>Les cohortes</h3>
-            <p>
-              Le format principal : huit semaines, un petit groupe qui avance
-              ensemble, deux rendez-vous par semaine. C'est là que les réflexes
-              s'installent, parce qu'on répète assez longtemps pour que ça tienne.
-            </p>
-          </article>
-          <article class="carte">
-            <span class="numero">2</span>
-            <h3>Les ateliers courts</h3>
-            <p>
-              Deux heures sur un point précis : mener une réunion, écrire un email
-              qui obtient une réponse, se présenter sans réciter. Utile quand une
-              échéance approche et qu'il faut débloquer une situation.
-            </p>
-          </article>
-          <article class="carte">
-            <span class="numero">3</span>
-            <h3>Le sur-mesure en entreprise</h3>
-            <p>
-              Un programme construit à partir de vos situations réelles, pour une
-              équipe ou un service. Contenu, rythme et durée définis ensemble après
-              un premier échange.
-            </p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section-verte">
-      <div class="contenu">
-        <span class="oeil">La méthode</span>
-        <h2>Ce qui bloque n'est presque jamais le niveau</h2>
-        <p class="chapeau" style="margin-top:16px">
-          La plupart des personnes que j'accompagne ont un anglais correct. Ce qui
-          leur manque, c'est l'aisance sous pression : trouver ses mots en direct,
-          oser demander une répétition, reprendre la parole après une hésitation.
-        </p>
-
-        <div class="grille grille-3">
-          <article class="carte">
-            <h3>On parle dès la première séance</h3>
-            <p>
-              Pas de tour de table théorique. Tu prends la parole tout de suite, et
-              on corrige à partir de ce que tu produis vraiment.
-            </p>
-          </article>
-          <article class="carte">
-            <h3>On travaille tes situations</h3>
-            <p>
-              Tes réunions, tes clients, tes présentations. Le contenu vient de ton
-              quotidien professionnel, pas d'un programme générique.
-            </p>
-          </article>
-          <article class="carte">
-            <h3>On répète jusqu'à l'automatisme</h3>
-            <p>
-              Une phrase apprise s'oublie. Une phrase répétée en situation reste
-              disponible le jour où la pression monte.
-            </p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="contenu centre">
-        <span class="oeil">Prochaines dates</span>
-        <h2>Les sessions des trois prochains mois</h2>
-        <p class="chapeau" style="margin-top:16px">
-          Le calendrier indique en un coup d'œil les sessions qui ont encore des
-          places et celles qui sont complètes.
-        </p>
-        <p style="margin-top:30px">
-          <a class="bouton bouton-vert" href="#formation">Consulter le calendrier</a>
+        <span class="oeil">Le programme</span>
+        <h2>Business English Accelerator</h2>
+        <p class="sous-titre">L'anglais professionnel, quand ça compte vraiment.</p>
+        <p class="chapeau" style="margin-top:18px">
+          Un programme intensif de 8 semaines pour cadres et indépendants
+          francophones qui veulent défendre leur expertise en anglais avec la même
+          autorité qu'en français — en réunion, au téléphone, ou face à un client.
         </p>
       </div>
     </section>
 
     <section class="section section-sable">
-      <div class="contenu contenu-etroit centre">
-        <span class="oeil">Pour commencer</span>
-        <h2>Le guide « Stop Avoiding » est gratuit</h2>
-        <p class="chapeau" style="margin-top:16px">
-          Cinq phrases de survie, un mini-script pour les réunions et trois réflexes
-          à installer cette semaine. De quoi tester la méthode avant de s'engager.
-        </p>
-        <p style="margin-top:28px">
-          <a class="bouton bouton-vert"
-             href="https://fluentandforward.pages.dev"
-             rel="noopener">Recevoir le guide gratuitement</a>
-        </p>
-        <p style="margin-top:16px; font-size:.88rem; color:var(--muted)">
-          Ce bouton renvoie vers la page de capture existante. À confirmer :
-          faut-il la garder séparée, ou l'intégrer un jour dans ce site ?
-        </p>
+      <div class="contenu">
+        <h3 class="titre-bloc">Le format</h3>
+        <ul class="liste-format">
+          <li>8 semaines, structurées en 8 modules progressifs</li>
+          <li>
+            Leçons en vidéo courtes, à votre rythme, accessibles à tout moment
+            depuis votre espace personnel
+          </li>
+          <li>
+            Sessions live en groupe toutes les semaines, pour pratiquer à l'oral
+            dans des mises en situation réelles
+          </li>
+          <li>
+            2 coachings individuels avec moi, en semaine 4 et semaine 8, pour
+            ajuster le programme à votre réalité professionnelle
+          </li>
+          <li>
+            Un Kit de Vocabulaire par module, en deux niveaux : l'essentiel à
+            retenir tout de suite, et pour aller plus loin si vous voulez approfondir
+          </li>
+          <li>
+            Nombre de participants limité par groupe, pour un accompagnement
+            réellement personnalisé
+          </li>
+        </ul>
       </div>
     </section>
-  </section>
 
-  <!-- ================= FORMATION ================= -->
-  <section class="ecran" id="formation" aria-label="Formation">
-  <section class="section section-serree">
+    <section class="section">
       <div class="contenu">
-        <span class="oeil">Formation</span>
-        <h2>La formation en quelques lignes</h2>
-        <p class="chapeau" style="margin-top:16px">
-          Un accompagnement à l'anglais professionnel oral, en visio et en petit
-          groupe. On part de situations de travail réelles — réunions, appels,
-          présentations, emails — et on répète jusqu'à ce que les bons réflexes
-          viennent sans y penser. Aucun prérequis de niveau : ce qui compte, c'est
-          d'avoir besoin de l'anglais au travail et d'accepter de parler dès la
-          première séance.
-        </p>
+        <h3 class="titre-bloc">Le contenu — 8 modules</h3>
+        <!-- Les modules sont dessinés par programme.js à partir de
+             assets/donnees/modules.js. -->
+        <div id="liste-modules"></div>
+        <noscript>
+          <p class="encart" style="margin-top:24px">
+            La liste des modules a besoin de JavaScript pour s'afficher.
+          </p>
+        </noscript>
+      </div>
+    </section>
 
-        <div class="grille grille-3">
-          <article class="carte">
-            <h3>Format</h3>
-            <p>
-              En visio, en petit groupe. Les cohortes durent huit semaines à raison
-              de deux rendez-vous hebdomadaires ; les ateliers tiennent en une
-              séance de deux heures.
-            </p>
-          </article>
-          <article class="carte">
-            <h3>Contenu</h3>
-            <p>
-              Prise de parole, gestion des blancs, relances, vocabulaire de
-              réunion et de négociation, écrit professionnel. Le détail des modules
-              est présenté dans <a href="#programme">Mon programme</a>.
-            </p>
-          </article>
-          <article class="carte">
-            <h3>Tarifs et inscription</h3>
-            <p class="a-confirmer">
-              À compléter avec Aurélie : tarif des cohortes, tarif des ateliers,
-              conditions pour les entreprises, modalités de règlement et politique
-              d'annulation.
-            </p>
-          </article>
-        </div>
+    <section class="section section-verte">
+      <div class="contenu contenu-etroit">
+        <h3 class="titre-bloc">Pour qui ?</h3>
+        <p class="chapeau" style="margin-top:14px">
+          Ce programme s'adresse aux professionnels francophones qui maîtrisent
+          déjà leur métier, mais dont l'anglais reste un frein à l'oral dans un
+          contexte professionnel : cadres, indépendants, entrepreneurs, qui
+          négocient, présentent ou échangent régulièrement avec des interlocuteurs
+          anglophones ou qui souhaitent s'ouvrir à une clientèle anglophone.
+        </p>
       </div>
     </section>
 
@@ -227,8 +152,8 @@
       <div class="contenu">
         <div class="calendrier-tete">
           <div>
-            <span class="oeil">Disponibilités</span>
-            <h2>Les trois prochains mois</h2>
+            <span class="oeil">Prochaines sessions</span>
+            <h3 class="titre-bloc">Les trois prochains mois</h3>
           </div>
           <p class="legende">
             <span><i class="jeton jeton-vert"></i> Places disponibles</span>
@@ -236,220 +161,302 @@
           </p>
         </div>
 
-        <p class="chapeau" style="margin-bottom:26px">
-          Le jour de démarrage de chaque session est en couleur pleine ; les jours
-          suivants, plus clairs, indiquent la durée de la session. Survolez une date
-          pour en connaître l'intitulé.
-        </p>
-
         <!-- Le calendrier et la liste sont dessinés par calendrier.js à partir
              de assets/donnees/sessions.js. -->
         <div id="calendrier"></div>
         <div id="liste-sessions"></div>
 
-        <noscript>
-          <p class="encart" style="margin-top:30px">
-            Le calendrier a besoin de JavaScript pour s'afficher. Les prochaines
-            dates peuvent être demandées directement par email.
-          </p>
-        </noscript>
-
         <p class="encart a-confirmer" style="margin-top:34px">
           Les sessions affichées sont des exemples, mis en place pour montrer le
-          fonctionnement du calendrier. Elles seront remplacées par les vraies dates
-          d'Aurélie, puis mises à jour automatiquement depuis son agenda.
+          fonctionnement du calendrier. Elles seront remplacées par les vraies
+          dates d'Aurélie.
         </p>
       </div>
     </section>
 
     <section class="section">
       <div class="contenu contenu-etroit centre">
-        <h2>Une session vous intéresse ?</h2>
-        <p class="chapeau" style="margin-top:16px">
-          Les inscriptions se font après un premier échange, pour vérifier que le
-          format correspond à votre besoin. Les sessions complètes disposent d'une
-          liste d'attente.
+        <h3 class="titre-bloc">Tarif et inscription</h3>
+        <p class="chapeau" style="margin-top:14px">
+          Places limitées par session, pour garantir un accompagnement
+          individualisé. Le tarif et les modalités de paiement vous sont
+          communiqués sur demande.
         </p>
-        <p style="margin-top:28px">
-          <a class="bouton bouton-vert" href="connexion.html">Demander un accès</a>
+        <p style="margin-top:30px">
+          <a class="bouton bouton-vert a-confirmer"
+             href="https://wa.me/262693441835?text=Bonjour%20Aur%C3%A9lie%2C%20je%20souhaite%20r%C3%A9server%20un%20appel%20de%20pr%C3%A9-inscription%20au%20Business%20English%20Accelerator."
+             rel="noopener">Réserver un appel de pré-inscription</a>
+        </p>
+        <p style="margin-top:16px; font-size:.88rem; color:var(--muted)">
+          Le bouton ouvre une conversation WhatsApp. À remplacer par le lien
+          Calendly dès qu'il existe.
         </p>
       </div>
     </section>
+
   </section>
 
-  <!-- ================= À PROPOS DE MOI ================= -->
+  <!-- ================= PAGE 3 — À PROPOS ================= -->
   <section class="ecran" id="a-propos" aria-label="À propos de moi">
-  <section class="heros">
-      <div class="contenu heros-grille">
-        <div>
-          <span class="oeil" style="color:var(--gold)">À propos de moi</span>
-          <h1>Aurélie Queva</h1>
-          <p class="chapeau">
-            Coach en anglais professionnel, installée à Saint-Pierre, à La Réunion.
-            J'accompagne des professionnels qui comprennent l'anglais depuis des
-            années sans réussir à le parler quand ça compte.
-          </p>
+
+    <section class="section">
+      <div class="contenu">
+        <span class="oeil">À propos de moi</span>
+        <h2>De la réalité à la formation</h2>
+
+        <div class="portrait-texte">
+          <div>
+            <p style="margin-top:18px">
+              Avant d'enseigner l'anglais professionnel, je l'ai vécu de
+              l'intérieur. 12 ans dans le secteur bancaire international et
+              l'immobilier de luxe, où chaque réunion, chaque négociation, chaque
+              email engageait quelque chose de concret et ne laissait pas de place
+              à l'approximation.
+            </p>
+            <p>
+              Bilingue anglais-français, aujourd'hui, je mets cette double culture
+              au service de professionnels francophones qui maîtrisent leur métier,
+              mais cherchent encore l'aisance pour le défendre avec la même
+              autorité en anglais.
+            </p>
+            <p>
+              Certifiée TEFL niveau 5, je ne suis pas seulement formatrice : je
+              suis passée par les mêmes salles de réunion que vous.
+            </p>
+          </div>
+          <img class="portrait" src="assets/aurelie.jpg"
+               alt="Portrait d'Aurélie Queva, formatrice en anglais professionnel">
         </div>
-        <img class="portrait" src="assets/aurelie.jpg" alt="Portrait d'Aurélie Queva">
       </div>
     </section>
 
-    <section class="section">
+    <section class="section section-verte">
       <div class="contenu contenu-etroit">
-        <span class="oeil">Mon parcours</span>
-        <h2>D'où je viens</h2>
-        <p class="chapeau a-confirmer" style="margin-top:18px">
-          Section à écrire avec Aurélie. Ce qu'il faut y trouver : sa formation,
-          ses expériences d'enseignement ou en entreprise, ce qui l'a menée à se
-          spécialiser dans l'anglais professionnel, et depuis combien de temps elle
-          accompagne des professionnels. Deux ou trois paragraphes suffisent — c'est
-          la page que les prospects lisent avant de s'inscrire, elle doit sonner
-          juste plutôt qu'impressionner.
-        </p>
-
-        <h3 style="margin-top:40px">Ce que je crois</h3>
-        <p style="margin-top:12px">
-          Que le blocage à l'oral n'est presque jamais un problème de niveau. On
-          peut avoir un excellent anglais écrit, comprendre un film sans
-          sous-titres, et rester muet dans une réunion parce qu'on a peur de la
-          faute. Ce que je travaille, c'est cette peur-là, avec des outils
-          concrets : des phrases prêtes à l'emploi, des façons de gagner du temps,
-          des manières de reprendre la parole après un blanc.
+        <h3 class="titre-bloc">Ma méthode</h3>
+        <p style="margin-top:14px">
+          Je ne crois pas à l'anglais appris hors-sol — les listes de vocabulaire
+          sans contexte, la grammaire pour la grammaire. Ma méthode s'appuie sur le
+          Task-Based Learning : vous apprenez en faisant, à partir de situations
+          réelles de votre quotidien professionnel — un email à rédiger, une
+          réunion à préparer, un client à convaincre.
         </p>
         <p>
-          Que la répétition compte plus que la théorie. On ne progresse pas en
-          apprenant une règle de plus, mais en produisant la même phrase assez
-          souvent pour qu'elle sorte toute seule le jour où la pression monte.
-        </p>
-        <p>
-          Que le petit groupe fait la différence. À huit maximum, chacun parle
-          vraiment, et personne ne peut se cacher derrière les autres — c'est
-          inconfortable les deux premières séances, et c'est exactement pour ça que
-          ça marche.
+          Chaque module part d'une tâche concrète, pas d'une règle abstraite. Vous
+          ne mémorisez pas une leçon : vous vous entraînez à résoudre une situation
+          que vous rencontrerez réellement — pour qu'au moment où ça compte, le
+          réflexe soit déjà là.
         </p>
       </div>
     </section>
 
     <section class="section section-sable">
       <div class="contenu">
-        <span class="oeil">En pratique</span>
-        <h2>Comment je travaille</h2>
+        <h3 class="titre-bloc">Pour qui ?</h3>
 
-        <div class="grille grille-2">
-          <article class="carte">
-            <h3>En visio, principalement</h3>
-            <p>
-              Ce qui permet de travailler avec des personnes partout à La Réunion et
-              en métropole, sans temps de trajet. Les séances se font en direct :
-              rien n'est préenregistré.
+        <div class="grille grille-2" style="margin-top:30px">
+          <article class="carte carte-cadran">
+            <span class="pastille">Professionnel individuel</span>
+            <p style="margin-top:16px">
+              Vous êtes cadre, indépendant ou entrepreneur, et l'anglais vous
+              freine à l'oral dans votre quotidien professionnel — réunions,
+              appels, présentations. Vous voulez progresser à votre rythme, dans un
+              petit groupe, avec un accompagnement individualisé.
+            </p>
+            <p style="margin-top:20px">
+              <a class="bouton bouton-vert a-confirmer"
+                 href="https://wa.me/262693441835?text=Bonjour%20Aur%C3%A9lie%2C%20je%20souhaite%20d%C3%A9couvrir%20le%20Business%20English%20Accelerator."
+                 rel="noopener">Découvrir le Business English Accelerator</a>
             </p>
           </article>
-          <article class="carte">
-            <h3>En présentiel, ponctuellement</h3>
-            <p class="a-confirmer">
-              À confirmer : Aurélie propose-t-elle des séances en présentiel dans le
-              sud de La Réunion, et à quelles conditions ? Si non, cette carte est à
-              supprimer.
+
+          <article class="carte carte-cadran">
+            <span class="pastille">Entreprise</span>
+            <p style="margin-top:16px">
+              Vos équipes échangent régulièrement avec des interlocuteurs
+              anglophones et l'anglais professionnel devient un enjeu collectif —
+              pas seulement individuel. Chaque entreprise a ses propres réalités
+              métier, ses interlocuteurs, ses urgences : la formation est donc
+              conçue sur mesure, à partir des besoins concrets de vos équipes.
             </p>
-          </article>
-          <article class="carte">
-            <h3>Avec les entreprises</h3>
-            <p>
-              Programmes construits sur mesure à partir des situations réelles de
-              l'équipe. Un premier échange sert à cadrer le besoin avant toute
-              proposition.
-            </p>
-          </article>
-          <article class="carte">
-            <h3>Langues et niveaux</h3>
-            <p class="a-confirmer">
-              À confirmer : niveaux acceptés (débutant réel ou faux débutant
-              uniquement ?), et si les séances se déroulent entièrement en anglais
-              ou en français au début.
+            <p style="margin-top:20px">
+              <a class="bouton bouton-vert"
+                 href="https://wa.me/262693441835?text=Bonjour%20Aur%C3%A9lie%2C%20je%20souhaite%20discuter%20d%27un%20projet%20de%20formation%20pour%20mon%20%C3%A9quipe."
+                 rel="noopener">Discutons de votre projet</a>
             </p>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="section section-verte">
-      <div class="contenu contenu-etroit centre">
-        <h2>On en discute ?</h2>
-        <p class="chapeau" style="margin-top:16px">
-          Le meilleur moyen de savoir si le format te convient est d'en parler
-          quelques minutes. Aucun engagement à la clé.
-        </p>
-        <p style="margin-top:28px">
-          <a class="bouton bouton-or" href="connexion.html">Me contacter</a>
-        </p>
-      </div>
-    </section>
   </section>
 
-  <!-- ================= MON PROGRAMME ================= -->
-  <section class="ecran" id="programme" aria-label="Mon programme">
-  <section class="section section-serree">
+  <!-- ================= PAGE 4 — ESPACE MEMBRES ================= -->
+  <section class="ecran" id="mon-accelerateur" aria-label="Mon Accélérateur">
+    <section class="section">
       <div class="contenu">
-        <span class="oeil">Mon programme</span>
-        <h2>Business English Accelerator</h2>
-        <p class="chapeau" style="margin-top:16px">
-          Huit modules, huit semaines. Chacun installe un réflexe précis, et
-          s'appuie sur le précédent. Les modules se construisent au fur et à mesure :
-          ceux qui sont prêts s'ouvrent pour montrer le détail de leurs séances.
-        </p>
-
-        <div class="encart" style="margin-top:30px">
-          <h3>Accès libre pour le moment</h3>
-          <p>
-            Le contenu est consultable sans compte, le temps de la mise au point.
-            L'accès sera ensuite réservé aux personnes inscrites, après validation
-            de leur demande par Aurélie.
+        <div style="max-width:720px">
+          <span class="oeil">Espace membres</span>
+          <h2>Mon Accélérateur</h2>
+          <p class="chapeau" style="margin-top:16px">
+            L'espace personnel des participants au Business English Accelerator :
+            les modules, les leçons vidéo et les Kits de Vocabulaire. Les comptes
+            ne se créent pas tout seuls — chaque demande est validée à la main par
+            Aurélie avant qu'un accès soit ouvert.
           </p>
         </div>
 
-        <!-- Les modules sont dessinés par programme.js à partir de
-             assets/donnees/modules.js. -->
-        <div id="liste-modules"></div>
+        <div class="colonnes-compte" style="margin-top:44px">
 
-        <noscript>
-          <p class="encart" style="margin-top:30px">
-            La liste des modules a besoin de JavaScript pour s'afficher.
-          </p>
-        </noscript>
+          <section class="bloc-formulaire">
+            <h3 class="titre-bloc">J'ai déjà un compte</h3>
+            <p style="margin-top:8px">Se connecter pour retrouver ses modules.</p>
 
-        <p class="encart a-confirmer" style="margin-top:34px">
-          Les intitulés des modules 1 à 3 reprennent les thèmes du guide
-          « Stop Avoiding ». Les modules 4 à 8 sont des propositions, à valider et
-          à réécrire avec Aurélie.
-        </p>
-      </div>
-    </section>
+            <form id="formulaire-connexion" novalidate>
+              <div class="champ">
+                <label for="identifiant">Adresse email</label>
+                <input type="email" id="identifiant" name="identifiant"
+                       autocomplete="username" disabled>
+              </div>
+              <div class="champ">
+                <label for="motdepasse">Mot de passe</label>
+                <input type="password" id="motdepasse" name="motdepasse"
+                       autocomplete="current-password" disabled>
+              </div>
+              <p style="margin-top:22px">
+                <button type="submit" class="bouton bouton-vert" disabled
+                        aria-disabled="true" style="width:100%">Se connecter</button>
+              </p>
+            </form>
 
-    <section class="section section-verte">
-      <div class="contenu contenu-etroit centre">
-        <h2>Rejoindre une prochaine cohorte</h2>
-        <p class="chapeau" style="margin-top:16px">
-          Le programme se suit en groupe, sur huit semaines. Les dates d'ouverture
-          sont indiquées sur la page Formation.
-        </p>
-        <p style="margin-top:28px">
-          <a class="bouton bouton-or" href="#formation">Voir les dates</a>
+            <div class="encart" style="margin-top:24px">
+              <h3>Pas encore actif</h3>
+              <p>
+                La connexion suppose un serveur capable de vérifier un mot de
+                passe. Tant qu'il n'existe pas, ce formulaire reste volontairement
+                inactif plutôt que de faire semblant de fonctionner.
+              </p>
+            </div>
+          </section>
+
+          <section class="bloc-formulaire">
+            <h3 class="titre-bloc">Demander un accès</h3>
+            <p style="margin-top:8px">
+              Quelques informations suffisent. Aurélie valide la demande, puis
+              envoie les identifiants par email.
+            </p>
+
+            <form id="formulaire-acces" novalidate>
+              <div class="champ">
+                <label for="prenom">Prénom</label>
+                <input type="text" id="prenom" name="prenom" autocomplete="given-name"
+                       aria-describedby="erreur-prenom">
+                <p class="erreur" id="erreur-prenom">Merci d'indiquer votre prénom.</p>
+              </div>
+
+              <div class="champ">
+                <label for="nom">Nom</label>
+                <input type="text" id="nom" name="nom" autocomplete="family-name"
+                       aria-describedby="erreur-nom">
+                <p class="erreur" id="erreur-nom">Merci d'indiquer votre nom.</p>
+              </div>
+
+              <div class="champ">
+                <label for="email">Adresse email</label>
+                <input type="email" id="email" name="email" autocomplete="email"
+                       aria-describedby="erreur-email">
+                <p class="erreur" id="erreur-email">Cette adresse ne semble pas valide.</p>
+                <p class="aide">C'est à cette adresse que les identifiants seront envoyés.</p>
+              </div>
+
+              <div class="champ">
+                <label for="motivation">En deux mots, votre besoin (facultatif)</label>
+                <textarea id="motivation" name="motivation"
+                          placeholder="Réunions en anglais, appels clients, présentations…"></textarea>
+              </div>
+
+              <div class="case">
+                <input type="checkbox" id="rgpd" name="rgpd" aria-describedby="erreur-rgpd">
+                <label for="rgpd">
+                  J'accepte que ces informations soient conservées pour traiter ma
+                  demande d'accès.
+                </label>
+              </div>
+              <p class="erreur" id="erreur-rgpd">
+                Cette autorisation est nécessaire pour enregistrer la demande.
+              </p>
+
+              <p style="margin-top:24px">
+                <button type="submit" class="bouton bouton-vert" style="width:100%">
+                  Envoyer ma demande
+                </button>
+              </p>
+
+              <p class="retour-formulaire" id="retour-acces" role="status"></p>
+            </form>
+
+            <p class="aide" style="margin-top:18px">
+              Aucun mot de passe n'est demandé ici : tant qu'il n'y a pas de
+              serveur pour le protéger, il ne serait stocké nulle part en sécurité.
+              Aurélie transmet les identifiants au moment où elle valide la demande.
+            </p>
+          </section>
+
+        </div>
+
+        <p class="encart a-confirmer" style="margin-top:40px">
+          À décider avant la mise en ligne : où arrivent les demandes d'accès. Le
+          plus simple est de les diriger vers le même tableur Google que les
+          contacts de la landing, dans un onglet séparé. Il suffira d'indiquer
+          l'adresse du script dans <code>assets/compte.js</code>.
         </p>
       </div>
     </section>
   </section>
+
 </main>
 
 <footer class="pied">
   <div class="contenu">
-    <span class="marque">Fluent &amp; Forward</span>
-    <div class="pied-liens">
-      <a href="#accueil">Accueil</a>
-      <a href="#formation">Formation</a>
-      <a href="#a-propos">À propos de moi</a>
-      <a href="#programme">Mon programme</a>
-      <a href="connexion.html">Connexion</a>
+    <div class="pied-haut">
+      <div>
+        <span class="marque">Fluent &amp; Forward</span>
+        <p class="pied-guide">
+          <a class="bouton bouton-or" href="https://fluentandforward.pages.dev"
+             rel="noopener">Télécharge ton guide gratuit</a>
+        </p>
+      </div>
+
+      <div class="pied-contact">
+        <span class="pied-titre">Contact</span>
+        <div class="ronds">
+          <button class="rond" type="button" data-email
+                  data-objet="Renseignement — Business English Accelerator"
+                  aria-label="Écrire un email à Aurélie" title="Écrire un email">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M21.4 2.6 2.9 9.4c-.9.3-.9 1.6 0 1.9l6.4 2.2 2.2 6.4c.3.9 1.6.9 1.9 0l6.8-18.5c.3-.7-.4-1.4-1.1-1.1z"/>
+              <path d="M9.5 13.6 21 3.2" class="trait"/>
+            </svg>
+          </button>
+
+          <a class="rond" href="https://www.linkedin.com/in/ameer-aurelie"
+             rel="noopener" aria-label="Le profil LinkedIn d'Aurélie" title="LinkedIn">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M4.98 3.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.76-1.95 4.02 0 4.76 2.5 4.76 5.76V21h-4v-5.6c0-1.34-.03-3.06-1.9-3.06-1.9 0-2.2 1.45-2.2 2.96V21h-4z"/>
+            </svg>
+          </a>
+
+          <a class="rond" href="https://www.instagram.com/businessenglish_byaurelie"
+             rel="noopener" aria-label="Le compte Instagram d'Aurélie" title="Instagram">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 1.8.25 2.2.42.55.21.95.47 1.36.88.41.41.67.81.88 1.36.17.4.36 1 .42 2.2.06 1.3.07 1.7.07 4.9s0 3.6-.07 4.9c-.06 1.2-.25 1.8-.42 2.2-.21.55-.47.95-.88 1.36-.41.41-.81.67-1.36.88-.4.17-1 .36-2.2.42-1.3.06-1.7.07-4.9.07s-3.6 0-4.9-.07c-1.2-.06-1.8-.25-2.2-.42a3.7 3.7 0 0 1-1.36-.88 3.7 3.7 0 0 1-.88-1.36c-.17-.4-.36-1-.42-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.9c.06-1.2.25-1.8.42-2.2.21-.55.47-.95.88-1.36.41-.41.81-.67 1.36-.88.4-.17 1-.36 2.2-.42C8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.15 0-3.5.01-4.74.07-1.14.05-1.76.24-2.17.4-.55.21-.94.47-1.35.88-.41.41-.67.8-.88 1.35-.16.41-.35 1.03-.4 2.17C2.4 10.1 2.4 10.45 2.4 12s.01 1.9.07 3.13c.05 1.14.24 1.76.4 2.17.21.55.47.94.88 1.35.41.41.8.67 1.35.88.41.16 1.03.35 2.17.4 1.24.06 1.59.07 4.74.07s3.5-.01 4.74-.07c1.14-.05 1.76-.24 2.17-.4.55-.21.94-.47 1.35-.88.41-.41.67-.8.88-1.35.16-.41.35-1.03.4-2.17.06-1.24.07-1.59.07-3.13s-.01-1.9-.07-3.13c-.05-1.14-.24-1.76-.4-2.17a3.6 3.6 0 0 0-.88-1.35 3.6 3.6 0 0 0-1.35-.88c-.41-.16-1.03-.35-2.17-.4C15.5 4.01 15.15 4 12 4z"/>
+              <path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8.2a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4z"/>
+              <circle cx="17.2" cy="6.8" r="1.2"/>
+            </svg>
+          </a>
+        </div>
+      </div>
     </div>
+
     <div class="pied-bas">
       <span>&copy; <span class="annee-courante">2026</span> Fluent &amp; Forward. Tous droits réservés.</span>
       <span><a href="mentions-legales.html">Mentions légales</a></span>
@@ -457,11 +464,31 @@
   </div>
 </footer>
 
+<!-- Fenêtre de la rentrée : une fois par navigateur, refermable. -->
+<div class="fenetre" id="fenetre-rentree" hidden role="dialog" aria-modal="true"
+     aria-labelledby="titre-fenetre">
+  <div class="fenetre-fond" data-fermer></div>
+  <div class="fenetre-boite">
+    <button class="fenetre-fermer" data-fermer aria-label="Fermer">&times;</button>
+    <span class="pastille">Rentrée septembre 2026</span>
+    <h2 id="titre-fenetre">&minus;50 % pour la rentrée</h2>
+    <p style="margin-top:12px">
+      Plus que quelques places disponibles sur la prochaine session du
+      Business English Accelerator.
+    </p>
+    <p style="margin-top:22px">
+      <a class="bouton bouton-vert" href="#formation" data-fermer>Voir le programme</a>
+    </p>
+  </div>
+</div>
+
 <script src="assets/donnees/sessions.js"></script>
 <script src="assets/donnees/modules.js"></script>
 <script src="assets/calendrier.js"></script>
 <script src="assets/programme.js"></script>
+<script src="assets/compte.js"></script>
 <script src="assets/defilement.js"></script>
+<script src="assets/bandeau.js"></script>
 <script src="assets/menu.js"></script>
 </body>
 </html>
