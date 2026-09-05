@@ -1,0 +1,11 @@
+{
+  // Site statique Fluent & Forward : aucun code de serveur, seulement des
+  // fichiers à servir tels quels depuis le dossier landing/. Le nom doit
+  // rester exactement "fluentandforward" : c'est lui qui donne l'adresse
+  // fluentandforward.pages.dev / le domaine personnalisé branché dessus.
+  "name": "fluentandforward",
+  "compatibility_date": "2025-09-05",
+  "assets": {
+    "directory": "./landing"
+  }
+}
