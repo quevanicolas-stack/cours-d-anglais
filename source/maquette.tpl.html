@@ -2082,6 +2082,11 @@ src="https://www.facebook.com/tr?id=1098827892487740&ev=PageView&noscript=1"/>
            avant de décrocher son téléphone. */
         noterEtape("adresse donnée");
 
+        /* Publicité Meta : un prospect qualifié vient de laisser son
+           adresse à l'issue du test — une seule fois, ici, jamais au
+           chargement de la page ni si la validation a échoué plus haut. */
+        fbq('track', 'Lead');
+
         if(ADRESSE_COLLECTEUR){
           fetch(ADRESSE_COLLECTEUR, { method:"POST", mode:"no-cors",
             headers:{ "Content-Type":"text/plain;charset=utf-8" },
@@ -2407,6 +2412,11 @@ src="https://www.facebook.com/tr?id=1098827892487740&ev=PageView&noscript=1"/>
       }
       noterEtape("inscription envoyée ("+programmeInscription+")");
       envoyerParcours("inscription");
+
+      /* Publicité Meta : la réservation est enregistrée et part vers le
+         paiement — une seule fois, ici, jamais au clic si les
+         vérifications ci-dessus ont arrêté l'envoi. */
+      fbq('track', 'InitiateCheckout');
 
       formInscription.hidden=true;
       transition.classList.add("actif");
