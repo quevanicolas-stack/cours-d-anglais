@@ -8,6 +8,7 @@ Supports de présentation du programme Business English Accelerator.
 |---|---|
 | `module1-seance1.html` | source unique — c'est le fichier qu'on modifie |
 | `module1-seance1.pdf` | export, 15 slides 16:9 |
+| `module2-seance1.html` | source unique, 9 slides 16:9 — pas encore de PDF exporté |
 
 ## Règle de travail
 
