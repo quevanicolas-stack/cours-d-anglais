@@ -31,14 +31,22 @@ curl https://raw.githubusercontent.com/quevanicolas-stack/NOM_DU_DEPOT/main/modu
 - Un slide = une balise `<section class="slide">`, classe `dark` pour fond vert
 - Numérotation des slides : automatique
 - Emplacements vidéo : `<div class="media">` sur les slides 02 et 09
+- `module1-seance1.html` est au format présentation plein écran : une
+  seule diapositive visible à la fois (classe `active`), navigation par
+  les flèches `#prevBtn`/`#nextBtn`, au clavier ou au doigt. C'est ce
+  format-là qui fait référence, à ne pas remplacer par la version à
+  simple défilement.
 
 ## Narration audio (module1-seance1.html)
 
 Sept diapositives (02, 03, 04, 08, 10, 11, 14) portent une narration :
 balises `<audio class="voix">` embarquées en base64 (aucun fichier
-externe), lues automatiquement au premier passage sur la diapositive
-via `IntersectionObserver`. La diapositive 08 enchaîne quatre extraits
-à la suite.
+externe), lues automatiquement au premier passage sur la diapositive.
+Le déclenchement observe la classe `active` posée par le script de
+navigation (`MutationObserver`, dans un second `<script>` séparé du
+premier pour ne rien risquer d'y casser) plutôt que le défilement, pour
+rester valable quel que soit le moyen de navigation utilisé. La
+diapositive 08 enchaîne quatre extraits à la suite.
 
 Le bouton rond `.rejouer` (en haut à droite, au-dessus du badge)
 n'apparaît qu'à la fin de la lecture — la première fois naturellement,
