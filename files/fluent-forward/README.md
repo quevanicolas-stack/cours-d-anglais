@@ -31,3 +31,24 @@ curl https://raw.githubusercontent.com/quevanicolas-stack/NOM_DU_DEPOT/main/modu
 - Un slide = une balise `<section class="slide">`, classe `dark` pour fond vert
 - Numérotation des slides : automatique
 - Emplacements vidéo : `<div class="media">` sur les slides 02 et 09
+
+## Narration audio (module1-seance1.html)
+
+Sept diapositives (02, 03, 04, 08, 10, 11, 14) portent une narration :
+balises `<audio class="voix">` embarquées en base64 (aucun fichier
+externe), lues automatiquement au premier passage sur la diapositive
+via `IntersectionObserver`. La diapositive 08 enchaîne quatre extraits
+à la suite.
+
+Le bouton rond `.rejouer` (en haut à droite, au-dessus du badge)
+n'apparaît qu'à la fin de la lecture — la première fois naturellement,
+ou tout de suite si le navigateur a refusé la lecture automatique
+(cas fréquent tant qu'aucun geste n'a eu lieu sur la page). Un clic
+relance la narration depuis le début.
+
+Pour ajouter ou remplacer une narration : convertir le fichier audio
+en MP3 mono (`ffmpeg -i source.wav -codec:a libmp3lame -b:a 96k -ac 1
+sortie.mp3` suffit très largement pour de la voix), l'encoder en
+base64 (`base64 -w0 sortie.mp3`), et coller le résultat dans l'attribut
+`src` d'un `<audio class="voix"><source src="data:audio/mpeg;base64,…">`
+placé juste après `<header class="chrome">` de la diapositive visée.
