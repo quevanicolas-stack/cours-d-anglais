@@ -18,6 +18,7 @@ Supports de présentation du programme Business English Accelerator.
 | `module4-seance2.html` | source unique, 13 slides 16:9 — pas encore de PDF exporté. Introduit le badge marron `.badge.marron` (`--marron:#6B4226`, la teinte « Entreprise » du site), réservé aux diapositives « Language Focus » (grammaire/vocabulaire). |
 | `module4-seance3.html` | source unique, 13 slides 16:9 — pas encore de PDF exporté. |
 | `module4-seance4.html` | source unique, 11 slides 16:9 — pas encore de PDF exporté. Dernière séance du module 4 : contient aussi le récapitulatif du module et la tâche de coaching (« Your 2-Minute Presentation — Recorded »). Module 4 complet. |
+| `module5-seance1.html` | source unique, 5 slides 16:9 — pas encore de PDF exporté. Module 5 (« Networking like a pro ») : 4 séances au total selon le brief, les séances 2 à 4 restent à construire. |
 
 ## Règle de travail
 
