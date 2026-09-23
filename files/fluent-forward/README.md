@@ -15,7 +15,8 @@ Supports de présentation du programme Business English Accelerator.
 | `module3-seance4.html` | source unique, 8 slides 16:9 — pas encore de PDF exporté. |
 | `module3-seance5.html` | source unique, 12 slides 16:9 — pas encore de PDF exporté. Dernière séance du module 3 : contient aussi le récapitulatif du module et l'exercice de la semaine. |
 | `module4-seance1.html` | source unique, 4 slides 16:9 — pas encore de PDF exporté. Module 4 (« immersion complète », contenu tout en anglais à partir d'ici) : 4 séances au total selon le brief. |
-| `module4-seance2.html` | source unique, 13 slides 16:9 — pas encore de PDF exporté. Introduit le badge marron `.badge.marron` (`--marron:#6B4226`, la teinte « Entreprise » du site), réservé aux diapositives « Language Focus » (grammaire/vocabulaire). Les séances 3 et 4 restent à construire. |
+| `module4-seance2.html` | source unique, 13 slides 16:9 — pas encore de PDF exporté. Introduit le badge marron `.badge.marron` (`--marron:#6B4226`, la teinte « Entreprise » du site), réservé aux diapositives « Language Focus » (grammaire/vocabulaire). |
+| `module4-seance3.html` | source unique, 13 slides 16:9 — pas encore de PDF exporté. La séance 4 (dernière du module) reste à construire. |
 
 ## Règle de travail
 
