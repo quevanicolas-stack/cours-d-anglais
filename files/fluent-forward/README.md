@@ -20,7 +20,8 @@ Supports de présentation du programme Business English Accelerator.
 | `module4-seance4.html` | source unique, 11 slides 16:9 — pas encore de PDF exporté. Dernière séance du module 4 : contient aussi le récapitulatif du module et la tâche de coaching (« Your 2-Minute Presentation — Recorded »). Module 4 complet. |
 | `module5-seance1.html` | source unique, 5 slides 16:9 — pas encore de PDF exporté. Module 5 (« Networking like a pro ») : 4 séances au total selon le brief. |
 | `module5-seance2.html` | source unique, 10 slides 16:9 — pas encore de PDF exporté. Ajoute la règle CSS `.col.on` (mise en valeur d'une colonne dans `.cols`, reprise du module 3 — manquante dans la lignée module 4/5 jusqu'ici, corrigée ici). |
-| `module5-seance3.html` | source unique, 9 slides 16:9 — pas encore de PDF exporté. « LinkedIn in English » : les 4 éléments clés du profil, verbes d'action (Language Focus), messages de connexion, engagement avec le contenu, relance. La séance 4 (dernière du module) reste à construire. |
+| `module5-seance3.html` | source unique, 9 slides 16:9 — pas encore de PDF exporté. « LinkedIn in English » : les 4 éléments clés du profil, verbes d'action (Language Focus), messages de connexion, engagement avec le contenu, relance. |
+| `module5-seance4.html` | source unique, 10 slides 16:9 — pas encore de PDF exporté. Dernière séance du module 5 : « Staying in the Flow » — 8 idiomes de networking sur 2 diapositives, stratégies pour les incompréhensions, survivre à un accent marqué, récapitulatif du module, tâche live (« Your Networking Toolkit »). Module 5 complet. |
 
 ## Règle de travail
 
