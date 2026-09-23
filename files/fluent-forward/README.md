@@ -9,6 +9,7 @@ Supports de présentation du programme Business English Accelerator.
 | `module1-seance1.html` | source unique — c'est le fichier qu'on modifie |
 | `module1-seance1.pdf` | export, 15 slides 16:9 |
 | `module2-seance1.html` | source unique, 9 slides 16:9 — pas encore de PDF exporté |
+| `module3-seance1.html` | source unique, 8 slides 16:9 — pas encore de PDF exporté. Construit à partir du brief PDF fourni (script, points clés, exemples) : la matière du module 3 n'a que 5 séances de contenu au total, les séances 2 à 5 restent à construire. |
 
 ## Règle de travail
 
