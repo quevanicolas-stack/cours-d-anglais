@@ -14,6 +14,7 @@ Supports de présentation du programme Business English Accelerator.
 | `module3-seance3.html` | source unique, 8 slides 16:9 — pas encore de PDF exporté. |
 | `module3-seance4.html` | source unique, 8 slides 16:9 — pas encore de PDF exporté. |
 | `module3-seance5.html` | source unique, 12 slides 16:9 — pas encore de PDF exporté. Dernière séance du module 3 : contient aussi le récapitulatif du module et l'exercice de la semaine. |
+| `module4-seance1.html` | source unique, 4 slides 16:9 — pas encore de PDF exporté. Module 4 (« immersion complète », contenu tout en anglais à partir d'ici) : 4 séances au total selon le brief, les séances 2 à 4 restent à construire. |
 
 ## Règle de travail
 
