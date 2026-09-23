@@ -22,7 +22,8 @@ Supports de présentation du programme Business English Accelerator.
 | `module5-seance2.html` | source unique, 10 slides 16:9 — pas encore de PDF exporté. Ajoute la règle CSS `.col.on` (mise en valeur d'une colonne dans `.cols`, reprise du module 3 — manquante dans la lignée module 4/5 jusqu'ici, corrigée ici). |
 | `module5-seance3.html` | source unique, 9 slides 16:9 — pas encore de PDF exporté. « LinkedIn in English » : les 4 éléments clés du profil, verbes d'action (Language Focus), messages de connexion, engagement avec le contenu, relance. |
 | `module5-seance4.html` | source unique, 10 slides 16:9 — pas encore de PDF exporté. Dernière séance du module 5 : « Staying in the Flow » — 8 idiomes de networking sur 2 diapositives, stratégies pour les incompréhensions, survivre à un accent marqué, récapitulatif du module, tâche live (« Your Networking Toolkit »). Module 5 complet. |
-| `module6-seance1.html` | source unique, 4 slides 16:9 — pas encore de PDF exporté. Module 6 (« Sales & Negotiation English ») : 4 séances au total selon le brief. Séance d'introduction courte, sur le même format que module4-seance1/module5-seance1. Module 6 est le dernier construit pour l'instant : il en reste 2, en attente du retour d'Aurélie. |
+| `module6-seance1.html` | source unique, 4 slides 16:9 — pas encore de PDF exporté. Module 6 (« Sales & Negotiation English ») : 4 séances au total selon le brief. Séance d'introduction courte, sur le même format que module4-seance1/module5-seance1. |
+| `module6-seance2.html` | source unique, 9 slides 16:9 — pas encore de PDF exporté. « The Sales Conversation » : les 5 étapes d'une vente, prospection (email + LinkedIn), Language Focus sur les réflexes de politesse français à ne pas traduire mot à mot, questions de découverte, présentation de l'offre. Module 6 est le dernier construit pour l'instant : il en reste 2, en attente du retour d'Aurélie. |
 
 ## Règle de travail
 
