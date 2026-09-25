@@ -8,7 +8,11 @@ Supports de présentation du programme Business English Accelerator.
 |---|---|
 | `module1-seance1.html` | source unique — c'est le fichier qu'on modifie |
 | `module1-seance1.pdf` | export, 15 slides 16:9 |
+| `module1-seance2.html` | source unique, 16 slides 16:9 — pas encore de PDF exporté. « The 3 Pillars of Business English » (Clarity, Confidence, Connection). Récupéré après une session où le fichier n'avait pas été poussé sur le dépôt — voir la note en bas de fichier. |
+| `module1-seance3.html` | source unique, 16 slides 16:9 — pas encore de PDF exporté. « Structuring Simple Professional Sentences ». Dernière séance du module 1 : contient l'exercice de la semaine (« Your 60-Second Business Introduction »). Module 1 complet. Même récupération que la séance 2. |
 | `module2-seance1.html` | source unique, 9 slides 16:9 — pas encore de PDF exporté |
+| `module2-seance2.html` | source unique, 11 slides 16:9 — pas encore de PDF exporté. Diapositive 9 (« Deux réflexes de plus ») reformulée : nouvelle remarque sur la variation des débuts de phrase, avec exemples (« What I do is… », « My role involves… », « Basically, I… »). La lettre isolée *I* n'est plus en italique — classe `.i-mark` (Plus Jakarta Sans 700, non italique) pour bien la distinguer visuellement. Récupéré après une session où le fichier n'avait pas été poussé sur le dépôt. |
+| `module2-seance3.html` | source unique, 11 slides 16:9 — pas encore de PDF exporté. « Speaking Up — Responding Without Searching for Your Words ». Dernière séance du module 2 : contient l'exercice de la semaine (« Write 3 Emails — Real Situations »). Module 2 complet. Même récupération que les séances précédentes.
 | `module3-seance1.html` | source unique, 8 slides 16:9 — pas encore de PDF exporté. Construit à partir du brief PDF fourni (script, points clés, exemples). |
 | `module3-seance2.html` | source unique, 9 slides 16:9 — pas encore de PDF exporté. |
 | `module3-seance3.html` | source unique, 8 slides 16:9 — pas encore de PDF exporté. |
@@ -77,3 +81,13 @@ sortie.mp3` suffit très largement pour de la voix), l'encoder en
 base64 (`base64 -w0 sortie.mp3`), et coller le résultat dans l'attribut
 `src` d'un `<audio class="voix"><source src="data:audio/mpeg;base64,…">`
 placé juste après `<header class="chrome">` de la diapositive visée.
+
+## Incident : module1-seance2/3 et module2-seance2/3 non poussés
+
+Ces quatre fichiers avaient été construits dans une session antérieure
+mais jamais commités sur ce dépôt — seul `module1-seance1.html` et
+`module2-seance1.html` avaient été poussés. Ils n'existaient donc que
+dans les fichiers livrés à l'utilisateur, pas dans Git. Récupérés à
+partir d'une archive fournie par l'utilisateur et poussés ici. Réflexe
+à garder : pousser chaque séance sur le dépôt dès sa construction, pas
+seulement la livrer.

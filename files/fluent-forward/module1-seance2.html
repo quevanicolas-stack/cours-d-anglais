@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<title>Fluent &amp; Forward — Module 1 · Séance 2</title>
+<style>
+
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --cream:#FAF7F2;
+  --ink:#2C1810;
+  --green:#1B6B4A;
+  --gold:#C9A96E;
+  --sand:#E8DDD0;
+  --deep:#10382A;
+  --deeper:#0B2A20;
+  --muted:rgba(44,24,16,.60);
+  --line:rgba(44,24,16,.13);
+  --red:#A8452F;
+}
+
+@page{ size:1280px 720px; margin:0 }
+
+html,body{background:#DDD5CB}
+body{font-family:'DM Sans',sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+
+.deck{counter-reset:slide}
+
+.slide{
+  position:relative;
+  width:1280px;height:720px;
+  background:var(--cream);
+  padding:52px 72px 44px;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  counter-increment:slide;
+  page-break-after:always;
+  break-after:page;
+}
+.slide:last-child{page-break-after:auto}
+
+/* ---------- chrome ---------- */
+.chrome{display:flex;justify-content:space-between;align-items:center;flex:0 0 auto}
+.brand{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:15px;color:var(--green);letter-spacing:-.01em}
+.badge{
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:10.5px;letter-spacing:.13em;
+  padding:6px 14px;border-radius:999px;background:var(--green);color:#fff;text-transform:uppercase;
+}
+.badge.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+
+.foot{
+  flex:0 0 auto;display:flex;justify-content:space-between;align-items:flex-end;
+  font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:rgba(44,24,16,.38);
+  padding-top:16px;
+}
+.foot .num{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;letter-spacing:.04em;color:rgba(44,24,16,.30)}
+.foot .num::before{content:counter(slide,decimal-leading-zero)}
+
+.body{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;min-height:0}
+.body.top{justify-content:flex-start;padding-top:24px;padding-bottom:6px}
+
+/* ---------- typo ---------- */
+.eyebrow{
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:11px;letter-spacing:.19em;
+  text-transform:uppercase;color:var(--green);margin-bottom:14px;
+}
+.eyebrow::after{content:"";display:block;width:34px;height:2.5px;background:var(--gold);margin-top:10px}
+h1{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:57px;line-height:1.06;letter-spacing:-.028em}
+h2{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:37px;line-height:1.14;letter-spacing:-.024em}
+h3{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:19px;line-height:1.25;letter-spacing:-.015em}
+.lead{font-size:18px;line-height:1.62;color:var(--muted);max-width:74ch}
+.sub{font-size:16px;line-height:1.6;color:var(--muted)}
+.tiny{font-size:12.5px;line-height:1.5;color:rgba(44,24,16,.45)}
+em{font-style:italic}
+
+/* ---------- titre de séance (couverture) ---------- */
+.seance{margin-top:30px;padding-left:20px;border-left:3px solid var(--gold);
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:26px;line-height:1.34;
+  letter-spacing:-.02em;color:var(--green)}
+
+/* ---------- pills ---------- */
+.pills{display:flex;gap:10px;margin-top:30px}
+.pill{
+  font-size:12.5px;font-weight:500;padding:8px 16px;border-radius:999px;
+  background:var(--sand);color:var(--ink);
+}
+.pill.solid{background:var(--green);color:#fff}
+
+/* ---------- cover ---------- */
+.cover-art{position:absolute;right:-90px;top:-60px;width:520px;height:520px;opacity:.5}
+.cover-rule{width:100%;height:1px;background:var(--line);margin:34px 0 0}
+
+/* ---------- dark ---------- */
+.slide.dark{background:var(--deep);color:#F3EFE8}
+.slide.dark .brand{color:#8FD3B4}
+.slide.dark .badge{background:var(--gold);color:#26180C}
+.slide.dark .eyebrow{color:var(--gold)}
+.slide.dark .eyebrow::after{background:rgba(255,255,255,.35)}
+.slide.dark .lead,.slide.dark .sub{color:rgba(243,239,232,.72)}
+.slide.dark .foot{color:rgba(243,239,232,.34)}
+.slide.dark .foot .num{color:rgba(243,239,232,.30)}
+.slide.dark .tiny{color:rgba(243,239,232,.5)}
+
+/* ---------- media slot ---------- */
+.split{display:flex;gap:46px;align-items:center}
+.media{
+  flex:0 0 470px;height:300px;border-radius:14px;
+  border:1.5px dashed rgba(243,239,232,.30);
+  background:rgba(255,255,255,.04);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;
+}
+.media .ico{width:46px;height:46px;opacity:.75}
+.media .cap{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;color:rgba(243,239,232,.62)}
+.media .note{font-size:12.5px;color:rgba(243,239,232,.45);max-width:32ch;line-height:1.5}
+
+.quote-en{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:32px;line-height:1.25;letter-spacing:-.02em}
+.quote-fr{font-size:16.5px;line-height:1.6;font-style:italic;color:rgba(243,239,232,.68);margin-top:20px;padding-left:16px;border-left:2px solid var(--gold)}
+
+
+/* ---------- carte vidéo externe ---------- */
+.ytcard{
+  flex:0 0 470px;height:300px;border-radius:14px;padding:24px 26px 22px;
+  display:flex;flex-direction:column;justify-content:space-between;text-decoration:none;color:inherit;
+  background:linear-gradient(150deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,.03) 55%,rgba(201,169,110,.10) 100%);
+  border:1px solid rgba(201,169,110,.42);position:relative;overflow:hidden;
+  transition:border-color .25s ease,transform .25s ease,box-shadow .25s ease;
+}
+.ytcard::after{content:"";position:absolute;right:-70px;bottom:-90px;width:240px;height:240px;border-radius:50%;
+  border:1px solid rgba(201,169,110,.20);pointer-events:none}
+.ytcard:hover{border-color:rgba(201,169,110,.85);transform:translateY(-2px);box-shadow:0 18px 40px rgba(0,0,0,.28)}
+.yt-head{display:flex;justify-content:space-between;align-items:center;position:relative}
+.yt-src{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:10.5px;letter-spacing:.17em;
+  text-transform:uppercase;color:var(--gold)}
+.yt-ext{width:13px;height:13px;color:var(--gold);opacity:.75}
+.yt-play{display:flex;justify-content:center;position:relative}
+.yt-play svg{width:62px;height:62px}
+.yt-play .ring{fill:rgba(201,169,110,.12);stroke:var(--gold);stroke-width:1.5}
+.yt-play .tri{fill:var(--gold)}
+.ytcard:hover .yt-play svg{transform:scale(1.06);transition:transform .25s ease}
+.yt-foot{position:relative}
+.yt-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:22px;line-height:1.22;
+  letter-spacing:-.02em;color:#F3EFE8}
+.yt-by{font-size:13px;color:rgba(243,239,232,.58);margin-top:7px}
+.yt-cta{display:inline-block;margin-top:16px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;
+  font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#26180C;background:var(--gold);
+  padding:8px 15px;border-radius:999px}
+
+/* ---------- key card ---------- */
+.keycard{
+  border:1.5px solid var(--gold);border-radius:16px;padding:44px 52px;
+  background:rgba(201,169,110,.07);max-width:900px;margin:0 auto;text-align:center;
+}
+.keycard .k-en{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:33px;line-height:1.24;letter-spacing:-.022em}
+.keycard .k-fr{font-size:16.5px;font-style:italic;line-height:1.55;color:var(--muted);margin-top:20px}
+.keytag{
+  display:inline-block;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:10.5px;
+  letter-spacing:.17em;text-transform:uppercase;color:var(--gold);margin-bottom:22px;
+}
+
+/* ---------- 3 col ---------- */
+.cols{display:flex;gap:20px;margin-top:34px}
+.col{
+  flex:1;border:1px solid var(--line);border-radius:13px;padding:24px 22px;background:#fff;
+}
+.col .lbl{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--green);margin-bottom:12px}
+.col p{font-size:14.5px;line-height:1.58;color:var(--muted)}
+.col p strong{color:var(--ink);font-weight:700}
+
+/* ---------- numbered ---------- */
+.nums{display:flex;gap:20px;margin-top:34px}
+.numcard{flex:1;border-radius:13px;padding:26px 24px;background:#fff;border:1px solid var(--line)}
+.numcard.on{background:var(--green);border-color:var(--green)}
+.numcard .n{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:34px;letter-spacing:-.03em;color:var(--gold);line-height:1}
+.numcard h3{margin:12px 0 10px}
+.numcard p{font-size:14.5px;line-height:1.56;color:var(--muted)}
+.numcard.on h3,.numcard.on .n{color:#fff}
+.numcard.on .n{color:var(--gold)}
+.numcard.on p{color:rgba(255,255,255,.78)}
+
+/* ---------- steps ---------- */
+.steps{display:flex;gap:22px;margin-top:30px}
+.step{flex:1;background:#fff;border:1px solid var(--line);border-radius:13px;padding:26px 26px 24px;position:relative}
+.step .min{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold)}
+.step h3{margin:9px 0 12px}
+.step p{font-size:14.5px;line-height:1.58;color:var(--muted)}
+.ex{
+  margin-top:16px;padding:14px 16px;border-radius:9px;background:var(--sand);
+  font-size:13.5px;line-height:1.5;font-style:italic;color:rgba(44,24,16,.78);
+}
+.ex b{font-style:normal;font-weight:700;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--green);display:block;margin-bottom:6px}
+
+/* ---------- people grid ---------- */
+.people{display:flex;gap:16px;margin-top:34px}
+.person{flex:1;background:#fff;border:1px solid var(--line);border-radius:13px;padding:24px 20px;text-align:center}
+.mono{
+  width:56px;height:56px;border-radius:50%;background:var(--green);color:#fff;
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:18px;letter-spacing:-.02em;
+  display:flex;align-items:center;justify-content:center;margin:0 auto 16px;
+}
+.person .nm{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:15.5px;letter-spacing:-.015em}
+.person .ro{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.4}
+.person .ac{margin-top:12px;display:inline-block;font-size:11px;font-weight:500;padding:5px 11px;border-radius:999px;background:var(--sand);color:rgba(44,24,16,.7)}
+
+/* ---------- vs ---------- */
+.vs{display:flex;gap:22px;margin-top:30px;align-items:stretch}
+.vsbox{flex:1;border-radius:14px;padding:28px 28px 26px;border:1px solid var(--line);background:#fff}
+.vsbox.bad{background:#fff}
+.vsbox.good{background:var(--green);border-color:var(--green)}
+.vshead{display:flex;align-items:center;gap:11px;margin-bottom:18px}
+.vshead .t{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:18px;letter-spacing:-.02em}
+.vsbox.good .vshead .t{color:#fff}
+.vsbox .desc{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5}
+.vsbox.good .desc{color:rgba(255,255,255,.72)}
+.vsbox .sent{font-size:15px;line-height:1.6;font-style:italic;padding:16px 18px;border-radius:10px;background:var(--sand);color:rgba(44,24,16,.82)}
+.vsbox.good .sent{background:rgba(255,255,255,.12);color:#fff}
+.mark{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex:0 0 auto}
+.mark.x{background:rgba(168,69,47,.12);color:var(--red)}
+.mark.v{background:rgba(255,255,255,.2);color:#fff}
+.mark.v.dark{background:rgba(27,107,74,.14);color:var(--green)}
+
+/* ---------- pairs grid ---------- */
+.pairs{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:18px;margin-top:28px;flex:1 1 auto}
+.pair{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;justify-content:center}
+.pair .ttl{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:13.5px;letter-spacing:.02em;color:var(--green);margin-bottom:12px}
+.pair .ln{display:flex;gap:11px;align-items:flex-start;font-size:14.5px;line-height:1.52;font-style:italic}
+.pair .ln + .ln{margin-top:11px}
+.pair .ln.no{color:rgba(44,24,16,.42);text-decoration:line-through;text-decoration-color:rgba(168,69,47,.35)}
+.pair .ln.yes{color:var(--ink);font-weight:500}
+.mk{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:12px;flex:0 0 14px;font-style:normal;line-height:1.55}
+.mk.x{color:var(--red)}
+.mk.v{color:var(--green)}
+
+/* ---------- closing ---------- */
+.equations{margin-top:8px}
+.eq{display:flex;align-items:baseline;gap:16px;padding:18px 0;border-bottom:1px solid rgba(255,255,255,.13)}
+.eq .l{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:26px;letter-spacing:-.02em;flex:0 0 300px}
+.eq .r{font-size:20px;color:rgba(243,239,232,.72)}
+.eq .r b{color:var(--gold);font-weight:700}
+.punch{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:30px;line-height:1.3;letter-spacing:-.022em;margin-top:34px;max-width:22ch}
+.punch span{color:var(--gold)}
+
+/* ---------- misc ---------- */
+.checks{margin-top:26px}
+.chk{display:flex;gap:14px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--line)}
+.chk:last-child{border-bottom:none}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--gold);margin-top:8px;flex:0 0 7px}
+.chk .tx{font-size:16px;line-height:1.55}
+.chk .tx em{color:var(--muted)}
+.slide.dark .chk{border-color:rgba(255,255,255,.12)}
+
+/* ---------- pastilles minuteur ---------- */
+.timer{position:relative;display:inline-flex;align-items:center;justify-content:center;height:36px;
+  min-width:132px;padding:0 18px;border:none;border-radius:999px;background:var(--sand);color:var(--green);
+  overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:12px;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+.timer .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(27,107,74,.16)}
+.timer .lbl{position:relative;display:inline-flex;align-items:center;gap:9px;white-space:nowrap}
+.timer .pl{width:9px;height:11px;fill:currentColor;flex:0 0 auto}
+.timer .num{font-size:16px;letter-spacing:.06em;font-variant-numeric:tabular-nums}
+.timer.run{background:var(--green);color:#fff}
+.timer.run .fill{background:rgba(255,255,255,.20)}
+.timer.pause{background:var(--gold);color:#2C1810}
+.timer.pause .fill{background:rgba(44,24,16,.13)}
+.timer.done{background:var(--green);color:#fff;animation:tdone 1.1s ease-out 3}
+.timer.done .fill{background:rgba(255,255,255,.22)}
+@keyframes tdone{0%{box-shadow:0 0 0 0 rgba(27,107,74,.55)}100%{box-shadow:0 0 0 16px rgba(27,107,74,0)}}
+.timer .fill{transition:width .3s linear}
+.step .timer + h3{margin-top:15px}
+
+
+
+.note-src{position:absolute;left:72px;bottom:44px;font-size:11px;color:rgba(44,24,16,.35)}
+
+/* ---------- seance 2 : trio d ouverture ---------- */
+.trio{display:flex;gap:20px;margin-top:34px}
+.tcard{flex:1;border-radius:14px;padding:30px 24px 28px;text-align:center;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14)}
+.slide.dark .tcard{color:#F3EFE8}
+.ticon{width:46px;height:46px;color:var(--gold);margin:0 auto 18px;display:block}
+.tw{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:26px;letter-spacing:-.02em}
+.tf{font-size:13.5px;color:rgba(243,239,232,.55);margin-top:6px}
+
+/* ---------- seance 2 : bloc pilier ---------- */
+.pillar-split{align-items:stretch;min-height:420px}
+.pillar-split .pmark,.pillar-split > div:last-child{display:flex;flex-direction:column;justify-content:center}
+.pmark{flex:0 0 320px;border-right:1px solid var(--line);padding-right:40px}
+.picon{width:64px;height:64px;color:var(--green);margin-bottom:26px;display:block}
+.pnum{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:11px;letter-spacing:.19em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.pname{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:50px;line-height:1;
+  letter-spacing:-.032em;color:var(--ink)}
+.pfr{font-size:16px;color:var(--muted);margin-top:12px;font-style:italic}
+.stmt{font-size:20px;line-height:1.62;color:var(--ink);max-width:50ch}
+.stmt-en{margin-top:26px;padding-left:20px;border-left:3px solid var(--gold);
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:24px;line-height:1.34;
+  letter-spacing:-.02em;color:var(--green)}
+.stmt-note{margin-top:22px;font-size:15px;line-height:1.58;color:var(--muted);max-width:50ch}
+
+/* ---------- seance 2 : colonnes comparees plus hautes ---------- */
+.vs-tall{min-height:300px}
+.vs-tall .vsbox{display:flex;flex-direction:column;justify-content:center;padding:34px 30px}
+.vs-tall .desc{font-size:15px;line-height:1.62;margin-bottom:0}
+.vs-tall .vshead{margin-bottom:16px}
+.vs-tall .vshead .t{font-size:20px}
+
+
+
+/* ---------- seance 2 : carte pilier isolee ---------- */
+.eyebrow.center{text-align:center}
+.eyebrow.center::after{margin:10px auto 0}
+.tsolo{display:flex;justify-content:center;margin-top:34px}
+.tcard.solo{flex:0 0 400px;padding:52px 40px 46px;cursor:default;
+  transition:border-color .3s ease,background .3s ease}
+.tcard.solo:hover{animation:bump .62s cubic-bezier(.28,.84,.42,1);
+  border-color:rgba(201,169,110,.6);background:rgba(255,255,255,.09)}
+.tcard.solo .ticon{width:76px;height:76px;margin-bottom:26px}
+.tcard.solo .tw{font-size:44px}
+.tcard.solo .tf{font-size:16px;margin-top:10px}
+@keyframes bump{0%{transform:translateY(0)}28%{transform:translateY(-20px)}
+  52%{transform:translateY(0)}72%{transform:translateY(-9px)}100%{transform:translateY(0)}}
+
+/* ---------- seance 2 : ligne de cloture d exemple ---------- */
+.closer{margin-top:24px;text-align:center;font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:700;font-size:20px;line-height:1.4;letter-spacing:-.015em;color:var(--green)}
+
+/* ---------- seance 2 : bloc large ---------- */
+.bigq.wide{max-width:none;font-size:33px}
+.lead.wide{max-width:none;margin-top:26px;font-size:18.5px;line-height:1.65}
+
+/* ---------- seance 2 : punch en deux lignes ---------- */
+.punch{max-width:none}
+.punch .l1,.punch .l2{display:block}
+.punch .l2{color:var(--gold)}
+
+/* ---------- seance 3 : calque qui deraille ---------- */
+.morph{margin-top:28px}
+.m-fr{font-size:20px;font-style:italic;color:rgba(243,239,232,.62)}
+.m-arrow{width:22px;margin:10px 0 10px 4px;color:rgba(243,239,232,.38)}
+.m-arrow svg{width:22px;height:34px;display:block}
+.m-bad{display:flex;align-items:center;gap:12px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;
+  font-size:27px;letter-spacing:-.02em;color:rgba(243,239,232,.75)}
+.m-bad .warn{width:24px;color:#E0A45C;flex:0 0 24px}
+.m-bad .warn svg{width:24px;height:24px;display:block}
+.m-bad .hl{color:#E07A5F;text-decoration:line-through;text-decoration-thickness:2px}
+.m-good{margin-top:16px;padding-left:18px;border-left:3px solid var(--gold);
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:27px;letter-spacing:-.02em;color:#F3EFE8}
+.m-good .ok{color:var(--gold)}
+
+/* ---------- seance 3 : grille 4 cartes ---------- */
+.nums.four .numcard{padding:22px 20px}
+.nums.four .numcard .n{font-size:28px}
+.nums.four .numcard h3{font-size:17px;margin:10px 0 8px}
+.nums.four .numcard p{font-size:13.5px;line-height:1.5}
+
+/* ---------- seance 3 : paires larges ---------- */
+.pairs.two{grid-template-columns:1fr 1fr;grid-auto-rows:auto;flex:0 0 auto;min-height:250px}
+.pair .why{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
+  font-size:13px;line-height:1.55;color:var(--muted)}
+.pair .why em{font-style:italic;color:var(--ink)}
+
+/* ---------- seance 3 : ordre des mots ---------- */
+.wtable{margin-top:30px;display:flex;flex-direction:column;gap:16px;flex:1 1 auto;justify-content:center}
+.wrow{display:flex;align-items:center;gap:20px;background:#fff;border:1px solid var(--line);
+  border-radius:12px;padding:20px 24px}
+.wrule{flex:0 0 190px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:12.5px;
+  letter-spacing:.02em;color:var(--green);line-height:1.35}
+.wset{flex:1;display:flex;flex-wrap:wrap;gap:6px}
+.warrow{width:28px;color:var(--gold);flex:0 0 28px}
+.warrow svg{width:28px;height:12px;display:block}
+.chip{font-size:15px;font-weight:500;padding:8px 14px;border-radius:8px;background:var(--sand);
+  color:rgba(44,24,16,.5);white-space:nowrap}
+.chip.ok{background:rgba(27,107,74,.10);color:var(--green);font-weight:700}
+.chip.move{background:var(--gold);color:#2C1810;font-weight:700}
+
+/* ---------- seance 3 : puzzle ---------- */
+.puzzle{flex:0 0 420px}
+.puzzle svg{width:100%;display:block}
+
+/* ---------- seance 3 : formule figee ---------- */
+.formula{display:flex;align-items:center;gap:24px;margin-top:26px;background:#fff;
+  border:1px solid var(--line);border-radius:13px;padding:24px 28px}
+.f-fr{font-size:21px;font-style:italic;color:rgba(44,24,16,.45);text-decoration:line-through;
+  text-decoration-color:rgba(168,69,47,.45)}
+.f-arrow{width:38px;color:var(--gold);flex:0 0 38px}
+.f-arrow svg{width:38px;height:16px;display:block}
+.f-en{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:24px;letter-spacing:-.02em;color:var(--green)}
+
+/* ---------- seance 3 : exercice ---------- */
+.exo-left{flex:0 0 440px}
+.exo-right{flex:1;background:#fff;border:1px solid var(--line);border-radius:14px;padding:30px 32px}
+.exo-lbl{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:10.5px;letter-spacing:.17em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:22px}
+.exo-line{display:flex;gap:16px;align-items:flex-start;padding:15px 0;border-bottom:1px solid var(--line)}
+.exo-line:last-child{border-bottom:none}
+.exo-n{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:14px;color:var(--gold);
+  flex:0 0 24px;line-height:1.6}
+.exo-line p{font-size:16px;line-height:1.6;font-style:italic;color:var(--ink)}
+.exo-line p em{color:var(--muted)}
+
+/* ---------- seance 2 : question / reponse ---------- */
+.bigq{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:32px;line-height:1.3;
+  letter-spacing:-.02em;max-width:24ch}
+.answer{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:46px;letter-spacing:-.03em;
+  color:var(--gold);margin-top:24px}
+.slide.dark .eq .r{font-size:19px}
+.slide.dark .eq .l{flex:0 0 240px}
+
+
+/* ================= MODE PLEIN ECRAN ================= */
+@media screen{
+  html,body{height:100%;overflow:hidden;background:#08211A;padding:0;margin:0}
+  #stage{position:absolute;top:0;left:0;width:1280px;height:720px;transform-origin:top left}
+  .deck{width:1280px;margin:0}
+  .slide{position:absolute;top:0;left:0;margin:0;border-radius:0;box-shadow:none;
+    visibility:hidden;opacity:0;transition:opacity .34s ease}
+  .slide.active{visibility:visible;opacity:1}
+}
+#nav{position:absolute;top:98px;right:72px;display:flex;gap:9px;z-index:60}
+.navbtn{width:40px;height:40px;border-radius:50%;border:1px solid rgba(201,169,110,.55);
+  background:#1B6B4A;color:#C9A96E;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;padding:0;box-shadow:0 6px 18px rgba(0,0,0,.28);
+  transition:transform .2s ease,opacity .2s ease,background .2s ease}
+.navbtn svg{width:17px;height:17px}
+.navbtn:hover:not(:disabled){transform:scale(1.07);background:#15583C}
+.navbtn:disabled{opacity:.3;cursor:not-allowed}
+.navbtn.locked{background:#C9A96E;color:#2C1810;border-color:rgba(44,24,16,.25);opacity:1;cursor:not-allowed}
+#lockmsg{position:absolute;top:150px;right:72px;z-index:60;max-width:300px;text-align:right;
+  font-family:'DM Sans',sans-serif;font-size:12.5px;line-height:1.5;color:#C9A96E;
+  background:rgba(8,33,26,.94);border:1px solid rgba(201,169,110,.4);border-radius:10px;
+  padding:10px 14px;display:none;box-shadow:0 8px 22px rgba(0,0,0,.22)}
+#nav,#lockmsg{transform:scale(var(--inv,1));transform-origin:top right}
+.timer:disabled,.timer.blocked{opacity:.38;cursor:not-allowed;pointer-events:none}
+.timer.replay{background:rgba(27,107,74,.13);color:var(--green)}
+.timer.replay .fill{background:rgba(27,107,74,.16)}
+
+/* ---------- portrait sur mobile ---------- */
+#rotate{position:fixed;inset:0;z-index:200;background:#08211A;color:#F3EFE8;display:none;
+  flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center;padding:40px}
+#rotate svg{width:76px;height:76px;color:#C9A96E;animation:tilt 2.6s ease-in-out infinite}
+@keyframes tilt{0%,55%,100%{transform:rotate(0)}70%,85%{transform:rotate(-90deg)}}
+#rotate .rt{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:24px;letter-spacing:-.02em}
+#rotate .rs{font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;color:rgba(243,239,232,.6);max-width:30ch}
+@media (orientation:portrait) and (max-width:940px){
+  #rotate{display:flex}
+  #stage{display:none}
+}
+
+</style>
+</head>
+<body>
+<div id="stage"><div class="deck">
+
+<!-- 01 — COUVERTURE -->
+<section class="slide">
+  <svg class="cover-art" viewBox="0 0 400 400" fill="none">
+    <circle cx="200" cy="200" r="198" stroke="#C9A96E" stroke-width="1" opacity=".55"/>
+    <circle cx="200" cy="200" r="152" stroke="#1B6B4A" stroke-width="1" opacity=".35"/>
+    <circle cx="200" cy="200" r="106" stroke="#C9A96E" stroke-width="1" opacity=".5"/>
+    <circle cx="200" cy="200" r="60" fill="#E8DDD0" opacity=".55"/>
+    <rect x="150" y="186" width="54" height="28" rx="6" fill="#1B6B4A"/>
+    <rect x="216" y="186" width="40" height="28" rx="6" fill="#C9A96E"/>
+  </svg>
+  <header class="chrome">
+    <div class="brand">Fluent &amp; Forward</div>
+    <div class="badge">Module 1</div>
+  </header>
+  <div class="body">
+    <div class="eyebrow">Foundation</div>
+    <h1>Think &amp; Speak<br>Like a Business Person</h1>
+    <div class="cover-rule"></div>
+    <p class="sub" style="margin-top:26px">Business English Accelerator · Semaine 1 · Séance 2</p>
+    <p class="seance">The 3 Pillars of Business English</p>
+  </div>
+  <footer class="foot"><span>Module 1 · Séance 2</span><span class="num"></span></footer>
+</section>
+
+<!-- 02 — PILIER 1 : CARTE -->
+<section class="slide dark">
+  <header class="chrome">
+    <div class="brand">Fluent &amp; Forward</div>
+    <div class="badge">Pilier 1</div>
+  </header>
+  <div class="body">
+    <div class="eyebrow center">Pillar 1</div>
+    <div class="tsolo">
+      <div class="tcard solo">
+        <svg class="ticon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="10.5" cy="13.5" r="8.5"/>
+          <circle cx="10.5" cy="13.5" r="4.6"/>
+          <circle cx="10.5" cy="13.5" r="1.4" fill="currentColor" stroke="none"/>
+          <path d="M10.5 13.5 L21.4 2.6"/>
+          <path d="M17.6 2.3 L21.7 2.3 L21.7 6.4"/>
+        </svg>
+        <p class="tw">Clarity</p>
+        <p class="tf">Clarté</p>
+      </div>
+    </div>
+  </div>
+  <footer class="foot"><span>Module 1 · Séance 2</span><span class="num"></span></footer>
+</section>
+
+<!-- 03 — PILIER 1 : ÉNONCÉ -->
+<section class="slide">
+  <header class="chrome">
+    <div class="brand">Fluent &amp; Forward</div>
+    <div class="badge">Pilier 1</div>
+  </header>
+  <div class="body">
+    <div class="split pillar-split">
+      <div class="pmark">
+        <svg class="picon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="10.5" cy="13.5" r="8.5"/>
+          <circle cx="10.5" cy="13.5" r="4.6"/>
+          <circle cx="10.5" cy="13.5" r="1.4" fill="currentColor" stroke="none"/>
+          <path d="M10.5 13.5 L21.4 2.6"/>
+          <path d="M17.6 2.3 L21.7 2.3 L21.7 6.4"/>
+        </svg>
+        <p class="pnum">Pillar 01</p>
+        <p class="pname">Clarity</p>
+        <p class="pfr">Clarté</p>
+      </div>
+      <div>
+        <p class="stmt">Ceux qui réussissent en anglais ne sont pas ceux qui ont le plus de vocabulaire. Ce sont ceux qui disent exactement ce qu’ils veulent dire — sans détour, sans surexpliquer.</p>
+        <p class="stmt-en">“You don’t need the perfect word. You need the clear one.”</p>
+      </div>
+    </div>
+  </div>
+  <footer class="foot"><span>Module 1 · Séance 2</span><span class="num"></span></footer>
+</section>
+
+<!-- 04 — CLARITY : VAGUE VS CLAIR -->
+<section class="slide">
+  <header class="chrome">
+    <div class="brand">Fluent &amp; Forward</div>
+    <div class="badge">Pilier 1</div>
+  </header>
+  <div class="body">
+    <div class="eyebrow">La même intention, deux formulations</div>
+    <h2>L’une fait attendre. L’autre fait agir.</h2>
+    <div class="vs vs-tall">
+      <div class="vsbox bad">
+        <div class="vshead"><span class="mark x">✕</span><span class="t">Vague</span></div>
+        <p class="sent">“So, um, I was thinking maybe we could possibly look into some kind of solution for this issue at some point, if that works for everyone?”</p>
+      </div>
+      <div class="vsbox good">
+        <div class="vshead"><span class="mark v">✓</span><span class="t">Clear</span></div>
+        <p class="sent">“Can we solve this by Friday?”</p>
+      </div>
+    </div>
+    <p class="closer">Same intention. But one version makes people wait. The other makes people act.</p>
+  </div>
+  <footer class="foot"><span>Module 1 · Séance 2</span><span class="num"></span></footer>
+</section>
+
+<!-- 05 — POINT CLÉ 1 -->
+<section class="slide">
+  <header class="chrome">
+    <div class="brand">Fluent &amp; Forward</div>
+    <div class="badge ghost">Point clé</div>
+  </header>
+  <div class="body">
+    <div class="keycard">
+      <div class="keytag">À retenir</div>
+      <p class="k-en">Clarity beats vocabulary.<br>Every time.</p>
+      <p class="k-fr">La clarté prime sur le vocabulaire. À chaque fois.</p>
+    </div>
+  </div>
+  <footer class="foot"><span>Module 1 · Séance 2</span><span class="num"></span></footer>
+</section>
+
+<!-- 06 — PILIER 2 : CARTE -->
+<section class="slide dark">
+  <header class="chrome">
+    <div class="brand">Fluent &amp; Forward</div>
+    <div class="badge">Pilier 2</div>
+  </header>
+  <div class="body">
+    <div class="eyebrow center">Pillar 2</div>
+    <div class="tsolo">
+      <div class="tcard solo">
+        <svg class="ticon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1.2 V3.3"/>
+          <path d="M7 3 L8.4 4.9"/>
+          <path d="M17 3 L15.6 4.9"/>
+          <circle cx="12" cy="7.8" r="2.7"/>
+          <path d="M4.4 12.4 L9.4 17.2"/>
+          <path d="M19.6 12.4 L14.6 17.2"/>
+          <path d="M9.4 17.2 H14.6 V22.6 H9.4 Z"/>
+        </svg>
+        <p class="tw">Confidence</p>
+        <p class="tf">Confiance</p>
+      </div>
+    </div>
+  </div>
+  <footer class="foot"><span>Module 1 · Séance 2</span><span class="num"></span></footer>
+</section>
+
+<!-- 07 — PILIER 2 : ÉNONCÉ -->
+<section class="slide">
+  <header class="chrome">
+    <div class="brand">Fluent &amp; Forward</div>
+    <div class="badge">Pilier 2</div>
+  </header>
+  <div class="body">
+    <div class="split pillar-split">
+      <div class="pmark">
+        <svg class="picon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1.2 V3.3"/>
+          <path d="M7 3 L8.4 4.9"/>
+          <path d="M17 3 L15.6 4.9"/>
+          <circle cx="12" cy="7.8" r="2.7"/>
+          <path d="M4.4 12.4 L9.4 17.2"/>
+          <path d="M19.6 12.4 L14.6 17.2"/>
+          <path d="M9.4 17.2 H14.6 V22.6 H9.4 Z"/>
+        </svg>
+        <p class="pnum">Pillar 02</p>
+        <p class="pname">Confidence</p>
+        <p class="pfr">Confiance</p>
+      </div>
+      <div>
+        <p class="stmt">La confiance n’est pas quelque chose qu’on attend d’avoir. C’est quelque chose qu’on construit — par la répétition, pas par la perfection.</p>
+        <p class="stmt-en">“You become good by speaking, not before speaking.”</p>
+        <p class="stmt-note">Le paradoxe dans lequel presque tout le monde tombe : on attend de se sentir assez bon pour parler. Ça fonctionne dans l’autre sens.</p>
+      </div>
+    </div>
+  </div>
+  <footer class="foot"><span>Module 1 · Séance 2</span><span class="num"></span></footer>
+</section>
+
+<!-- 08 — CONFIDENCE : LA FORMULE À RETENIR -->
+<section class="slide">
+  <header class="chrome">
+    <div class="brand">Fluent &amp; Forward</div>
+    <div class="badge">Pilier 2</div>
+  </header>
+  <div class="body">
+    <div class="eyebrow">La formule à retenir</div>
+    <div class="vs vs-tall" style="margin-top:20px">
+      <div class="vsbox bad">
+        <div class="vshead"><span class="mark x">✕</span><span class="t">Fake it until you make it</span></div>
+        <p class="desc">Ça suppose de jouer un rôle, de prétendre être quelqu’un qu’on n’est pas encore. On construit sur une illusion.</p>
+      </div>
+      <div class="vsbox good">
+        <div class="vshead"><span class="mark v">✓</span><span class="t">Practice it until you own it</span></div>
+        <p class="desc">La confiance vient de la répétition réelle. Chaque phrase répétée, chaque erreur corrigée, c’est le processus qui fonctionne — pas un échec.</p>
+      </div>
+    </div>
+  </div>
+  <footer class="foot"><span>Module 1 · Séance 2</span><span class="num"></span></footer>
+</section>
+
+<!-- 09 — POINT CLÉ 2 -->
+<section class="slide">
+  <header class="chrome">
+    <div class="brand">Fluent &amp; Forward</div>
+    <div class="badge ghost">Point clé</div>
+  </header>
+  <div class="body">
+    <div class="keycard">
+      <div class="keytag">À retenir</div>
+      <p class="k-en">You don’t need to feel confident to start.<br>You need to start to feel confident.</p>
+      <p class="k-fr">Vous n’avez pas besoin d’avoir confiance pour commencer.<br>Vous devez commencer pour prendre confiance.</p>
+    </div>
+  </div>
+  <footer class="foot"><span>Module 1 · Séance 2</span><span class="num"></span></footer>
+</section>
+
+<!-- 10 — PILIER 3 : CARTE -->
+<section class="slide dark">
+  <header class="chrome">
+    <div class="brand">Fluent &amp; Forward</div>
+    <div class="badge">Pilier 3</div>
+  </header>
+  <div class="body">
+    <div class="eyebrow center">Pillar 3</div>
+    <div class="tsolo">
+      <div class="tcard solo">
+        <svg class="ticon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m11 17 2 2a1 1 0 1 0 3-3"/>
+          <path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/>
+          <path d="m21 3 1 11h-2"/>
+          <path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/>
+          <path d="M3 4h8"/>
+        </svg>
+        <p class="tw">Connection</p>
+        <p class="tf">Connexion</p>
+      </div>
+    </div>
+  </div>
+  <footer class="foot"><span>Module 1 · Séance 2</span><span class="num"></span></footer>
+</section>
+
+<!-- 11 — PILIER 3 : ÉNONCÉ -->
+<section class="slide">
+  <header class="chrome">
+    <div class="brand">Fluent &amp; Forward</div>
+    <div class="badge">Pilier 3</div>
+  </header>
+  <div class="body">
+    <div class="split pillar-split">
+      <div class="pmark">
+        <svg class="picon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m11 17 2 2a1 1 0 1 0 3-3"/>
+          <path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/>
+          <path d="m21 3 1 11h-2"/>
+          <path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/>
+          <path d="M3 4h8"/>
+        </svg>
+        <p class="pnum">Pillar 03</p>
+        <p class="pname">Connection</p>
+        <p class="pfr">Connexion</p>
+      </div>
+      <div>
+        <p class="stmt">On imagine le Business English comme une affaire purement technique : grammaire, vocabulaire, structure. La réalité est que le business est relationnel.</p>
+        <p class="stmt-en">“Business is relational.”</p>
+        <p class="stmt-note">Conclure une affaire, gérer un client, négocier un contrat — ce qui fait avancer les choses, c’est la confiance, l’empathie et le lien.</p>
+      </div>
+    </div>
+  </div>
+  <footer class="foot"><span>Module 1 · Séance 2</span><span class="num"></span></footer>
+</section>
+
+<!-- 12 — CONNECTION : LA PHRASE -->
+<section class="slide dark">
+  <header class="chrome">
+    <div class="brand">Fluent &amp; Forward</div>
+    <div class="badge">Pilier 3</div>
+  </header>
+  <div class="body">
+    <p class="quote-en" style="font-size:56px;line-height:1.16;max-width:none;letter-spacing:-.028em">“The best dealmakers are not the best grammarians. They’re the ones who make people feel heard, understood, and comfortable — in any language.”</p>
+    <p class="quote-fr" style="max-width:none;font-size:21px;line-height:1.6;margin-top:34px;padding-left:22px">Les meilleurs négociateurs ne sont pas les meilleurs grammairiens. Ce sont ceux qui font sentir aux autres qu’ils sont écoutés, compris et à l’aise — dans n’importe quelle langue.</p>
+  </div>
+  <footer class="foot"><span>Module 1 · Séance 2</span><span class="num"></span></footer>
+</section>
+
+<!-- 13 — POINT CLÉ 3 -->
+<section class="slide">
+  <header class="chrome">
+    <div class="brand">Fluent &amp; Forward</div>
+    <div class="badge ghost">Point clé</div>
+  </header>
+  <div class="body">
+    <div class="keycard">
+      <div class="keytag">À retenir</div>
+      <p class="k-en">People remember how you made them feel,<br>not how perfect your English was.</p>
+      <p class="k-fr">Les gens se souviennent de ce que vous leur avez fait ressentir,<br>pas de la perfection de votre anglais.</p>
+    </div>
+  </div>
+  <footer class="foot"><span>Module 1 · Séance 2</span><span class="num"></span></footer>
+</section>
+
+<!-- 14 — SYNTHÈSE : LE TEMPLE -->
+<section class="slide">
+  <header class="chrome">
+    <div class="brand">Fluent &amp; Forward</div>
+    <div class="badge">Synthèse</div>
+  </header>
+  <div class="body">
+    <div class="eyebrow">Les trois piliers ensemble</div>
+    <svg viewBox="0 0 1000 330" style="width:100%;max-width:1000px;margin:22px auto 0;display:block">
+      <rect x="70" y="14" width="860" height="54" rx="6" fill="#1B6B4A"/>
+      <text x="500" y="49" text-anchor="middle" font-family="Plus Jakarta Sans" font-size="24" font-weight="800" letter-spacing="4" fill="#ffffff">BUSINESS ENGLISH</text>
+      <rect x="70" y="72" width="860" height="6" rx="3" fill="#C9A96E"/>
+
+      <rect x="165" y="96" width="110" height="150" rx="4" fill="#ffffff" stroke="rgba(44,24,16,.15)"/>
+      <path d="M204 150 L215 161 L237 137" fill="none" stroke="#C9A96E" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="196" y="182" width="48" height="2.5" fill="#E8DDD0"/>
+
+      <rect x="445" y="96" width="110" height="150" rx="4" fill="#ffffff" stroke="rgba(44,24,16,.15)"/>
+      <path d="M484 150 L495 161 L517 137" fill="none" stroke="#C9A96E" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="476" y="182" width="48" height="2.5" fill="#E8DDD0"/>
+
+      <rect x="725" y="96" width="110" height="150" rx="4" fill="#ffffff" stroke="rgba(44,24,16,.15)"/>
+      <path d="M764 150 L775 161 L797 137" fill="none" stroke="#C9A96E" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="756" y="182" width="48" height="2.5" fill="#E8DDD0"/>
+
+      <rect x="70" y="246" width="860" height="12" rx="4" fill="#E8DDD0"/>
+
+      <text x="220" y="288" text-anchor="middle" font-family="Plus Jakarta Sans" font-size="21" font-weight="800" letter-spacing="-.3" fill="#2C1810">Clarity</text>
+      <text x="220" y="312" text-anchor="middle" font-family="DM Sans" font-size="13.5" fill="rgba(44,24,16,.6)">Dire exactement ce qu’on veut dire</text>
+
+      <text x="500" y="288" text-anchor="middle" font-family="Plus Jakarta Sans" font-size="21" font-weight="800" letter-spacing="-.3" fill="#2C1810">Confidence</text>
+      <text x="500" y="312" text-anchor="middle" font-family="DM Sans" font-size="13.5" fill="rgba(44,24,16,.6)">Construite par la pratique, pas la perfection</text>
+
+      <text x="780" y="288" text-anchor="middle" font-family="Plus Jakarta Sans" font-size="21" font-weight="800" letter-spacing="-.3" fill="#2C1810">Connection</text>
+      <text x="780" y="312" text-anchor="middle" font-family="DM Sans" font-size="13.5" fill="rgba(44,24,16,.6)">Le relationnel qui crée la confiance</text>
+    </svg>
+  </div>
+  <footer class="foot"><span>Module 1 · Séance 2</span><span class="num"></span></footer>
+</section>
+
+<!-- 15 — LES TROIS QUESTIONS -->
+<section class="slide">
+  <header class="chrome">
+    <div class="brand">Fluent &amp; Forward</div>
+    <div class="badge">Votre grille</div>
+  </header>
+  <div class="body">
+    <div class="eyebrow">En situation réelle</div>
+    <h2>Trois questions à se poser à chaque fois</h2>
+    <div class="nums">
+      <div class="numcard on">
+        <div class="n">01</div>
+        <h3>Am I being clear?</h3>
+        <p>Est-ce que je dis exactement ce que je veux dire, ou est-ce que je tourne autour ?</p>
+      </div>
+      <div class="numcard">
+        <div class="n">02</div>
+        <h3>Am I practicing<br>instead of waiting?</h3>
+        <p>Est-ce que je parle maintenant, ou est-ce que j’attends d’être prêt ?</p>
+      </div>
+      <div class="numcard">
+        <div class="n">03</div>
+        <h3>Am I connecting,<br>not just talking?</h3>
+        <p>Est-ce que la personne en face se sent écoutée, ou est-ce que je récite ?</p>
+      </div>
+    </div>
+  </div>
+  <footer class="foot"><span>Module 1 · Séance 2</span><span class="num"></span></footer>
+</section>
+
+<!-- 16 — CLÔTURE -->
+<section class="slide dark">
+  <header class="chrome">
+    <div class="brand">Fluent &amp; Forward</div>
+    <div class="badge">Récap Séance 2</div>
+  </header>
+  <div class="body">
+    <div class="eyebrow">Votre cadre mental</div>
+    <div class="equations">
+      <div class="eq"><span class="l">Clarity</span><span class="r">dire exactement ce qu’on veut dire.</span></div>
+      <div class="eq"><span class="l">Confidence</span><span class="r">construite par la pratique.</span></div>
+      <div class="eq"><span class="l">Connection</span><span class="r"><b>faire sentir aux autres qu’ils comptent.</b></span></div>
+    </div>
+    <p class="punch"><span class="l1">Every module from here</span><span class="l2">comes back to these three.</span></p>
+  </div>
+  <footer class="foot"><span>Module 1 · Séance 2 → Séance 3</span><span class="num"></span></footer>
+</section>
+
+</div>
+
+
+
+
+<div id="nav">
+  <button id="prevBtn" class="navbtn" aria-label="Page précédente">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5 L8 12 L15 19"/></svg>
+  </button>
+  <button id="nextBtn" class="navbtn" aria-label="Page suivante">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5 L16 12 L9 19"/></svg>
+  </button>
+</div>
+<div id="lockmsg"></div>
+</div>
+<div id="rotate">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="7" y="2" width="10" height="20" rx="2.4"/><path d="M11 18.6h2"/>
+  </svg>
+  <p class="rt">Tournez votre téléphone</p>
+  <p class="rs">Cette présentation est conçue en format paysage.</p>
+</div>
+<script>
+(function(){
+  /* ---------- mise a l echelle plein ecran ---------- */
+  var stage=document.getElementById('stage');
+  function fit(){
+    var w=document.documentElement.clientWidth,h=window.innerHeight||document.documentElement.clientHeight;
+    var k=Math.min(w/1280,h/720);
+    stage.style.transform='scale('+k+')';
+    stage.style.left=((w-1280*k)/2)+'px';
+    stage.style.top=((h-720*k)/2)+'px';
+    document.documentElement.style.setProperty('--inv', k<1 ? Math.min(1/k,2).toFixed(3) : 1);
+  }
+  window.addEventListener('resize',fit);
+  window.addEventListener('orientationchange',function(){setTimeout(fit,120);});
+  if(window.visualViewport) window.visualViewport.addEventListener('resize',fit);
+  fit();
+
+  /* ---------- signal sonore ---------- */
+  var AC=null;
+  function beep(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    [0,.30,.60].forEach(function(d,i){var o=AC.createOscillator(),g=AC.createGain();
+      o.type='sine';o.frequency.value=(i===2?988:784);o.connect(g);g.connect(AC.destination);
+      var t=AC.currentTime+d;g.gain.setValueAtTime(.0001,t);
+      g.gain.exponentialRampToValueAtTime(.22,t+.02);
+      g.gain.exponentialRampToValueAtTime(.0001,t+.28);o.start(t);o.stop(t+.32);});}catch(e){}}
+
+  /* ---------- chronometres ---------- */
+  var timers=[];
+  function pad(n){return (n<10?'0':'')+n;}
+  Array.prototype.forEach.call(document.querySelectorAll('.timer'),function(btn){
+    var total=parseInt(btn.getAttribute('data-sec'),10),left=total,id=null,state='idle';
+    var lbl=btn.querySelector('.lbl'),fill=btn.querySelector('.fill'),base=lbl.innerHTML;
+    var T={el:btn,done:false,running:function(){return state==='run';}};
+    function draw(){fill.style.width=((total-left)/total*100)+'%';
+      lbl.innerHTML='<span class="num">'+pad(Math.floor(left/60))+':'+pad(left%60)+'</span>';}
+    function halt(){clearInterval(id);id=null;}
+    function rearm(){halt();state='idle';left=total;btn.className='timer replay';
+      fill.style.width='0';lbl.innerHTML=base;refresh();}
+    function tick(){left--;
+      if(left<=0){left=0;halt();state='done';T.done=true;
+        btn.className='timer done';draw();beep();refresh();
+        setTimeout(function(){if(state==='done')rearm();},3400);}
+      else draw();}
+    btn.addEventListener('click',function(){
+      if(state==='run'){halt();state='pause';btn.className='timer pause';refresh();return;}
+      if(anyRunning())return;
+      if(state==='done')left=total;
+      state='run';btn.className='timer run';draw();halt();id=setInterval(tick,1000);
+      refresh();
+    });
+    timers.push(T);
+  });
+  function anyRunning(){return timers.some(function(t){return t.running();});}
+
+  /* ---------- lecteur video ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll('.vframe'),function(f){
+    var v=f.querySelector('video');if(!v)return;
+    function sync(){f.classList.toggle('paused',v.paused);}
+    v.addEventListener('play',sync);v.addEventListener('pause',sync);
+    f.addEventListener('click',function(){v.paused?v.play():v.pause();});
+    var go=v.play();if(go&&go.catch)go.catch(function(){f.classList.add('paused');});
+  });
+
+  /* ---------- navigation ---------- */
+  var slides=[].slice.call(document.querySelectorAll('section.slide'));
+  var i=0;
+  var prevBtn=document.getElementById('prevBtn'),nextBtn=document.getElementById('nextBtn');
+  var lockmsg=document.getElementById('lockmsg');
+
+  function slideTimers(){return timers.filter(function(t){return slides[i].contains(t.el);});}
+  function locked(){var st=slideTimers();
+    return st.length>0 && st.some(function(t){return !t.done;});}
+  function refresh(){
+    slides.forEach(function(s,n){s.classList.toggle('active',n===i);});
+    var busy=anyRunning();
+    timers.forEach(function(t){t.el.classList.toggle('blocked', busy && !t.running());});
+    var isLast=(i===slides.length-1), lock=locked();
+    prevBtn.disabled=(i===0);
+    nextBtn.disabled=isLast;
+    nextBtn.classList.toggle('locked', lock && !isLast);
+    if(lock && !isLast) nextBtn.disabled=true;
+    lockmsg.classList.toggle('on', lock && !isLast);
+    lockmsg.style.display=(lock && !isLast)?'block':'none';
+    var st=slideTimers(), n=st.filter(function(t){return t.done;}).length;
+    if(lock) lockmsg.textContent = st.length>1
+      ? 'Lancez les '+st.length+' chronomètres pour continuer ('+n+'/'+st.length+' terminés). Un seul à la fois.'
+      : 'Lancez le chronomètre pour continuer.';
+  }
+  function go(d){
+    if(d>0 && locked())return;
+    var n=i+d; if(n<0||n>=slides.length)return;
+    i=n; refresh();
+    var v=slides[i].querySelector('video');
+    if(v){var g=v.play(); if(g&&g.catch)g.catch(function(){});}
+  }
+  prevBtn.addEventListener('click',function(){go(-1);});
+  nextBtn.addEventListener('click',function(){go(1);});
+  var tx=0,ty=0;
+  document.addEventListener('touchstart',function(e){
+    tx=e.changedTouches[0].clientX;ty=e.changedTouches[0].clientY;},{passive:true});
+  document.addEventListener('touchend',function(e){
+    var dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+    if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.4) go(dx<0?1:-1);},{passive:true});
+  document.addEventListener('keydown',function(e){
+    var k=e.key.toLowerCase();
+    if(k==='arrowright'||k==='arrowdown'||k==='pagedown'||e.code==='Space'){e.preventDefault();go(1);}
+    if(k==='arrowleft'||k==='arrowup'||k==='pageup'){e.preventDefault();go(-1);}
+  });
+  refresh();
+})();
+</script>
+</body>
+</html>
