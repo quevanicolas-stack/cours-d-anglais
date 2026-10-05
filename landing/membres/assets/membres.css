@@ -292,3 +292,5 @@ a:hover { color: var(--deep); text-decoration: underline; }
   .ligne-membre { grid-template-columns: 1fr; }
   .ligne-membre .boutons { justify-content: flex-start; }
 }
+.bouton-secondaire { background: transparent; color: var(--green); border: 2px solid rgba(27,107,74,.35); }
+.bouton-secondaire:hover { background: rgba(27,107,74,.06); }

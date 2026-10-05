@@ -183,7 +183,7 @@
        en revenant sur la page (après être allé lire ses emails, ou si le
        téléphone a rechargé l'onglet), on la retrouve telle quelle. */
     var CLE_ATTENTE = "ff_membre_attente";
-    var DUREE_TICKET_MS = 6 * 3600 * 1000;      // durée de vie du ticket côté serveur
+    var DUREE_TICKET_MS = 30 * 60 * 1000;      // au-delà, on repart du formulaire
     var ATTENTE_ACTIVE_MS = 30 * 60 * 1000;     // au-delà, on arrête d'interroger
 
     function memoriserAttente() {
@@ -326,6 +326,9 @@
         ticket = enCours.ticket;
         champEmail.value = enCours.email;
         ecranAttente("En attente de ta connexion…");
+        var minutes = Math.max(1, Math.round((Date.now() - enCours.debut) / 60000));
+        afficherRetour(retourEnvoye, "Un lien t'a été envoyé il y a " + minutes + " minute" + (minutes > 1 ? "s" : "") +
+          ". Rien reçu ? Renvoie-le avec le bouton ci-dessous.");
         attendre();
       }
     }
