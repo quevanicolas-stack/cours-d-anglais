@@ -6,7 +6,7 @@ Supports de présentation du programme Business English Accelerator.
 
 | Fichier | Rôle |
 |---|---|
-| `module1-seance1.html` | source unique — c'est le fichier qu'on modifie. Narration en fichiers externes dans `audio/module1-seance1/` (diapositives 02, 03, 04, 05, 06, 08, 10, 11, 14). |
+| `module1-seance1.html` | source unique — c'est le fichier qu'on modifie. Narration en fichiers externes dans `audio/module1-seance1/` (diapositives 02, 03, 05, 06, 08, 11, 14), même lecteur que les séances 2 et 3 (bouton rond lecture / pause / relecture). |
 | `module1-seance1.pdf` | export, 15 slides 16:9 |
 | `module1-seance2.html` | source unique, 16 slides 16:9 — pas encore de PDF exporté. « The 3 Pillars of Business English » (Clarity, Confidence, Connection). Intègre le lecteur de narration (bouton circulaire à anneau de progression, lecture multi-parties par diapositive) sur les diapositives 03, 07, 11, 14, avec les fichiers audio correspondants dans `audio/module1-seance2/` (voir `docs/ESPACE-MEMBRES.md`). |
 | `module1-seance3.html` | source unique, 16 slides 16:9 — pas encore de PDF exporté. « Structuring Simple Professional Sentences ». Dernière séance du module 1 : contient l'exercice de la semaine (« Your 60-Second Business Introduction »). Module 1 complet. Même lecteur de narration que la séance 2, fichiers dans `audio/module1-seance3/`. |

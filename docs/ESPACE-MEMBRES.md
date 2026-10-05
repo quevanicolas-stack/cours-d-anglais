@@ -73,11 +73,10 @@ Les audios sont rangés par séance dans `files/fluent-forward/audio/`
 (`module1-seance1/`, `module1-seance2/`, …) : deux séances peuvent ainsi
 avoir chacune leur `page-03.mp3` sans s'écraser.
 
-- Séance 1 : lecteur d'origine (lecture automatique à l'arrivée sur la
-  diapositive, puis bouton de relecture). Nouveaux enregistrements sur
-  les diapositives 02, 03, 05, 06, 08, 11 et 14 ; les diapositives 04 et
-  10, sans nouvel enregistrement, gardent leur ancien son.
-- Séances 2 et 3 : lecteur à bouton rond (anneau de progression), sur
+- Séance 1 : enregistrements des diapositives 02, 03, 05, 06, 08, 11
+  et 14 ; les anciens sons (04 et 10) ont été retirés.
+- Les trois séances : même lecteur à bouton rond (lecture, pause,
+  relecture) (anneau de progression), sur
   les diapositives indiquées par leurs attributs `data-audio`.
 
 ## Publier les supports (`source/publier_cours.py`)

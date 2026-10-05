@@ -53,19 +53,15 @@ body{font-family:'DM Sans',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 }
 .badge.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
 
-/* ---------- narration audio ---------- */
-audio.voix{display:none}
-.rejouer{
-  position:absolute;top:14px;right:72px;z-index:5;
-  width:32px;height:32px;border-radius:50%;border:0;cursor:pointer;
-  background:var(--green);color:#fff;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 2px 8px rgba(0,0,0,.18);
-}
-.rejouer svg{width:16px;height:16px}
-.rejouer:hover{background:#164f38}
-.slide.dark .rejouer{background:var(--gold);color:#26180C}
-.slide.dark .rejouer:hover{background:#dab27e}
+/* ---------- voix off ---------- */
+#vo{position:relative;display:none;--p:0}
+#vo.on{display:flex}
+#vo::before{content:"";position:absolute;inset:-4px;border-radius:50%;
+  background:conic-gradient(#C9A96E calc(var(--p)*1%),rgba(201,169,110,.18) 0);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2.5px));
+          mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2.5px))}
+#vo svg{display:none}
+#vo.playing .i-pause,#vo.paused .i-play,#vo.ended .i-replay{display:block}
 
 .foot{
   flex:0 0 auto;display:flex;justify-content:space-between;align-items:flex-end;
@@ -377,13 +373,9 @@ em{font-style:italic}
 </section>
 
 <!-- 02 — HOOK -->
-<section id="s02" class="slide dark">
+<section id="s02" class="slide dark" data-audio="audio/module1-seance1/page-02.mp3" data-durs="8.05">
   <header class="chrome">
-        <audio class="voix" preload="auto"><source src="audio/module1-seance1/page-02.mp3" type="audio/mpeg"></audio>
-    <button class="rejouer" type="button" aria-label="Réécouter l'audio" hidden>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
-    </button>
-    <div class="brand">Fluent &amp; Forward</div>
+        <div class="brand">Fluent &amp; Forward</div>
     <div class="badge">Ouverture</div>
   </header>
   <div class="body">
@@ -411,13 +403,9 @@ em{font-style:italic}
 </section>
 
 <!-- 03 — SCHEMA CERVEAU -->
-<section id="s03" class="slide">
+<section id="s03" class="slide" data-audio="audio/module1-seance1/page-03.mp3" data-durs="38.84">
   <header class="chrome">
-        <audio class="voix" preload="auto"><source src="audio/module1-seance1/page-03.mp3" type="audio/mpeg"></audio>
-    <button class="rejouer" type="button" aria-label="Réécouter l'audio" hidden>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
-    </button>
-    <div class="brand">Fluent &amp; Forward</div>
+        <div class="brand">Fluent &amp; Forward</div>
     <div class="badge">Leçon 1</div>
   </header>
   <div class="body top">
@@ -467,11 +455,7 @@ em{font-style:italic}
 <!-- 04 — POINT CLE 1 -->
 <section id="s04" class="slide">
   <header class="chrome">
-        <audio class="voix" preload="auto"><source src="audio/module1-seance1/page-04.mp3" type="audio/mpeg"></audio>
-    <button class="rejouer" type="button" aria-label="Réécouter l'audio" hidden>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
-    </button>
-    <div class="brand">Fluent &amp; Forward</div>
+        <div class="brand">Fluent &amp; Forward</div>
     <div class="badge ghost">Point clé</div>
   </header>
   <div class="body">
@@ -485,12 +469,8 @@ em{font-style:italic}
 </section>
 
 <!-- 05 — LA SOLUTION -->
-<section id="s05" class="slide">
+<section id="s05" class="slide" data-audio="audio/module1-seance1/page-05.mp3" data-durs="35.47">
   <header class="chrome">
-    <audio class="voix" preload="auto"><source src="audio/module1-seance1/page-05.mp3" type="audio/mpeg"></audio>
-    <button class="rejouer" type="button" aria-label="Réécouter l'audio" hidden>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
-    </button>
     <div class="brand">Fluent &amp; Forward</div>
     <div class="badge">Leçon 2</div>
   </header>
@@ -517,12 +497,8 @@ em{font-style:italic}
 </section>
 
 <!-- 06 — EXERCICE -->
-<section id="s06" class="slide">
+<section id="s06" class="slide" data-audio="audio/module1-seance1/page-06.mp3" data-durs="44.43">
   <header class="chrome">
-    <audio class="voix" preload="auto"><source src="audio/module1-seance1/page-06.mp3" type="audio/mpeg"></audio>
-    <button class="rejouer" type="button" aria-label="Réécouter l'audio" hidden>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
-    </button>
     <div class="brand">Fluent &amp; Forward</div>
     <div class="badge">Exercice</div>
   </header>
@@ -578,13 +554,9 @@ em{font-style:italic}
 </section>
 
 <!-- 08 — L'ACCENT -->
-<section id="s08" class="slide">
+<section id="s08" class="slide" data-audio="audio/module1-seance1/page-08.mp3" data-durs="32.29">
   <header class="chrome">
-        <audio class="voix" preload="auto"><source src="audio/module1-seance1/page-08.mp3" type="audio/mpeg"></audio>
-                <button class="rejouer" type="button" aria-label="Réécouter l'audio" hidden>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
-    </button>
-    <div class="brand">Fluent &amp; Forward</div>
+                    <div class="brand">Fluent &amp; Forward</div>
     <div class="badge">Leçon 3</div>
   </header>
   <div class="body">
@@ -658,11 +630,7 @@ em{font-style:italic}
 <!-- 10 — POINT CLE 2 -->
 <section id="s10" class="slide">
   <header class="chrome">
-        <audio class="voix" preload="auto"><source src="audio/module1-seance1/page-10.mp3" type="audio/mpeg"></audio>
-    <button class="rejouer" type="button" aria-label="Réécouter l'audio" hidden>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
-    </button>
-    <div class="brand">Fluent &amp; Forward</div>
+        <div class="brand">Fluent &amp; Forward</div>
     <div class="badge ghost">Point clé</div>
   </header>
   <div class="body">
@@ -676,13 +644,9 @@ em{font-style:italic}
 </section>
 
 <!-- 11 — VS -->
-<section id="s11" class="slide">
+<section id="s11" class="slide" data-audio="audio/module1-seance1/page-11.mp3" data-durs="14.29">
   <header class="chrome">
-        <audio class="voix" preload="auto"><source src="audio/module1-seance1/page-11.mp3" type="audio/mpeg"></audio>
-    <button class="rejouer" type="button" aria-label="Réécouter l'audio" hidden>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
-    </button>
-    <div class="brand">Fluent &amp; Forward</div>
+        <div class="brand">Fluent &amp; Forward</div>
     <div class="badge">Leçon 4</div>
   </header>
   <div class="body">
@@ -775,13 +739,9 @@ em{font-style:italic}
 </section>
 
 <!-- 14 — TRANSITION -->
-<section id="s14" class="slide">
+<section id="s14" class="slide" data-audio="audio/module1-seance1/page-14.mp3" data-durs="15.23">
   <header class="chrome">
-        <audio class="voix" preload="auto"><source src="audio/module1-seance1/page-14.mp3" type="audio/mpeg"></audio>
-    <button class="rejouer" type="button" aria-label="Réécouter l'audio" hidden>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
-    </button>
-    <div class="brand">Fluent &amp; Forward</div>
+        <div class="brand">Fluent &amp; Forward</div>
     <div class="badge ghost">Le changement de logique</div>
   </header>
   <div class="body">
@@ -820,6 +780,11 @@ em{font-style:italic}
   <a id="retourEspace" class="navbtn" href="../espace.html" aria-label="Retour à mon espace" title="Retour à mon espace">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11.5 12 4.5l8.5 7"/><path d="M6 10v9.5h12V10"/></svg>
   </a>
+  <button id="vo" class="navbtn paused" aria-label="Voix off : lecture / pause">
+    <svg class="i-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6.5" y="5" width="3.6" height="14" rx="1"/><rect x="13.9" y="5" width="3.6" height="14" rx="1"/></svg>
+    <svg class="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.2v13.6a.8.8 0 0 0 1.2.7l10.6-6.8a.8.8 0 0 0 0-1.4L9.2 4.5A.8.8 0 0 0 8 5.2z"/></svg>
+    <svg class="i-replay" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4.5h4.5"/></svg>
+  </button>
   <button id="prevBtn" class="navbtn" aria-label="Page précédente">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5 L8 12 L15 19"/></svg>
   </button>
@@ -950,59 +915,65 @@ em{font-style:italic}
 
 <script>
 (function(){
-  /* Narration audio : ce script est volontairement séparé de celui de
-     navigation ci-dessus, pour ne rien risquer de casser dedans. Une
-     diapositive change de visibilité via la classe "active" posée par
-     refresh() — on observe donc cette classe plutôt que de modifier
-     go()/refresh(). Lecture automatique au premier passage sur chaque
-     diapositive concernée, puis bouton de relecture qui n'apparaît
-     qu'à la toute fin de la lecture (première lecture terminée, ou
-     lecture automatique refusée par le navigateur — le bouton reste
-     alors le recours). */
-  var groupes = [
-    { id: "s02" }, { id: "s03" }, { id: "s04" }, { id: "s05" },
-    { id: "s06" }, { id: "s08" },
-    { id: "s10" }, { id: "s11" }, { id: "s14" }
-  ];
-
-  groupes.forEach(function(g){
-    var section = document.getElementById(g.id);
-    if(!section) return;
-    var clips = [].slice.call(section.querySelectorAll("audio.voix"));
-    var bouton = section.querySelector(".rejouer");
-    if(!clips.length || !bouton) return;
-
-    var dejaJoue = false;
-
-    function lireDepuis(i){
-      if(i >= clips.length){ bouton.hidden = false; return; }
-      clips[i].currentTime = 0;
-      clips[i].play().catch(function(){ bouton.hidden = false; });
-    }
-
-    clips.forEach(function(clip, i){
-      clip.addEventListener("ended", function(){ lireDepuis(i + 1); });
-    });
-
-    bouton.addEventListener("click", function(){
-      clips.forEach(function(c){ c.pause(); });
-      lireDepuis(0);
-    });
-
-    var observateur = new MutationObserver(function(){
-      if(section.classList.contains("active") && !dejaJoue){
-        dejaJoue = true;
-        clips.forEach(function(c){ c.pause(); });
-        lireDepuis(0);
-      }
-    });
-    observateur.observe(section, { attributes: true, attributeFilter: ["class"] });
-
-    if(section.classList.contains("active")){
-      dejaJoue = true;
-      lireDepuis(0);
-    }
+  /* Voix off : même lecteur que les séances 2 et 3 (bouton rond, lecture /
+     pause / relecture, anneau de progression). Le script de navigation
+     n'est pas modifié : on suit la classe "active" qu'il pose sur la
+     diapositive affichée. */
+  var VO_DELAI=1200; /* délai avant la voix off à l'arrivée sur la page (ms) */
+  var VO_PAUSE=600;  /* pause entre deux parties d'une même page (ms) */
+  var slides=[].slice.call(document.querySelectorAll('section.slide'));
+  var voBtn=document.getElementById('vo'), vo=new Audio(); vo.preload='auto';
+  var voList=[],voDurs=[],voTotal=0,voIdx=0,voWait=null,voUnlocked=false,courante=null;
+  function voState(s){voBtn.classList.remove('playing','paused','ended');voBtn.classList.add(s);}
+  function voCancel(){clearTimeout(voWait);voWait=null;}
+  function voLater(ms){voCancel();voState('playing');
+    voWait=setTimeout(function(){voWait=null;vo.muted=false;
+      var g=vo.play();if(g&&g.catch)g.catch(function(){voState('paused');});},ms);}
+  function voLoad(k){voIdx=k;vo.src=voList[k];}
+  function voDone(){var s=0;for(var k=0;k<voIdx;k++)s+=voDurs[k];return s;}
+  vo.addEventListener('play',function(){voState('playing');});
+  vo.addEventListener('pause',function(){if(!vo.ended&&!voWait)voState('paused');});
+  vo.addEventListener('ended',function(){
+    if(voIdx<voList.length-1){voLoad(voIdx+1);voLater(VO_PAUSE);}
+    else{voState('ended');voBtn.style.setProperty('--p',100);}
   });
+  vo.addEventListener('timeupdate',function(){
+    if(voTotal)voBtn.style.setProperty('--p',Math.min(100,(voDone()+vo.currentTime)/voTotal*100).toFixed(1));});
+  function voUnlock(){ /* débloque le son dès le premier geste (Safari / iPhone) */
+    if(voUnlocked)return; voUnlocked=true;
+    try{vo.muted=true;var g=vo.play();
+      if(g&&g.then)g.then(function(){vo.pause();vo.muted=false;}).catch(function(){vo.muted=false;});
+      else{vo.pause();vo.muted=false;}}catch(e){vo.muted=false;}
+  }
+  function voFor(slide){
+    voCancel(); vo.pause();
+    var src=slide.getAttribute('data-audio');
+    voBtn.classList.toggle('on',!!src);
+    if(!src){vo.removeAttribute('src');voList=[];return;}
+    voUnlock();
+    voList=src.split('|');
+    voDurs=(slide.getAttribute('data-durs')||'').split('|').map(parseFloat);
+    voTotal=voDurs.reduce(function(a,b){return a+(b||0);},0);
+    voLoad(0); voBtn.style.setProperty('--p',0); voLater(VO_DELAI);
+  }
+  voBtn.addEventListener('click',function(){
+    if(voWait){voCancel();voState('paused');return;}
+    if(voBtn.classList.contains('ended')){voLoad(0);voBtn.style.setProperty('--p',0);vo.play();return;}
+    if(vo.paused)vo.play(); else vo.pause();
+  });
+  /* un chronomètre lancé met la voix off en pause */
+  Array.prototype.forEach.call(document.querySelectorAll('.timer'),function(t){
+    t.addEventListener('click',function(){
+      if(voWait){voCancel();voState('paused');}
+      if(!vo.paused)vo.pause();},true);});
+
+  function suivre(){
+    var active=slides.filter(function(s){return s.classList.contains('active');})[0];
+    if(active && active!==courante){courante=active; voFor(active);}
+  }
+  var observateur=new MutationObserver(suivre);
+  slides.forEach(function(s){observateur.observe(s,{attributes:true,attributeFilter:['class']});});
+  suivre();
 })();
 </script>
 </body>
