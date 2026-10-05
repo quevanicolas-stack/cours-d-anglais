@@ -24,6 +24,8 @@ jobs:
             npx --yes wrangler@4 d1 execute fluentandforward-membres --remote --json --command "$1" 2>&1 \
               | tail -n 40 | sed -e 's/%/%25/g' | sed ':a;N;$!ba;s/\n/%0A/g'
           }
+          echo "::notice title=secrets::$(npx --yes wrangler@4 secret list --name fluentandforward 2>&1 | tail -n 20 | sed -e 's/%/%25/g' | sed ':a;N;$!ba;s/\n/%0A/g')"
+          echo "::notice title=versions::$(npx --yes wrangler@4 deployments list --name fluentandforward 2>&1 | tail -n 30 | sed -e 's/%/%25/g' | sed ':a;N;$!ba;s/\n/%0A/g')"
           echo "::notice title=envois::$(requete "SELECT date, sujet, ok, erreur FROM envois ORDER BY id DESC LIMIT 6")"
           echo "::notice title=comptes::$(requete "SELECT statut, dernier_lien, date_expiration FROM membres ORDER BY id DESC LIMIT 6")"
       - name: Ce que servent les domaines
