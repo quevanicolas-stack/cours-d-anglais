@@ -1,94 +1,88 @@
 /* ===================================================================
    ESPACE MEMBRES — Fluent & Forward
 
-   Ce fichier est une ADDITION, pas un remplacement. Il ne touche à
-   rien de ce qui existe déjà (inscriptions au guide, tableau de bord
-   des parcours). Marche à suivre :
+   Fichier de SCRIPT (.gs) à placer à côté de Code.gs, dans le projet
+   Apps Script lié au classeur « Prospects Fluent & Forward ». Surtout
+   pas dans un fichier HTML : Google ne l'exécuterait jamais.
 
-   1. Ouvrir le projet Apps Script lié au classeur « Prospects Fluent
-      & Forward » (celui qui gère déjà le guide et le tableau de bord —
-      voir docs/README.md).
-   2. Dans l'éditeur, cliquer sur le « + » à côté des fichiers existants
-      → Script → le nommer par exemple « MembresEspace » → coller tout
-      le contenu de ce fichier dedans.
-   3. Dans le fichier qui contient déjà votre doPost(e) existant,
-      ajouter TOUT EN HAUT de la fonction, avant le reste de son code :
+   Connexion par lien : aucun mot de passe, aucun code à recopier.
+   - Première fois : la personne demande un accès, Aurélie valide par
+     email, et la personne reçoit un lien qui la connecte directement.
+   - Ensuite : la personne indique son email sur la page de connexion
+     et reçoit aussitôt un nouveau lien, sans passer par Aurélie.
+   Chaque lien ne sert qu'une fois et expire.
 
-           var corpsMembres = essayerLireJSON(e);
-           if (corpsMembres && corpsMembres.type === 'membre') {
-             return doPostMembres(e, corpsMembres);
-           }
+   Marche à suivre :
 
-      Et dans votre doGet(e) existant, tout en haut :
+   1. Dans l'éditeur, « + » à côté de Fichiers → Script → le nommer
+      « MembresEspace » → coller tout le contenu de ce fichier.
 
-           if (e.parameter.action === 'decision') return doGetDecision(e);
+   2. Dans Code.gs, tout en haut de doGet(e), une seule ligne :
 
-   4. Dans la feuille de calcul, créer deux nouveaux onglets, avec ces
-      en-têtes EXACTS en ligne 1 :
+           if (e.parameter.membre || e.parameter.action === 'decision') return doGetMembres(e);
+
+      (elle remplace l'ancienne ligne qui ne testait que 'decision').
+      Les lignes ajoutées en haut de doPost(e) peuvent rester : elles
+      fonctionnent toujours, le site ne s'en sert simplement plus.
+
+   3. Dans la feuille de calcul, deux onglets avec ces en-têtes en
+      ligne 1 :
 
       Onglet « Membres » :
         horodatage_demande | prenom | email | statut | jeton_decision |
         date_validation | date_expiration | otp_code | otp_expiration |
         otp_tentatives | otp_dernier_envoi | session_token |
-        session_expiration
+        session_expiration | site
+
+      Les colonnes « otp_… » gardent leur nom d'origine mais contiennent
+      désormais le lien de connexion (jeton, expiration, dernier envoi).
+      La colonne « site » est facultative : elle retient l'adresse du
+      site d'où vient la demande, pour que le premier lien y renvoie.
 
       Onglet « Programme » :
         semaine | module_titre | fichiers
 
-      La colonne « fichiers » liste un ou plusieurs fichiers séparés par
-      des point-virgules, chacun sous la forme nom-du-fichier.html|Libellé
-      affiché. Le libellé est ce que voit le membre sur sa carte ; sans
-      lui (pas de « | »), c'est le nom de fichier qui s'affiche tel quel.
+      La colonne « fichiers » liste des entrées séparées par des
+      points-virgules, chacune sous la forme fichier.html|Libellé. Pour
+      la semaine 1 (une seule cellule, à copier telle quelle) :
 
-      Dans « Programme », ajouter une première ligne (tout sur une seule
-      cellule pour la colonne fichiers, copier-coller tel quel) :
-
-        semaine : 1
-        module_titre : Module 1 — Think & Speak Like a Business Person
-        fichiers :
           module1-seance1.html|Séance 1 — Why Your Brain Freezes in English;module1-seance2.html|Séance 2 — The 3 Pillars of Business English;module1-seance3.html|Séance 3 — Structuring Simple Professional Sentences;module1-vocabulaire.html|Vocabulary Kit;module1-grammaire.html|Grammar — The Present Simple
 
-      C'est cet onglet qui pilote le déblocage. Pour ajouter un module
-      plus tard, il suffit d'ajouter une ligne — aucun redéploiement de
-      script nécessaire. Les fichiers eux-mêmes doivent en revanche être
-      publiés dans /membres/cours/ au moment voulu (ça, c'est un commit).
+      Ajouter un module plus tard = ajouter une ligne, sans redéployer.
 
-   5. Vérifier les deux constantes MEMBRES_EMAIL_AURELIE et
-      MEMBRES_URL_SCRIPT (section Réglages).
+   4. Vérifier les réglages ci-dessous (email d'Aurélie, adresse du
+      script, adresses du site).
 
-   6. Dans la barre du haut de l'éditeur, choisir la fonction
-      autoriserEspaceMembres puis cliquer sur « Exécuter » et accepter
-      la fenêtre d'autorisation Google. Sans cette étape, le site reçoit
-      une erreur et aucune exécution n'apparaît dans les journaux.
+   5. Choisir la fonction autoriserEspaceMembres dans la barre du haut,
+      « Exécuter », accepter la fenêtre d'autorisation Google (une seule
+      fois : l'envoi d'emails l'exige).
 
-   7. Redéployer (Déployer → Gérer les déploiements → crayon →
-      Nouvelle version).
-
-   Rien n'est stocké en clair de façon permanente : le code OTP est
-   effacé de la feuille dès qu'il est utilisé ou remplacé, et aucun mot
-   de passe n'est jamais conservé — seulement un code à usage unique,
-   valable quelques minutes, renvoyé à chaque connexion.
+   6. Déployer → Gérer les déploiements → crayon → Nouvelle version.
    =================================================================== */
 
 // ---------- Réglages ----------
-var MEMBRES_FEUILLE          = 'Membres';
-var PROGRAMME_FEUILLE        = 'Programme';
-var MEMBRES_DUREE_COMPTE_J   = 180;   // validité d'un compte, en jours
-var MEMBRES_OTP_VALIDITE_MIN = 10;    // validité d'un code, en minutes
-var MEMBRES_OTP_TENTATIVES   = 5;     // essais autorisés avant d'exiger un nouveau code
-var MEMBRES_OTP_DELAI_SEC    = 60;    // délai minimum entre deux envois de code
-var MEMBRES_SESSION_J        = 14;    // durée d'une session après connexion réussie
+var MEMBRES_FEUILLE           = 'Membres';
+var PROGRAMME_FEUILLE         = 'Programme';
+var MEMBRES_DUREE_COMPTE_J    = 180;  // validité d'un compte, en jours
+var MEMBRES_LIEN_PREMIER_H    = 72;   // validité du lien envoyé après validation, en heures
+var MEMBRES_LIEN_VALIDITE_MIN = 30;   // validité des liens suivants, en minutes
+var MEMBRES_LIEN_DELAI_SEC    = 60;   // délai minimum entre deux envois de lien
+var MEMBRES_SESSION_J         = 14;   // durée de connexion sur un appareil
 
-var MEMBRES_EMAIL_AURELIE    = 'contact@fluentandforward.com';
-var MEMBRES_URL_SCRIPT       = 'https://script.google.com/macros/s/AKfycbwK0XxvWhNiwoWVsROAHi7EFQFRMymFOcH5gxV-KSZ3C5F39DPcT1YxSp83iJq9oMbO/exec';
+var MEMBRES_EMAIL_AURELIE     = 'contact@fluentandforward.com';
+var MEMBRES_URL_SCRIPT        = 'https://script.google.com/macros/s/AKfycbwK0XxvWhNiwoWVsROAHi7EFQFRMymFOcH5gxV-KSZ3C5F39DPcT1YxSp83iJq9oMbO/exec';
+
+// Adresses du site vers lesquelles un lien de connexion peut renvoyer.
+// La première sert par défaut. Toute autre adresse est refusée : un lien
+// qui pointerait ailleurs livrerait la connexion à un autre site.
+var MEMBRES_SITES = [
+  'https://fluentandforward.pages.dev',
+  'https://fluentandforward.com',
+  'https://www.fluentandforward.com'
+];
 
 // ---------- Autorisation (à lancer une fois depuis l'éditeur) ----------
 
-// L'envoi d'emails demande une autorisation Google que le script du site
-// n'avait jamais eue. Tant qu'elle n'est pas accordée, Google refuse les
-// visiteurs avant même d'exécuter le script. Lancer cette fonction avec le
-// bouton « Exécuter » ouvre la fenêtre d'autorisation, puis envoie un email
-// de test à MEMBRES_EMAIL_AURELIE pour confirmer que tout fonctionne.
 function autoriserEspaceMembres() {
   var classeur = classeurMembres();
   feuilleMembres();
@@ -110,37 +104,32 @@ function essayerLireJSON(e) {
 }
 
 function classeurMembres() {
-  // Même logique que le reste du projet : le classeur fixé par
-  // ID_CLASSEUR (déjà défini dans l'autre fichier) si disponible,
-  // sinon le classeur auquel ce script est rattaché.
-  return (typeof ID_CLASSEUR !== "undefined" && ID_CLASSEUR)
+  return (typeof ID_CLASSEUR !== 'undefined' && ID_CLASSEUR)
     ? SpreadsheetApp.openById(ID_CLASSEUR)
     : SpreadsheetApp.getActiveSpreadsheet();
 }
 
 function feuilleMembres() {
-  var cl = classeurMembres();
-  var f = cl.getSheetByName(MEMBRES_FEUILLE);
+  var f = classeurMembres().getSheetByName(MEMBRES_FEUILLE);
   if (!f) throw new Error('Onglet "Membres" introuvable — voir les instructions en tête de fichier.');
   return f;
 }
 
 function feuilleProgramme() {
-  var cl = classeurMembres();
-  var f = cl.getSheetByName(PROGRAMME_FEUILLE);
+  var f = classeurMembres().getSheetByName(PROGRAMME_FEUILLE);
   if (!f) throw new Error('Onglet "Programme" introuvable — voir les instructions en tête de fichier.');
   return f;
 }
 
 var COL = {
   horodatage_demande: 1, prenom: 2, email: 3, statut: 4, jeton_decision: 5,
-  date_validation: 6, date_expiration: 7, otp_code: 8, otp_expiration: 9,
-  otp_tentatives: 10, otp_dernier_envoi: 11, session_token: 12, session_expiration: 13
+  date_validation: 6, date_expiration: 7, lien_jeton: 8, lien_expiration: 9,
+  inutilisee: 10, lien_dernier_envoi: 11, session_token: 12, session_expiration: 13,
+  site: 14
 };
 
 function trouverLigneMembre(email) {
-  var f = feuilleMembres();
-  var valeurs = f.getDataRange().getValues();
+  var valeurs = feuilleMembres().getDataRange().getValues();
   var emailBas = String(email).trim().toLowerCase();
   for (var i = 1; i < valeurs.length; i++) {
     if (String(valeurs[i][COL.email - 1]).trim().toLowerCase() === emailBas) {
@@ -150,16 +139,34 @@ function trouverLigneMembre(email) {
   return null;
 }
 
+function trouverLigneParColonne(colonne, valeur) {
+  if (!valeur) return null;
+  var valeurs = feuilleMembres().getDataRange().getValues();
+  for (var i = 1; i < valeurs.length; i++) {
+    if (String(valeurs[i][colonne - 1]) === valeur) return { ligne: i + 1, valeurs: valeurs[i] };
+  }
+  return null;
+}
+
 function jetonAleatoire(longueur) {
-  var alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  var alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   var s = '';
   for (var i = 0; i < longueur; i++) s += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
   return s;
 }
 
-function codeOtp() {
-  // 6 chiffres, jamais de zéro en tête perdu à l'affichage : stocké en texte.
-  return String(Math.floor(100000 + Math.random() * 900000));
+function echapper(texte) {
+  return String(texte).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function adresseSite(origine) {
+  return MEMBRES_SITES.indexOf(String(origine || '')) >= 0 ? origine : MEMBRES_SITES[0];
+}
+
+function compteExpire(valeursLigne) {
+  var exp = valeursLigne[COL.date_expiration - 1];
+  return exp && new Date(exp) < new Date();
 }
 
 function reponseJSON(objet) {
@@ -168,234 +175,229 @@ function reponseJSON(objet) {
 }
 
 function reponseHTML(texte) {
-  return HtmlService.createHtmlOutput(texte);
+  return HtmlService.createHtmlOutput(
+    '<div style="font-family:sans-serif;font-size:16px;max-width:560px;margin:40px auto;line-height:1.5">' +
+    texte + '</div>');
 }
 
-// ---------- Répartiteur POST (appelé depuis votre doPost existant) ----------
+// ---------- Répartiteurs ----------
 
+// Appelé depuis doGet de Code.gs : le site et les liens d'Aurélie.
+function doGetMembres(e) {
+  return traiterMembres(e.parameter || {});
+}
+
+// Ancien point d'entrée, conservé pour les lignes déjà posées dans doPost.
 function doPostMembres(e, corps) {
-  var action = corps.action;
-  if (action === 'demande_compte')  return membresDemandeCompte(corps);
-  if (action === 'demande_otp')     return membresDemandeOtp(corps);
-  if (action === 'verifier_otp')    return membresVerifierOtp(corps);
-  if (action === 'verifier_session') return membresVerifierSession(corps);
-  return reponseJSON({ ok: false, erreur: 'action inconnue' });
+  return traiterMembres(corps || {});
 }
 
-// ---------- Répartiteur GET (appelé depuis votre doGet existant) ----------
-
-function doGetDecision(e) {
-  var token = e.parameter.token;
-  var choix = e.parameter.choix; // "valider" ou "refuser"
-  if (!token || !choix) return reponseHTML('<p>Lien incomplet.</p>');
-
-  var f = feuilleMembres();
-  var valeurs = f.getDataRange().getValues();
-  for (var i = 1; i < valeurs.length; i++) {
-    if (String(valeurs[i][COL.jeton_decision - 1]) === token) {
-      var ligne = i + 1;
-      var email = valeurs[i][COL.email - 1];
-      var prenom = valeurs[i][COL.prenom - 1];
-      var statutActuel = valeurs[i][COL.statut - 1];
-
-      if (statutActuel !== 'en_attente') {
-        return reponseHTML('<p>Cette demande a déjà été traitée (statut actuel : ' + statutActuel + ').</p>');
-      }
-
-      if (choix === 'refuser') {
-        f.getRange(ligne, COL.statut).setValue('refuse');
-        return reponseHTML('<p>Demande de ' + prenom + ' (' + email + ') refusée. Aucun email supplémentaire ne lui a été envoyé.</p>');
-      }
-
-      // --- validation ---
-      var maintenant = new Date();
-      var expiration = new Date(maintenant.getTime() + MEMBRES_DUREE_COMPTE_J * 24 * 60 * 60 * 1000);
-      f.getRange(ligne, COL.statut).setValue('valide');
-      f.getRange(ligne, COL.date_validation).setValue(maintenant);
-      f.getRange(ligne, COL.date_expiration).setValue(expiration);
-
-      var premierCode = codeOtp();
-      f.getRange(ligne, COL.otp_code).setValue(premierCode);
-      f.getRange(ligne, COL.otp_expiration).setValue(new Date(maintenant.getTime() + MEMBRES_OTP_VALIDITE_MIN * 60 * 1000));
-      f.getRange(ligne, COL.otp_tentatives).setValue(0);
-      f.getRange(ligne, COL.otp_dernier_envoi).setValue(maintenant);
-
-      envoyerEmailOtp(prenom, email, premierCode, true);
-
-      return reponseHTML('<p>Compte de ' + prenom + ' (' + email + ') validé. Son premier code de connexion vient de lui être envoyé par email.</p>');
-    }
+function traiterMembres(p) {
+  var op = p.op || p.action;
+  try {
+    if (op === 'demande_compte')   return membresDemandeCompte(p);
+    if (op === 'decision')         return membresDecision(p);
+    if (op === 'demande_lien')     return membresDemandeLien(p);
+    if (op === 'ouvrir_lien')      return membresOuvrirLien(p);
+    if (op === 'verifier_session') return membresVerifierSession(p);
+    return reponseJSON({ ok: false, erreur: 'action_inconnue' });
+  } catch (err) {
+    if (op === 'decision') return reponseHTML('<p>Erreur : ' + echapper(err) + '</p>');
+    return reponseJSON({ ok: false, erreur: 'serveur', detail: String(err) });
   }
-  return reponseHTML('<p>Lien invalide ou déjà utilisé.</p>');
 }
 
 // ---------- 1. Demande de compte ----------
 
-function membresDemandeCompte(corps) {
-  var prenom = String(corps.prenom || '').trim();
-  var email = String(corps.email || '').trim().toLowerCase();
+function membresDemandeCompte(p) {
+  var prenom = String(p.prenom || '').trim().slice(0, 80);
+  var email = String(p.email || '').trim().toLowerCase();
   if (!prenom || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
-    return reponseJSON({ ok: false, erreur: 'prenom ou email invalide' });
+    return reponseJSON({ ok: false, erreur: 'prenom_ou_email_invalide' });
   }
 
   var existant = trouverLigneMembre(email);
   if (existant) {
     var statut = existant.valeurs[COL.statut - 1];
     if (statut === 'en_attente') return reponseJSON({ ok: true, info: 'deja_en_attente' });
-    if (statut === 'valide')     return reponseJSON({ ok: true, info: 'deja_membre' });
-    // si "refuse", on laisse la possibilité de redemander : on retombe plus bas
+    if (statut === 'valide' && !compteExpire(existant.valeurs)) return reponseJSON({ ok: true, info: 'deja_membre' });
+    // refusé ou expiré : nouvelle demande possible
   }
 
   var f = feuilleMembres();
-  var jeton = jetonAleatoire(24);
+  var jeton = jetonAleatoire(32);
   var maintenant = new Date();
+  var site = adresseSite(p.origine);
 
   if (existant) {
     var ligne = existant.ligne;
     f.getRange(ligne, COL.horodatage_demande).setValue(maintenant);
+    f.getRange(ligne, COL.prenom).setValue(prenom);
     f.getRange(ligne, COL.statut).setValue('en_attente');
     f.getRange(ligne, COL.jeton_decision).setValue(jeton);
+    f.getRange(ligne, COL.site).setValue(site);
   } else {
-    var nouvelleLigne = [maintenant, prenom, email, 'en_attente', jeton, '', '', '', '', '', '', '', ''];
-    f.appendRow(nouvelleLigne);
+    f.appendRow([maintenant, prenom, email, 'en_attente', jeton, '', '', '', '', '', '', '', '', site]);
   }
 
-  envoyerEmailDecisionAurelie(prenom, email, jeton);
+  var lien = MEMBRES_URL_SCRIPT + '?action=decision&token=' + jeton + '&choix=';
+  MailApp.sendEmail(MEMBRES_EMAIL_AURELIE, 'Demande d\'accès — ' + prenom,
+    'Nouvelle demande d\'accès à l\'espace membres.\n\n' +
+    'Prénom : ' + prenom + '\nEmail  : ' + email + '\n\n' +
+    'Valider : ' + lien + 'valider\nRefuser : ' + lien + 'refuser\n',
+    { htmlBody:
+      '<p>Nouvelle demande d\'accès à l\'espace membres.</p>' +
+      '<p><b>Prénom :</b> ' + echapper(prenom) + '<br><b>Email :</b> ' + echapper(email) + '</p>' +
+      '<p><a href="' + lien + 'valider" style="background:#1B6B4A;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold">Valider</a>' +
+      '&nbsp;&nbsp;<a href="' + lien + 'refuser" style="color:#A8452F">Refuser</a></p>' });
+
   return reponseJSON({ ok: true });
 }
 
-function envoyerEmailDecisionAurelie(prenom, email, jeton) {
-  var lienValider = MEMBRES_URL_SCRIPT + '?action=decision&token=' + jeton + '&choix=valider';
-  var lienRefuser = MEMBRES_URL_SCRIPT + '?action=decision&token=' + jeton + '&choix=refuser';
-  var corps =
-    'Nouvelle demande d\'accès à l\'espace membres.\n\n' +
-    'Prénom : ' + prenom + '\n' +
-    'Email  : ' + email + '\n\n' +
-    'Valider : ' + lienValider + '\n' +
-    'Refuser : ' + lienRefuser + '\n';
-  MailApp.sendEmail(MEMBRES_EMAIL_AURELIE, 'Demande d\'accès — ' + prenom, corps);
-}
+// ---------- 2. Décision d'Aurélie (clic dans son email) ----------
 
-function envoyerEmailOtp(prenom, email, code, premiereFois) {
-  var sujet = premiereFois ? 'Ton accès Fluent & Forward est prêt' : 'Ton code de connexion Fluent & Forward';
-  var corps =
-    'Bonjour ' + prenom + ',\n\n' +
-    (premiereFois ? 'Ton compte vient d\'être validé. ' : '') +
-    'Voici ton code de connexion, valable ' + MEMBRES_OTP_VALIDITE_MIN + ' minutes :\n\n' +
-    '    ' + code + '\n\n' +
-    'Il ne sert qu\'une fois. À chaque connexion, un nouveau code t\'est envoyé —\n' +
-    'il n\'y a pas de mot de passe à retenir ni à conserver.\n';
-  MailApp.sendEmail(email, sujet, corps);
-}
+function membresDecision(p) {
+  var m = trouverLigneParColonne(COL.jeton_decision, String(p.token || ''));
+  if (!m) return reponseHTML('<p>Lien invalide ou déjà utilisé.</p>');
 
-// ---------- 2. Demande d'un code (connexions suivantes) ----------
+  var f = feuilleMembres();
+  var prenom = m.valeurs[COL.prenom - 1];
+  var email = m.valeurs[COL.email - 1];
+  var statut = m.valeurs[COL.statut - 1];
+  var qui = echapper(prenom) + ' (' + echapper(email) + ')';
 
-function membresDemandeOtp(corps) {
-  var email = String(corps.email || '').trim().toLowerCase();
-  var m = trouverLigneMembre(email);
-
-  // Réponse volontairement identique, que le compte existe ou non :
-  // ça évite qu'un tiers déduise quelles adresses sont membres.
-  var reponseGenerique = { ok: true };
-
-  if (!m || m.valeurs[COL.statut - 1] !== 'valide') return reponseJSON(reponseGenerique);
-
-  var expirationCompte = m.valeurs[COL.date_expiration - 1];
-  if (expirationCompte && new Date(expirationCompte) < new Date()) {
-    return reponseJSON({ ok: true, info: 'compte_expire' });
+  if (statut !== 'en_attente') {
+    return reponseHTML('<p>Cette demande a déjà été traitée (statut : ' + echapper(statut) + ').</p>');
   }
 
-  var dernierEnvoi = m.valeurs[COL.otp_dernier_envoi - 1];
-  if (dernierEnvoi && (new Date() - new Date(dernierEnvoi)) < MEMBRES_OTP_DELAI_SEC * 1000) {
+  if (p.choix === 'refuser') {
+    f.getRange(m.ligne, COL.statut).setValue('refuse');
+    return reponseHTML('<p>Demande de ' + qui + ' refusée. Aucun email ne lui a été envoyé.</p>');
+  }
+  if (p.choix !== 'valider') return reponseHTML('<p>Lien incomplet.</p>');
+
+  var maintenant = new Date();
+  f.getRange(m.ligne, COL.statut).setValue('valide');
+  f.getRange(m.ligne, COL.date_validation).setValue(maintenant);
+  f.getRange(m.ligne, COL.date_expiration).setValue(
+    new Date(maintenant.getTime() + MEMBRES_DUREE_COMPTE_J * 24 * 3600 * 1000));
+
+  envoyerLien(m.ligne, prenom, email, true, m.valeurs[COL.site - 1]);
+
+  return reponseHTML('<p>Compte de ' + qui + ' validé. Un lien de connexion vient de lui être envoyé par email.</p>');
+}
+
+// ---------- 3. Envoi d'un lien de connexion ----------
+
+function envoyerLien(ligne, prenom, email, premiereFois, origine) {
+  var f = feuilleMembres();
+  var maintenant = new Date();
+  var dureeMs = premiereFois ? MEMBRES_LIEN_PREMIER_H * 3600 * 1000 : MEMBRES_LIEN_VALIDITE_MIN * 60 * 1000;
+  var jeton = jetonAleatoire(40);
+
+  f.getRange(ligne, COL.lien_jeton).setValue(jeton);
+  f.getRange(ligne, COL.lien_expiration).setValue(new Date(maintenant.getTime() + dureeMs));
+  f.getRange(ligne, COL.lien_dernier_envoi).setValue(maintenant);
+
+  var url = adresseSite(origine) + '/membres/connexion.html?lien=' + jeton;
+  var validite = premiereFois
+    ? (MEMBRES_LIEN_PREMIER_H >= 24 ? (MEMBRES_LIEN_PREMIER_H / 24) + ' jours' : MEMBRES_LIEN_PREMIER_H + ' heures')
+    : MEMBRES_LIEN_VALIDITE_MIN + ' minutes';
+  var sujet = premiereFois ? 'Ton accès Fluent & Forward est prêt' : 'Ton lien de connexion Fluent & Forward';
+  var intro = premiereFois
+    ? 'Ton compte vient d\'être validé. Clique sur le lien ci-dessous pour accéder à ton espace.'
+    : 'Voici ton lien pour accéder à ton espace.';
+  var note = 'Ce lien est valable ' + validite + ' et ne sert qu\'une fois. Pour te reconnecter plus tard, ' +
+    'indique simplement ton email sur la page de connexion : un nouveau lien t\'est envoyé aussitôt.';
+
+  MailApp.sendEmail(email, sujet,
+    'Bonjour ' + prenom + ',\n\n' + intro + '\n\n' + url + '\n\n' + note + '\n',
+    { name: 'Fluent & Forward', htmlBody:
+      '<p>Bonjour ' + echapper(prenom) + ',</p><p>' + intro + '</p>' +
+      '<p style="margin:26px 0"><a href="' + url + '" style="background:#1B6B4A;color:#fff;padding:13px 26px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Accéder à mon espace</a></p>' +
+      '<p style="color:#777;font-size:13px">' + note + '</p>' });
+}
+
+function membresDemandeLien(p) {
+  var email = String(p.email || '').trim().toLowerCase();
+  var m = trouverLigneMembre(email);
+
+  // Réponse identique que l'adresse soit membre ou non : un tiers ne
+  // peut pas en déduire qui a un compte.
+  if (!m || m.valeurs[COL.statut - 1] !== 'valide') return reponseJSON({ ok: true });
+  if (compteExpire(m.valeurs)) return reponseJSON({ ok: true, info: 'compte_expire' });
+
+  var dernier = m.valeurs[COL.lien_dernier_envoi - 1];
+  if (dernier && (new Date() - new Date(dernier)) < MEMBRES_LIEN_DELAI_SEC * 1000) {
     return reponseJSON({ ok: true, info: 'patienter' });
   }
 
-  var f = feuilleMembres();
-  var code = codeOtp();
-  var maintenant = new Date();
-  f.getRange(m.ligne, COL.otp_code).setValue(code);
-  f.getRange(m.ligne, COL.otp_expiration).setValue(new Date(maintenant.getTime() + MEMBRES_OTP_VALIDITE_MIN * 60 * 1000));
-  f.getRange(m.ligne, COL.otp_tentatives).setValue(0);
-  f.getRange(m.ligne, COL.otp_dernier_envoi).setValue(maintenant);
-
-  envoyerEmailOtp(m.valeurs[COL.prenom - 1], email, code, false);
-  return reponseJSON(reponseGenerique);
+  envoyerLien(m.ligne, m.valeurs[COL.prenom - 1], email, false, p.origine);
+  return reponseJSON({ ok: true });
 }
 
-// ---------- 3. Vérification du code ----------
+// ---------- 4. Ouverture du lien : ouvre une session ----------
 
-function membresVerifierOtp(corps) {
-  var email = String(corps.email || '').trim().toLowerCase();
-  var code = String(corps.code || '').trim();
-  var m = trouverLigneMembre(email);
-  if (!m || m.valeurs[COL.statut - 1] !== 'valide') {
-    return reponseJSON({ ok: false, erreur: 'compte_inconnu' });
-  }
+function membresOuvrirLien(p) {
+  var jeton = String(p.lien || '').trim();
+  if (jeton.length < 30) return reponseJSON({ ok: false, erreur: 'lien_invalide' });
+
+  var m = trouverLigneParColonne(COL.lien_jeton, jeton);
+  if (!m || m.valeurs[COL.statut - 1] !== 'valide') return reponseJSON({ ok: false, erreur: 'lien_invalide' });
+  if (compteExpire(m.valeurs)) return reponseJSON({ ok: false, erreur: 'compte_expire' });
 
   var f = feuilleMembres();
-  var tentatives = Number(m.valeurs[COL.otp_tentatives - 1] || 0);
-  if (tentatives >= MEMBRES_OTP_TENTATIVES) {
-    return reponseJSON({ ok: false, erreur: 'trop_de_tentatives' });
+  var expLien = m.valeurs[COL.lien_expiration - 1];
+  if (!expLien || new Date(expLien) < new Date()) {
+    f.getRange(m.ligne, COL.lien_jeton).setValue('');
+    return reponseJSON({ ok: false, erreur: 'lien_expire' });
   }
 
-  var codeAttendu = String(m.valeurs[COL.otp_code - 1] || '');
-  var expiration = m.valeurs[COL.otp_expiration - 1];
-  var expire = !expiration || new Date(expiration) < new Date();
-
-  if (!codeAttendu || expire || code !== codeAttendu) {
-    f.getRange(m.ligne, COL.otp_tentatives).setValue(tentatives + 1);
-    return reponseJSON({ ok: false, erreur: expire ? 'code_expire' : 'code_invalide' });
-  }
-
-  // Succès : le code est effacé (usage unique) et une session est ouverte.
   var maintenant = new Date();
-  var expirationCompte = new Date(m.valeurs[COL.date_expiration - 1]);
-  var expirationSession = new Date(maintenant.getTime() + MEMBRES_SESSION_J * 24 * 60 * 60 * 1000);
-  if (expirationSession > expirationCompte) expirationSession = expirationCompte;
+  var expCompte = new Date(m.valeurs[COL.date_expiration - 1]);
+  var expSession = new Date(maintenant.getTime() + MEMBRES_SESSION_J * 24 * 3600 * 1000);
+  if (expSession > expCompte) expSession = expCompte;
 
-  var jetonSession = jetonAleatoire(32);
-  f.getRange(m.ligne, COL.otp_code).setValue('');
-  f.getRange(m.ligne, COL.otp_expiration).setValue('');
-  f.getRange(m.ligne, COL.otp_tentatives).setValue(0);
-  f.getRange(m.ligne, COL.session_token).setValue(jetonSession);
-  f.getRange(m.ligne, COL.session_expiration).setValue(expirationSession);
+  // Une session encore valide est reprise plutôt que remplacée : se
+  // connecter sur le téléphone ne déconnecte pas l'ordinateur.
+  var session = String(m.valeurs[COL.session_token - 1] || '');
+  var finSession = m.valeurs[COL.session_expiration - 1];
+  if (!session || !finSession || new Date(finSession) < maintenant) session = jetonAleatoire(40);
 
-  return reponseJSON({ ok: true, session: jetonSession });
+  f.getRange(m.ligne, COL.lien_jeton).setValue('');
+  f.getRange(m.ligne, COL.lien_expiration).setValue('');
+  f.getRange(m.ligne, COL.session_token).setValue(session);
+  f.getRange(m.ligne, COL.session_expiration).setValue(expSession);
+
+  return reponseJSON({ ok: true, session: session });
 }
 
-// ---------- 4. Vérification de session + calcul des modules débloqués ----------
+// ---------- 5. Vérification de session + modules débloqués ----------
 
-function membresVerifierSession(corps) {
-  var token = String(corps.session || '').trim();
-  if (!token) return reponseJSON({ ok: false });
+function membresVerifierSession(p) {
+  var m = trouverLigneParColonne(COL.session_token, String(p.session || '').trim());
+  if (!m) return reponseJSON({ ok: false, erreur: 'session_inconnue' });
 
-  var f = feuilleMembres();
-  var valeurs = f.getDataRange().getValues();
-  for (var i = 1; i < valeurs.length; i++) {
-    if (String(valeurs[i][COL.session_token - 1]) === token) {
-      var expirationSession = valeurs[i][COL.session_expiration - 1];
-      if (!expirationSession || new Date(expirationSession) < new Date()) {
-        return reponseJSON({ ok: false, erreur: 'session_expiree' });
-      }
-
-      var dateValidation = new Date(valeurs[i][COL.date_validation - 1]);
-      var joursEcoules = Math.floor((new Date() - dateValidation) / (24 * 60 * 60 * 1000));
-      var semaineCourante = Math.floor(joursEcoules / 7) + 1;
-
-      return reponseJSON({
-        ok: true,
-        prenom: valeurs[i][COL.prenom - 1],
-        semaine_courante: semaineCourante,
-        date_expiration: valeurs[i][COL.date_expiration - 1],
-        programme: programmeDebloqueJusqua(semaineCourante)
-      });
-    }
+  var fin = m.valeurs[COL.session_expiration - 1];
+  if (!fin || new Date(fin) < new Date() || compteExpire(m.valeurs)) {
+    return reponseJSON({ ok: false, erreur: 'session_expiree' });
   }
-  return reponseJSON({ ok: false, erreur: 'session_inconnue' });
+
+  var dateValidation = new Date(m.valeurs[COL.date_validation - 1]);
+  var joursEcoules = Math.floor((new Date() - dateValidation) / (24 * 3600 * 1000));
+  var semaineCourante = Math.floor(joursEcoules / 7) + 1;
+
+  return reponseJSON({
+    ok: true,
+    prenom: m.valeurs[COL.prenom - 1],
+    semaine_courante: semaineCourante,
+    date_expiration: m.valeurs[COL.date_expiration - 1],
+    programme: programmeDebloqueJusqua(semaineCourante)
+  });
 }
 
 function programmeDebloqueJusqua(semaineCourante) {
-  var f = feuilleProgramme();
-  var valeurs = f.getDataRange().getValues();
+  var valeurs = feuilleProgramme().getDataRange().getValues();
   var resultat = [];
   for (var i = 1; i < valeurs.length; i++) {
     var semaine = Number(valeurs[i][0]);
@@ -403,15 +405,9 @@ function programmeDebloqueJusqua(semaineCourante) {
     var fichiers = String(valeurs[i][2] || '').split(';').map(function (entree) {
       var parties = entree.split('|');
       var fichier = (parties[0] || '').trim();
-      var libelle = (parties[1] || fichier).trim();
-      return { fichier: fichier, libelle: libelle };
-    }).filter(function (e) { return e.fichier; });
-    resultat.push({
-      semaine: semaine,
-      titre: valeurs[i][1],
-      fichiers: fichiers,
-      debloque: semaine <= semaineCourante
-    });
+      return { fichier: fichier, libelle: (parties[1] || fichier).trim() };
+    }).filter(function (x) { return x.fichier; });
+    resultat.push({ semaine: semaine, titre: valeurs[i][1], fichiers: fichiers, debloque: semaine <= semaineCourante });
   }
   resultat.sort(function (a, b) { return a.semaine - b.semaine; });
   return resultat;

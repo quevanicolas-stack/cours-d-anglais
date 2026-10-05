@@ -1,24 +1,26 @@
 # Espace membres
 
 Accès aux modules du Business English Accelerator, réservé aux personnes
-dont le compte a été validé par Aurélie. Pas de mot de passe stocké : une
-connexion se fait avec un code à usage unique envoyé par email (OTP),
-régénéré à chaque fois.
+dont le compte a été validé par Aurélie. Pas de mot de passe ni de code
+à recopier : on se connecte en cliquant sur un lien reçu par email,
+valable une seule fois.
 
 ## Parcours
 
 1. **Demande** — `landing/membres/inscription.html`. La personne indique
    son prénom et son email. La demande est enregistrée dans l'onglet
-   « Membres » du classeur, et Aurélie reçoit un email avec deux liens :
+   « Membres » du classeur, et Aurélie reçoit un email avec deux boutons :
    *Valider* / *Refuser*.
-2. **Décision d'Aurélie** — un clic sur *Valider* déclenche l'envoi du
-   premier code de connexion par email, et fixe la date de validation
-   (point de départ du calcul des 180 jours et des semaines). Un clic sur
-   *Refuser* ne déclenche aucun email vers la personne.
-3. **Connexion** — `landing/membres/connexion.html`. Email, puis code à
-   6 chiffres reçu par email (valable 10 minutes, usage unique). Les
-   connexions suivantes n'ont plus besoin d'Aurélie : un nouveau code est
-   renvoyé à chaque fois.
+2. **Décision d'Aurélie** — un clic sur *Valider* envoie à la personne un
+   lien de connexion (valable 3 jours) et fixe la date de validation
+   (point de départ des 180 jours et des semaines). Un clic sur *Refuser*
+   n'envoie rien à la personne.
+3. **Connexion** — le lien ouvre `landing/membres/connexion.html`, qui
+   connecte et redirige vers l'espace. Les fois suivantes, la personne
+   indique son email sur cette même page et reçoit aussitôt un nouveau
+   lien (valable 30 minutes), sans repasser par Aurélie. Une fois connectée,
+   elle le reste 14 jours sur cet appareil : la page de connexion l'envoie
+   alors directement dans son espace.
 4. **Espace** — `landing/membres/espace.html`. Liste les modules,
    débloqués semaine par semaine à partir de **la date de validation du
    compte de cette personne** (calendrier individuel, pas une cohorte

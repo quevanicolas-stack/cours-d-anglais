@@ -25,8 +25,13 @@
       <h1>Connexion</h1>
       <p class="chapeau">
         Pas de mot de passe à retenir : indique ton adresse email, et un
-        code à usage unique t'est envoyé pour te connecter.
+        lien de connexion t'est envoyé aussitôt. Un clic, et tu es dans
+        ton espace.
       </p>
+
+      <div id="etape-lien" hidden style="margin-top:28px">
+        <p class="chapeau">Connexion en cours…</p>
+      </div>
 
       <div id="etape-email" style="margin-top:28px">
         <form id="formulaire-email" novalidate>
@@ -36,23 +41,19 @@
                    placeholder="Ton adresse email" required aria-describedby="erreur-email-connexion">
             <span class="erreur-champ" id="erreur-email-connexion">Cette adresse email semble incomplète.</span>
           </div>
-          <button type="submit" class="bouton bouton-vert">Recevoir mon code</button>
+          <button type="submit" class="bouton bouton-vert">Recevoir mon lien</button>
           <p class="retour" role="status"></p>
         </form>
       </div>
 
-      <div id="etape-code" hidden style="margin-top:28px">
-        <p class="chapeau">Code envoyé à <strong id="email-affiche"></strong>.</p>
-        <form id="formulaire-code" novalidate style="margin-top:18px">
-          <div class="champ champ-code">
-            <label for="code">Code à 6 chiffres</label>
-            <input type="text" id="code" name="code" inputmode="numeric" pattern="[0-9]*"
-                   maxlength="6" placeholder="······" autocomplete="one-time-code" required>
-          </div>
-          <button type="submit" class="bouton bouton-vert">Me connecter</button>
-          <p class="retour" role="status"></p>
-        </form>
-        <p class="lien-discret"><a href="#" id="renvoyer-code">Renvoyer un code</a></p>
+      <div id="etape-envoye" hidden style="margin-top:28px">
+        <p class="chapeau">
+          Si <strong id="email-affiche"></strong> correspond à un compte
+          validé, un lien de connexion vient de t'être envoyé. Il est
+          valable 30 minutes et ne sert qu'une fois.
+        </p>
+        <p class="retour" id="retour-envoye" role="status"></p>
+        <p class="lien-discret">Rien reçu ? Regarde dans les indésirables, ou <a href="#" id="renvoyer-lien">renvoie un lien</a>.</p>
       </div>
 
       <p class="lien-discret">Pas encore de compte ? <a href="inscription.html">Demander un accès</a></p>

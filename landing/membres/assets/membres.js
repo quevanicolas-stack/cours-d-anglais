@@ -24,12 +24,17 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(valeur);
   }
 
-  function appeler(action, donnees) {
-    return fetch(COLLECTEUR, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(Object.assign({ type: "membre", action: action }, donnees))
-    }).then(function (reponse) { return reponse.json(); })
+  /* Appels en GET : c'est le chemin dont la page d'accueil lit déjà la
+     réponse sans souci (sessions disponibles). La réponse d'un POST vers
+     Apps Script, elle, n'était pas toujours lisible par le navigateur :
+     la demande partait bien, mais la page affichait une erreur. */
+  function appeler(op, donnees) {
+    var params = new URLSearchParams(Object.assign({ membre: "1", op: op }, donnees));
+    return fetch(COLLECTEUR + "?" + params.toString(), { cache: "no-store" })
+      .then(function (reponse) { return reponse.text(); })
+      .then(function (texte) {
+        try { return JSON.parse(texte); } catch (e) { return { ok: false, erreur: "reponse" }; }
+      })
       .catch(function () { return { ok: false, erreur: "reseau" }; });
   }
 
@@ -69,7 +74,7 @@
       bouton.disabled = true;
       bouton.textContent = "Envoi de la demande…";
 
-      appeler("demande_compte", { prenom: prenom.value.trim(), email: email.value.trim() })
+      appeler("demande_compte", { prenom: prenom.value.trim(), email: email.value.trim(), origine: location.origin })
         .then(function (reponse) {
           bouton.disabled = false;
           bouton.textContent = libelle;
@@ -83,7 +88,7 @@
           } else if (reponse.info === "deja_en_attente") {
             afficherRetour(retour, "Une demande est déjà en attente de validation pour cette adresse.");
           } else {
-            afficherRetour(retour, "Demande envoyée. Tu recevras un email dès qu'Aurélie l'aura validée.");
+            afficherRetour(retour, "Demande envoyée. Dès qu'Aurélie l'aura validée, tu recevras par email un lien pour accéder à ton espace.");
           }
         });
     });
@@ -93,25 +98,56 @@
 
   function initConnexion() {
     var etapeEmail = document.getElementById("etape-email");
-    var etapeCode = document.getElementById("etape-code");
-    if (!etapeEmail || !etapeCode) return;
+    var etapeEnvoye = document.getElementById("etape-envoye");
+    var etapeLien = document.getElementById("etape-lien");
+    if (!etapeEmail || !etapeEnvoye || !etapeLien) return;
 
     var formEmail = document.getElementById("formulaire-email");
     var champEmail = formEmail.querySelector("input[name=email]");
     var boutonEmail = formEmail.querySelector("button[type=submit]");
     var retourEmail = formEmail.querySelector(".retour");
-
-    var formCode = document.getElementById("formulaire-code");
-    var champCode = formCode.querySelector("input[name=code]");
-    var boutonCode = formCode.querySelector("button[type=submit]");
-    var retourCode = formCode.querySelector(".retour");
     var emailAffiche = document.getElementById("email-affiche");
-    var renvoyer = document.getElementById("renvoyer-code");
-
+    var retourEnvoye = document.getElementById("retour-envoye");
+    var renvoyer = document.getElementById("renvoyer-lien");
     var emailCourant = "";
 
-    function demanderCode() {
-      return appeler("demande_otp", { email: emailCourant });
+    function montrer(etape) {
+      etapeEmail.hidden = etape !== etapeEmail;
+      etapeEnvoye.hidden = etape !== etapeEnvoye;
+      etapeLien.hidden = etape !== etapeLien;
+    }
+
+    /* 1. Arrivée par le lien reçu par email */
+    var lien = new URLSearchParams(location.search).get("lien");
+    if (lien) {
+      // Le jeton ne doit pas rester dans l'historique ni dans un favori.
+      history.replaceState(null, "", location.pathname);
+      montrer(etapeLien);
+      appeler("ouvrir_lien", { lien: lien }).then(function (reponse) {
+        if (reponse.ok && reponse.session) {
+          try { localStorage.setItem(CLE_SESSION, reponse.session); } catch (e) {}
+          location.replace("espace.html");
+          return;
+        }
+        var messages = {
+          lien_expire: "Ce lien a expiré. Indique ton email ci-dessous pour en recevoir un nouveau.",
+          lien_invalide: "Ce lien a déjà servi ou n'est plus valable. Indique ton email ci-dessous pour en recevoir un nouveau.",
+          compte_expire: "Ton accès de 180 jours est terminé. Contacte Aurélie pour le renouveler.",
+          reseau: "Connexion impossible pour le moment. Vérifie ta connexion internet et rouvre le lien."
+        };
+        montrer(etapeEmail);
+        afficherRetour(retourEmail, messages[reponse.erreur] || messages.lien_invalide, true);
+      });
+    } else {
+      /* 2. Déjà connecté sur cet appareil : on entre directement. */
+      var session = null;
+      try { session = localStorage.getItem(CLE_SESSION); } catch (e) {}
+      if (session) { location.replace("espace.html"); return; }
+    }
+
+    /* 3. Demande d'un lien */
+    function demanderLien() {
+      return appeler("demande_lien", { email: emailCourant, origine: location.origin });
     }
 
     formEmail.addEventListener("submit", function (evenement) {
@@ -122,61 +158,37 @@
 
       emailCourant = champEmail.value.trim();
       boutonEmail.disabled = true;
-      boutonEmail.textContent = "Envoi du code…";
+      boutonEmail.textContent = "Envoi du lien…";
 
-      demanderCode().then(function (reponse) {
+      demanderLien().then(function (reponse) {
         boutonEmail.disabled = false;
-        boutonEmail.textContent = "Recevoir mon code";
+        boutonEmail.textContent = "Recevoir mon lien";
         if (!reponse.ok) {
-          afficherRetour(retourEmail, "Le code n'a pas pu être envoyé. Réessaie dans un instant.", true);
+          afficherRetour(retourEmail, "Le lien n'a pas pu être envoyé. Réessaie dans un instant.", true);
           return;
         }
         if (reponse.info === "compte_expire") {
-          afficherRetour(retourEmail, "Ce compte a dépassé sa durée d'accès de 180 jours. Contacte Aurélie pour le renouveler.", true);
+          afficherRetour(retourEmail, "Ton accès de 180 jours est terminé. Contacte Aurélie pour le renouveler.", true);
           return;
         }
-        // Réponse volontairement identique si l'email n'est pas membre :
-        // on passe à l'étape suivante dans tous les cas.
+        // Même écran que l'adresse soit membre ou non : on ne révèle pas qui a un compte.
         emailAffiche.textContent = emailCourant;
-        etapeEmail.hidden = true;
-        etapeCode.hidden = false;
-        champCode.focus();
-      });
-    });
-
-    formCode.addEventListener("submit", function (evenement) {
-      evenement.preventDefault();
-      var code = champCode.value.trim();
-      if (!/^\d{6}$/.test(code)) {
-        afficherRetour(retourCode, "Le code comporte 6 chiffres.", true);
-        return;
-      }
-
-      boutonCode.disabled = true;
-      boutonCode.textContent = "Vérification…";
-
-      appeler("verifier_otp", { email: emailCourant, code: code }).then(function (reponse) {
-        boutonCode.disabled = false;
-        boutonCode.textContent = "Me connecter";
-        if (!reponse.ok) {
-          var messages = {
-            code_invalide: "Ce code est incorrect.",
-            code_expire: "Ce code a expiré, demande-en un nouveau.",
-            trop_de_tentatives: "Trop d'essais : demande un nouveau code.",
-            compte_inconnu: "Aucun compte validé pour cette adresse."
-          };
-          afficherRetour(retourCode, messages[reponse.erreur] || "Code incorrect.", true);
-          return;
-        }
-        try { localStorage.setItem(CLE_SESSION, reponse.session); } catch (e) {}
-        window.location.href = "espace.html";
+        retourEnvoye.classList.remove("visible");
+        montrer(etapeEnvoye);
       });
     });
 
     renvoyer.addEventListener("click", function (evenement) {
       evenement.preventDefault();
-      afficherRetour(retourCode, "Nouveau code envoyé.");
-      demanderCode();
+      demanderLien().then(function (reponse) {
+        if (reponse.info === "patienter") {
+          afficherRetour(retourEnvoye, "Un lien vient d'être envoyé : patiente une minute avant d'en redemander un.");
+        } else if (reponse.ok) {
+          afficherRetour(retourEnvoye, "Nouveau lien envoyé.");
+        } else {
+          afficherRetour(retourEnvoye, "Le lien n'a pas pu être envoyé. Réessaie dans un instant.", true);
+        }
+      });
     });
   }
 
