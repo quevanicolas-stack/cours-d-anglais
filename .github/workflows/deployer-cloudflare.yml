@@ -2,9 +2,11 @@
 # www.fluentandforward.com) à chaque modification de main, ou à la demande
 # depuis l'onglet Actions. Remplace la connexion Git de Cloudflare.
 #
-# Secret GitHub requis (Settings → Secrets and variables → Actions) :
+# Secrets GitHub (Settings → Secrets and variables → Actions) :
 #   CLOUDFLARE_API_TOKEN  jeton Cloudflare du compte d'Aurélie, modèle
 #                         « Edit Cloudflare Workers » + D1 : Edit.
+#   SMTP_MOT_DE_PASSE     mot de passe de la boîte contact@ ; recopié à
+#                         chaque déploiement dans le secret du Worker.
 name: Déployer sur Cloudflare
 
 on:
@@ -38,3 +40,17 @@ jobs:
             exit 1
           fi
           tail -n 15 journal.txt | sed ':a;N;$!ba;s/\n/%0A/g' | sed 's/^/::notice title=wrangler deploy::/'
+      - name: Recopier le mot de passe de la boîte mail dans le Worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: a23a6b25645269aa18a75ed494f88d4d
+          SMTP_MOT_DE_PASSE: ${{ secrets.SMTP_MOT_DE_PASSE }}
+        shell: bash
+        run: |
+          if [ -z "$SMTP_MOT_DE_PASSE" ]; then
+            echo "::warning title=mot de passe::Secret GitHub SMTP_MOT_DE_PASSE absent : les emails ne partiront pas."
+            exit 0
+          fi
+          printf '%s' "$SMTP_MOT_DE_PASSE" | npx --yes wrangler@4 secret put SMTP_MOT_DE_PASSE --name fluentandforward > journal.txt 2>&1 \
+            && echo "::notice title=mot de passe::Secret SMTP_MOT_DE_PASSE mis à jour dans le Worker." \
+            || { echo "::error title=mot de passe::$(tail -n 20 journal.txt | sed ':a;N;$!ba;s/\n/%0A/g')"; exit 1; }
