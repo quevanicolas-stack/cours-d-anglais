@@ -1,0 +1,28 @@
+# Lit le journal des emails de l'espace membres, sans aucune adresse email
+# (le dépôt et ses journaux sont publics). Lancement à la demande.
+name: Diagnostic espace membres
+
+on:
+  workflow_dispatch:
+
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Derniers envois et état des comptes
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: a23a6b25645269aa18a75ed494f88d4d
+        shell: bash
+        run: |
+          set -o pipefail
+          requete() {
+            npx --yes wrangler@4 d1 execute fluentandforward-membres --remote --json --command "$1" 2>&1 \
+              | tail -n 40 | sed -e 's/%/%25/g' | sed ':a;N;$!ba;s/\n/%0A/g'
+          }
+          echo "::notice title=envois::$(requete "SELECT date, sujet, ok, erreur FROM envois ORDER BY id DESC LIMIT 6")"
+          echo "::notice title=comptes::$(requete "SELECT statut, dernier_lien, date_expiration FROM membres ORDER BY id DESC LIMIT 6")"
