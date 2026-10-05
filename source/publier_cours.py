@@ -16,6 +16,7 @@ sécurité du site (landing/_headers) ou par la navigation :
   des séances, pour circuler sans changer d'onglet.
 """
 import base64
+import json
 import pathlib
 import re
 import shutil
@@ -24,15 +25,10 @@ RACINE = pathlib.Path(__file__).resolve().parent.parent
 SOURCE = RACINE / "files" / "fluent-forward"
 SORTIE = RACINE / "landing" / "membres" / "cours"
 
-# Fichiers publiés, dans l'ordre du programme. Ajouter ici chaque
-# nouveau support au moment où il doit devenir accessible.
-PUBLIES = [
-    "module1-seance1.html",
-    "module1-seance2.html",
-    "module1-seance3.html",
-    "module1-vocabulaire.html",
-    "module1-grammaire.html",
-]
+# Les supports publiés sont ceux du programme : membres-serveur/programme.json,
+# le même fichier qui décide côté serveur de la semaine où chacun s'ouvre.
+PROGRAMME = RACINE / "membres-serveur" / "programme.json"
+PUBLIES = [s["fichier"] for bloc in json.loads(PROGRAMME.read_text(encoding="utf-8")) for s in bloc["supports"]]
 
 POLICES_GOOGLE = re.compile(
     r'<link rel="preconnect" href="https://fonts\.googleapis\.com">\n'

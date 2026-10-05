@@ -254,3 +254,41 @@ a:hover { color: var(--deep); text-decoration: underline; }
 @keyframes tourner { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .cercle { animation-duration: 2.4s; } }
 .detail-erreur { font-size: .78rem; color: var(--muted); margin-top: 10px; font-family: ui-monospace, Menlo, monospace; word-break: break-word; }
+
+/* ---------- Administration (admin.html) ---------- */
+.actions-entete { display: flex; align-items: center; gap: 18px; }
+.lien-admin { font-size: .85rem; font-weight: 700; }
+.admin-bloc { margin-top: 30px; }
+.admin-bloc h2 { margin-bottom: 8px; }
+.ajout { display: grid; grid-template-columns: 1fr 1.4fr auto; gap: 10px; margin-top: 16px; }
+.ajout input {
+  padding: 12px 14px; font: inherit; font-size: .95rem; background: var(--cream);
+  border: 2px solid transparent; border-radius: 10px;
+}
+.ajout input:focus { outline: none; border-color: var(--gold); }
+.ajout .bouton { width: auto; padding: 12px 22px; }
+.ligne-membre {
+  display: grid; grid-template-columns: 1.6fr 1fr auto; gap: 14px; align-items: center;
+  background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin-bottom: 8px;
+}
+.ligne-membre .qui b { font-family: var(--titre); display: block; }
+.ligne-membre .qui span, .ligne-membre .quand { font-size: .82rem; color: var(--muted); }
+.ligne-membre .boutons { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.ligne-membre button {
+  font-family: var(--titre); font-weight: 700; font-size: .78rem; border-radius: 8px; padding: 7px 12px;
+  border: 1px solid var(--line); background: #fff; color: var(--ink); cursor: pointer;
+}
+.ligne-membre button.vert { background: var(--green); border-color: var(--green); color: #fff; }
+.ligne-membre button.rouge { color: var(--red); border-color: rgba(168,69,47,.4); }
+.statut-membre { display: inline-block; font-family: var(--titre); font-weight: 700; font-size: .66rem;
+  letter-spacing: .06em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; margin-left: 6px;
+  vertical-align: middle; background: rgba(44,24,16,.08); color: var(--muted); }
+.statut-membre.en_attente { background: rgba(201,169,110,.25); color: #7a5a22; }
+.statut-membre.valide { background: rgba(27,107,74,.12); color: var(--green); }
+.envoi { font-size: .84rem; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.envoi .erreur-envoi { color: var(--red); display: block; }
+@media (max-width: 760px) {
+  .ajout { grid-template-columns: 1fr; }
+  .ligne-membre { grid-template-columns: 1fr; }
+  .ligne-membre .boutons { justify-content: flex-start; }
+}

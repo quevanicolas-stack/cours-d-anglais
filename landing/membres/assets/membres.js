@@ -1,39 +1,36 @@
 /* ==================================================================
    Fluent & Forward — espace membres
-   Inscription, connexion par code à usage unique (OTP), et affichage
-   du programme débloqué. Aucun mot de passe n'est jamais stocké ni
-   saisi : un nouveau code à six chiffres est envoyé par email à
-   chaque connexion.
+   Inscription, connexion par lien envoyé par email, et programme
+   débloqué semaine par semaine. Le serveur est celui du site
+   (Cloudflare Pages, dossier functions/) : la session tient dans un
+   cookie sécurisé que le navigateur garde tout seul, aucun mot de
+   passe n'est jamais demandé.
    ================================================================== */
 
 (function () {
   "use strict";
 
-  /* ------------------------------------------------------------------
-     RÉGLAGE — le seul bloc à modifier.
-     Adresse /exec du script du site (ADRESSE_COLLECTEUR dans
-     source/maquette.tpl.html), complété par docs/collecte/
-     espace-membres-apps-script.gs. Attention : le « collecteur » de
-     landing/guide/assets/script.js est un AUTRE projet Apps Script.
-     ------------------------------------------------------------------ */
-  var COLLECTEUR = "https://script.google.com/macros/s/AKfycbwK0XxvWhNiwoWVsROAHi7EFQFRMymFOcH5gxV-KSZ3C5F39DPcT1YxSp83iJq9oMbO/exec";
-
-  var CLE_SESSION = "ff_membre_session";
-
   function emailPlausible(valeur) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(valeur);
   }
 
-  /* Appels en GET : c'est le chemin dont la page d'accueil lit déjà la
-     réponse sans souci (sessions disponibles). La réponse d'un POST vers
-     Apps Script, elle, n'était pas toujours lisible par le navigateur :
-     la demande partait bien, mais la page affichait une erreur. */
-  function appeler(op, donnees) {
-    var params = new URLSearchParams(Object.assign({ membre: "1", op: op }, donnees));
-    return fetch(COLLECTEUR + "?" + params.toString(), { cache: "no-store" })
-      .then(function (reponse) { return reponse.text(); })
-      .then(function (texte) {
-        try { return JSON.parse(texte); } catch (e) { return { ok: false, erreur: "reponse" }; }
+  function appeler(action, donnees, methode) {
+    var url = "/api/membres/" + action;
+    var options = { method: methode || "POST", credentials: "same-origin", cache: "no-store" };
+    if (options.method === "GET") {
+      if (donnees) url += "?" + new URLSearchParams(donnees).toString();
+    } else {
+      options.headers = { "Content-Type": "application/json" };
+      options.body = JSON.stringify(donnees || {});
+    }
+    return fetch(url, options)
+      .then(function (reponse) {
+        return reponse.text().then(function (texte) {
+          var donneesReponse;
+          try { donneesReponse = JSON.parse(texte); } catch (e) { donneesReponse = { ok: false, erreur: "reponse" }; }
+          donneesReponse.statut = reponse.status;
+          return donneesReponse;
+        });
       })
       .catch(function () { return { ok: false, erreur: "reseau" }; });
   }
@@ -74,7 +71,7 @@
       bouton.disabled = true;
       bouton.textContent = "Envoi de la demande…";
 
-      appeler("demande_compte", { prenom: prenom.value.trim(), email: email.value.trim(), origine: location.origin })
+      appeler("demande", { prenom: prenom.value.trim(), email: email.value.trim() })
         .then(function (reponse) {
           bouton.disabled = false;
           bouton.textContent = libelle;
@@ -105,12 +102,8 @@
     return s;
   }
 
-  function sessionLocale() {
-    try { return localStorage.getItem(CLE_SESSION); } catch (e) { return null; }
-  }
-
-  function entrer(session) {
-    try { localStorage.setItem(CLE_SESSION, session); } catch (e) {}
+  function entrer() {
+    try { localStorage.removeItem("ff_membre_attente"); } catch (e) {}
     location.replace("espace.html");
   }
 
@@ -159,9 +152,9 @@
         retourLien.classList.remove("visible");
         var donnees = { lien: lien };
         if (ticketLien) donnees.t = ticketLien;
-        appeler("ouvrir_lien", donnees).then(function (reponse) {
-          if (reponse.ok && reponse.session) { try { localStorage.removeItem("ff_membre_attente"); } catch (e) {} entrer(reponse.session); return; }
-          if (reponse.erreur === "reseau" || reponse.erreur === "reponse" || reponse.erreur === "serveur") {
+        appeler("ouvrir", donnees).then(function (reponse) {
+          if (reponse.ok) { entrer(); return; }
+          if (reponse.erreur === "reseau" || reponse.erreur === "reponse") {
             afficherRetour(retourLien, "Le serveur ne répond pas pour le moment.", true);
             reessayerLien.hidden = false;
             return;
@@ -178,10 +171,11 @@
       reessayerLien.addEventListener("click", ouvrir);
       montrer(etapeLien);
       ouvrir();
-    } else if (sessionLocale()) {
+    } else {
       /* 2. Déjà connecté sur cet appareil : on entre directement. */
-      location.replace("espace.html");
-      return;
+      appeler("session", null, "GET").then(function (reponse) {
+        if (reponse.ok && !attente) entrer();
+      });
     }
 
     /* 3. Attente : la page interroge le serveur jusqu'à ce que le lien
@@ -211,10 +205,6 @@
       return null;
     }
 
-    function connecter(session) {
-      oublierAttente();
-      entrer(session);
-    }
 
     function arreterAttente() {
       if (attente) { clearTimeout(attente.minuteur); attente.actif = false; attente = null; }
@@ -238,20 +228,18 @@
 
       function tour() {
         if (!etat.actif) return;
-        var session = sessionLocale();
-        if (session) { connecter(session); return; }  // lien ouvert dans un autre onglet
         if (document.hidden) { etat.minuteur = setTimeout(tour, 8000); return; }
         var ecoule = Date.now() - etat.debut;
         if (ecoule > ATTENTE_ACTIVE_MS) { finAttente(); return; }
-        appeler("attendre_lien", { ticket: ticket }).then(function (reponse) {
+        appeler("attendre", { ticket: ticket }, "GET").then(function (reponse) {
           if (!etat.actif) return;
-          if (reponse.ok && reponse.session) { connecter(reponse.session); return; }
+          if (reponse.ok) { entrer(); return; }
           if (reponse.erreur === "ticket_inconnu") {
             oublierAttente();
             finAttente();
             return;
           }
-          etat.minuteur = setTimeout(tour, ecoule < 2 * 60 * 1000 ? 2500 : 5000);
+          etat.minuteur = setTimeout(tour, ecoule < 2 * 60 * 1000 ? 2000 : 4000);
         });
       }
       tour();
@@ -262,12 +250,8 @@
       if (!document.hidden && attente) attendre();
     });
 
-    window.addEventListener("storage", function (evenement) {
-      if (evenement.key === CLE_SESSION && evenement.newValue && attente) connecter(evenement.newValue);
-    });
-
     function demanderLien() {
-      return appeler("demande_lien", { email: emailCourant, origine: location.origin, ticket: ticket });
+      return appeler("lien", { email: emailCourant, ticket: ticket });
     }
 
     function ecranAttente(texteTitre) {
@@ -352,14 +336,14 @@
 
   var CLE_CACHE = "ff_membre_cache";
   var CLE_ACCUEIL_VU = "ff_accueil_vu";
-  var ACCUEIL_MIN_MS = 1600;
+  var ACCUEIL_MIN_MS = 900;
 
   function lireCache() {
     try { return JSON.parse(localStorage.getItem(CLE_CACHE) || "null"); } catch (e) { return null; }
   }
 
-  function oublierSession() {
-    try { localStorage.removeItem(CLE_SESSION); localStorage.removeItem(CLE_CACHE); } catch (e) {}
+  function oublierCache() {
+    try { localStorage.removeItem(CLE_CACHE); } catch (e) {}
   }
 
   function echapper(texte) {
@@ -393,10 +377,6 @@
     var vueModule = document.getElementById("vue-module");
     var vueErreur = document.getElementById("vue-erreur");
     var accueil = document.getElementById("accueil");
-
-    var jeton = null;
-    try { jeton = localStorage.getItem(CLE_SESSION); } catch (e) {}
-    if (!jeton) { location.replace("connexion.html"); return; }
 
     var donnees = null;
 
@@ -479,8 +459,9 @@
     }
 
     function charger() {
-      appeler("verifier_session", { session: jeton }).then(function (reponse) {
+      appeler("session", null, "GET").then(function (reponse) {
         if (reponse.ok) {
+          document.getElementById("lien-admin").hidden = !reponse.admin;
           donnees = reponse;
           try { localStorage.setItem(CLE_CACHE, JSON.stringify(reponse)); } catch (e) {}
           afficher();
@@ -489,17 +470,16 @@
         }
         // Seul un refus explicite du serveur déconnecte. Une lenteur ou une
         // panne passagère ne doit jamais faire perdre la session.
-        if (reponse.erreur === "session_inconnue" || reponse.erreur === "session_expiree") {
-          oublierSession();
+        if (reponse.statut === 401) {
+          oublierCache();
           location.replace("connexion.html");
           return;
         }
         if (!donnees) {
           document.getElementById("detail-erreur").textContent =
             "Code : " + (reponse.erreur || "inconnu") + " — " + ({
-              reponse: "Google a renvoyé une page au lieu des données (souvent une autorisation à renouveler dans Apps Script)",
-              reseau: "serveur injoignable ou connexion internet coupée",
-              serveur: "erreur dans le script : " + (reponse.detail || "")
+              reponse: "le serveur a renvoyé une réponse illisible (statut " + reponse.statut + ")",
+              reseau: "serveur injoignable ou connexion internet coupée"
             }[reponse.erreur] || reponse.detail || "");
           montrer(vueErreur);
           masquerAccueil();
@@ -542,9 +522,97 @@
       charger();
     });
     document.getElementById("deconnexion").addEventListener("click", function () {
-      oublierSession();
-      location.href = "connexion.html";
+      oublierCache();
+      appeler("deconnexion").then(function () { location.href = "connexion.html"; });
     });
+  }
+
+  /* ---------- Page admin.html ---------- */
+
+  function dateCourte(iso) {
+    if (!iso) return "—";
+    var d = new Date(iso);
+    return isNaN(d) ? "—" : d.toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
+  }
+
+  var STATUTS = { en_attente: "En attente", valide: "Actif", refuse: "Refusé", revoque: "Révoqué" };
+
+  function initAdmin() {
+    var zone = document.getElementById("admin");
+    if (!zone) return;
+    var liste = document.getElementById("liste-membres");
+    var envois = document.getElementById("liste-envois");
+    var resume = document.getElementById("admin-resume");
+
+    function boutons(m) {
+      var expire = m.date_expiration && new Date(m.date_expiration) < new Date();
+      var b = [];
+      if (m.statut === "en_attente") b.push(["valider", "Valider", "vert"], ["refuser", "Refuser", "rouge"]);
+      else if (m.statut === "valide") {
+        if (expire) b.push(["prolonger", "Rouvrir 180 jours", "vert"]);
+        else b.push(["prolonger", "Prolonger de 180 jours", ""]);
+        b.push(["revoquer", "Révoquer", "rouge"]);
+      } else b.push(["valider", "Valider", "vert"]);
+      return b.map(function (x) {
+        return '<button type="button" class="' + x[2] + '" data-action="' + x[0] + '" data-id="' + m.id + '">' + x[1] + "</button>";
+      }).join("");
+    }
+
+    function charger() {
+      appeler("admin", null, "GET").then(function (r) {
+        if (r.statut === 401 || r.statut === 403) { location.replace("connexion.html"); return; }
+        if (!r.ok) { resume.textContent = "La liste n'a pas pu être chargée (" + (r.erreur || "erreur") + ")."; return; }
+        var attente = r.membres.filter(function (m) { return m.statut === "en_attente"; }).length;
+        var actifs = r.membres.filter(function (m) { return m.statut === "valide" && new Date(m.date_expiration) > new Date(); }).length;
+        resume.textContent = actifs + " membre" + (actifs > 1 ? "s" : "") + " actif" + (actifs > 1 ? "s" : "") +
+          (attente ? " · " + attente + " demande" + (attente > 1 ? "s" : "") + " en attente" : "") + ".";
+        liste.innerHTML = r.membres.map(function (m) {
+          var expire = m.statut === "valide" && m.date_expiration && new Date(m.date_expiration) < new Date();
+          var libelle = expire ? "Expiré" : (STATUTS[m.statut] || m.statut);
+          var quand = m.statut === "en_attente" ? "Demande du " + dateCourte(m.date_demande)
+            : m.statut === "valide" ? "Accès jusqu'au " + dateCourte(m.date_expiration) + " · " + m.appareils + " appareil" + (m.appareils > 1 ? "s" : "") + " connecté" + (m.appareils > 1 ? "s" : "")
+            : "Demande du " + dateCourte(m.date_demande);
+          return '<div class="ligne-membre"><div class="qui"><b>' + echapper(m.prenom) +
+            '<span class="statut-membre ' + (expire ? "" : echapper(m.statut)) + '">' + libelle + "</span></b>" +
+            "<span>" + echapper(m.email) + '</span></div><div class="quand">' + quand + "</div>" +
+            '<div class="boutons">' + boutons(m) + "</div></div>";
+        }).join("") || '<p class="vide">Aucun membre pour le moment.</p>';
+        envois.innerHTML = r.envois.map(function (e) {
+          return '<div class="envoi">' + dateCourte(e.date) + " · " + echapper(e.destinataire) + " · " + echapper(e.sujet) +
+            (e.ok ? "" : '<span class="erreur-envoi">Échec : ' + echapper(e.erreur) + "</span>") + "</div>";
+        }).join("") || '<p class="vide">Aucun email envoyé pour le moment.</p>';
+      });
+    }
+
+    liste.addEventListener("click", function (evenement) {
+      var bouton = evenement.target.closest("button[data-action]");
+      if (!bouton) return;
+      var action = bouton.getAttribute("data-action");
+      if (action === "revoquer" && !confirm("Révoquer cet accès ? La personne sera déconnectée de tous ses appareils.")) return;
+      bouton.disabled = true;
+      appeler("admin", { action: action, id: Number(bouton.getAttribute("data-id")) }).then(function (r) {
+        if (!r.ok) alert("Action impossible (" + (r.erreur || "erreur") + ").");
+        else if (r.envoye === false) alert("C'est fait, mais l'email n'a pas pu partir : voir « Derniers emails envoyés ».");
+        charger();
+      });
+    });
+
+    var formulaire = document.getElementById("formulaire-ajout");
+    var retour = document.getElementById("retour-ajout");
+    formulaire.addEventListener("submit", function (evenement) {
+      evenement.preventDefault();
+      var prenom = formulaire.prenom.value.trim();
+      var email = formulaire.email.value.trim();
+      if (!prenom || !emailPlausible(email)) { afficherRetour(retour, "Indique un prénom et une adresse email valide.", true); return; }
+      appeler("admin", { action: "ajouter", prenom: prenom, email: email }).then(function (r) {
+        if (!r.ok) { afficherRetour(retour, "Ajout impossible (" + (r.erreur || "erreur") + ").", true); return; }
+        formulaire.reset();
+        afficherRetour(retour, r.envoye ? "Membre ajouté : son lien de connexion est parti." : "Membre ajouté, mais l'email n'a pas pu partir.", !r.envoye);
+        charger();
+      });
+    });
+
+    charger();
   }
 
   function initAnnee() {
@@ -557,6 +625,7 @@
     initInscription();
     initConnexion();
     initEspace();
+    initAdmin();
     initAnnee();
   });
 })();
