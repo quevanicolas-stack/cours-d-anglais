@@ -76,8 +76,8 @@ avoir chacune leur `page-03.mp3` sans s'écraser.
 - Séance 1 : enregistrements des diapositives 02, 03, 05, 06, 08, 11
   et 14 ; les anciens sons (04 et 10) ont été retirés.
 - Les trois séances : même lecteur à bouton rond (lecture, pause,
-  relecture) (anneau de progression), sur
-  les diapositives indiquées par leurs attributs `data-audio`.
+  relecture, anneau de progression), sur les diapositives indiquées par
+  leurs attributs `data-audio`.
 
 ## Publier les supports (`source/publier_cours.py`)
 
