@@ -86,47 +86,37 @@ attributs `data-audio`.
 
 ## Mise en route dans Cloudflare (une seule fois)
 
-Dans le tableau de bord Cloudflare, compte qui héberge le projet Pages
-`fluentandforward` :
+La liaison à la base et les réglages non secrets sont déclarés dans
+`wrangler.jsonc`, à la racine du dépôt : ce fichier fait foi pour le
+projet Pages `fluentandforward`, ils ne se modifient plus dans le tableau
+de bord. Reste à faire dans Cloudflare :
 
-1. **Base de données** — Storage & Databases → D1 → *Create database*,
-   nom `fluentandforward-membres`. Ouvrir la base → *Console*, coller tout
-   le contenu de `migrations/0001_espace_membres.sql`, exécuter.
-2. **Liaison** — Workers & Pages → `fluentandforward` → Settings →
-   Bindings → *Add* → D1 database : nom de variable `DB`, base
-   `fluentandforward-membres`. À faire pour **Production** et pour
-   **Preview**.
-3. **Variables** — même page, Settings → Variables and Secrets, pour
-   Production et Preview :
+1. **Créer les tables** — Storage & databases → D1 SQL database →
+   `fluentandforward-membres` → *Console* : coller tout le contenu de
+   `migrations/0001_espace_membres.sql`, exécuter.
+2. **Mot de passe de la boîte mail** — Workers & Pages → projet Pages
+   `fluentandforward` → Settings → Variables and Secrets : ajouter
+   `SMTP_MOT_DE_PASSE`, type **Secret**, en Production et en Preview.
+3. **Redéployer** — Deployments → *Retry deployment*.
 
-   | Nom | Type | Valeur |
-   |---|---|---|
-   | `SMTP_HOTE` | Texte | serveur SMTP indiqué par LWS pour la boîte (souvent `mail.fluentandforward.com`) |
-   | `SMTP_PORT` | Texte | `465` |
-   | `SMTP_UTILISATEUR` | Texte | `contact@fluentandforward.com` |
-   | `SMTP_MOT_DE_PASSE` | **Secret** | mot de passe de la boîte contact@ |
-   | `ADMIN_EMAILS` | Texte | `contact@fluentandforward.com` |
+Le serveur d'envoi (`SMTP_HOTE` dans `wrangler.jsonc`) doit être celui
+qu'indique LWS pour la boîte contact@. Si un email ne part pas, la page
+d'administration affiche l'erreur exacte. « certificat » : mettre dans
+`SMTP_HOTE` le nom de serveur que LWS indique dans son panneau (celui que
+couvre son certificat). « mot de passe refusé » : vérifier le secret.
 
-4. **Redéployer** — Deployments → dernier déploiement → *Retry
-   deployment* : les liaisons et variables ne s'appliquent qu'aux
-   déploiements suivants.
-
-Si un email ne part pas, la page d'administration affiche l'erreur
-exacte. « certificat » : remplacer `SMTP_HOTE` par le nom de serveur que
-LWS indique dans son panneau (celui que couvre son certificat).
-« mot de passe refusé » : vérifier `SMTP_MOT_DE_PASSE`.
-
-**Ancien projet Workers** : le dépôt est aussi déployé par un projet
+**Ancien projet Workers** : le dépôt était aussi déployé par un projet
 *Workers* `fluentandforward` (vestige du premier déploiement, adresse en
-`.workers.dev`). Il ne fait pas tourner `functions/` : les cours y sont
-donc servis sans verrou. Le supprimer (Workers & Pages → le projet
-Workers → Settings → Delete), ainsi que `wrangler.jsonc`.
+`.workers.dev`). `wrangler.jsonc` étant désormais une configuration Pages,
+ses constructions échouent : c'est attendu. Le supprimer (Workers & Pages
+→ le projet Workers → Settings → Delete) ; il servait d'ailleurs les cours
+sans verrou.
 
 ## Tester en local
 
-    cp -r landing functions membres-serveur migrations /tmp/essai/
-    # dans /tmp/essai : un wrangler.toml avec pages_build_output_dir,
-    # la liaison D1 « DB » et des variables SMTP de test, puis
+    cp -r landing functions membres-serveur migrations wrangler.jsonc /tmp/essai/
+    # dans /tmp/essai : remplacer les variables SMTP par celles d'un faux
+    # serveur local (SMTP_SECURITE = "aucune"), puis
     npx wrangler d1 execute fluentandforward-membres --local --file migrations/0001_espace_membres.sql
     npx wrangler pages dev
 

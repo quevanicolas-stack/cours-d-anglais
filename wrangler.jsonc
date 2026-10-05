@@ -1,11 +1,27 @@
 {
-  // Site statique Fluent & Forward : aucun code de serveur, seulement des
-  // fichiers à servir tels quels depuis le dossier landing/. Le nom doit
-  // rester exactement "fluentandforward" : c'est lui qui donne l'adresse
-  // fluentandforward.pages.dev / le domaine personnalisé branché dessus.
+  // Configuration du projet Cloudflare Pages « fluentandforward ».
+  // Ce fichier fait foi : la liaison à la base et les réglages ci-dessous
+  // ne se modifient plus dans le tableau de bord, mais ici.
+  // Le mot de passe de la boîte mail n'y figure jamais : c'est un secret
+  // (Settings → Variables and Secrets → SMTP_MOT_DE_PASSE, type Secret).
   "name": "fluentandforward",
-  "compatibility_date": "2025-09-05",
-  "assets": {
-    "directory": "./landing"
+  "pages_build_output_dir": "./landing",
+  "compatibility_date": "2026-09-01",
+
+  // Base de l'espace membres (schéma : migrations/0001_espace_membres.sql).
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "fluentandforward-membres",
+      "database_id": "cf259dfe-8b75-460f-bb31-c11efd4a071c"
+    }
+  ],
+
+  // Envoi des emails par la boîte contact@ hébergée chez LWS.
+  "vars": {
+    "SMTP_HOTE": "mail.fluentandforward.com",
+    "SMTP_PORT": "465",
+    "SMTP_UTILISATEUR": "contact@fluentandforward.com",
+    "ADMIN_EMAILS": "contact@fluentandforward.com"
   }
 }
