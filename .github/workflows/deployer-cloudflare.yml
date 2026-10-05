@@ -28,4 +28,13 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: a23a6b25645269aa18a75ed494f88d4d
-        run: npx --yes wrangler@4 deploy
+        shell: bash
+        run: |
+          set -o pipefail
+          if ! npx --yes wrangler@4 deploy 2>&1 | tee journal.txt; then
+            # L'erreur est recopiée en annotation, lisible sans ouvrir le journal.
+            message=$(tail -n 60 journal.txt | sed -e 's/%/%25/g' -e 's/\x1b\[[0-9;]*m//g' | sed ':a;N;$!ba;s/\n/%0A/g')
+            echo "::error title=wrangler deploy::${message}"
+            exit 1
+          fi
+          tail -n 15 journal.txt | sed ':a;N;$!ba;s/\n/%0A/g' | sed 's/^/::notice title=wrangler deploy::/'
