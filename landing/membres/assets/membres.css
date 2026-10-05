@@ -1,0 +1,165 @@
+/* ==================================================================
+   Fluent & Forward — espace membres
+   Même charte que le reste du site (voir landing/guide/assets/style.css).
+   ================================================================== */
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --cream:  #FAF7F2;
+  --ink:    #2C1810;
+  --green:  #1B6B4A;
+  --gold:   #C9A96E;
+  --sand:   #E8DDD0;
+  --deep:   #10382A;
+  --deeper: #0B2A20;
+  --muted:  rgba(44, 24, 16, .60);
+  --line:   rgba(44, 24, 16, .13);
+  --red:    #A8452F;
+
+  --muted-clair: rgba(250, 247, 242, .70);
+  --line-clair:  rgba(250, 247, 242, .18);
+  --titre: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+  --texte: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
+  --largeur: 680px;
+  --rayon: 14px;
+  --transition: .18s ease;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--texte);
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--cream);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+h1, h2, h3 {
+  font-family: var(--titre);
+  font-weight: 800;
+  line-height: 1.14;
+  letter-spacing: -.02em;
+  text-wrap: balance;
+}
+h1 { font-size: clamp(1.5rem, 2.6vw, 2.1rem); }
+h2 { font-size: 1.2rem; }
+
+p { margin-bottom: 1.05em; }
+p:last-child { margin-bottom: 0; }
+
+a { color: var(--green); text-decoration: none; transition: color var(--transition); }
+a:hover { color: var(--deep); text-decoration: underline; }
+
+:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+.contenu { width: 100%; max-width: var(--largeur); margin: 0 auto; padding: 0 24px; }
+
+/* ---------- Barre supérieure ---------- */
+.entete {
+  position: sticky; top: 0; z-index: 60;
+  background: rgba(250, 247, 242, .95);
+  backdrop-filter: blur(9px);
+  border-bottom: 1px solid var(--line);
+}
+.barre {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 18px; min-height: 64px; max-width: 920px; margin: 0 auto; padding: 0 24px;
+}
+.marque {
+  font-family: var(--titre); font-weight: 800; font-size: 1.05rem;
+  color: var(--green); letter-spacing: -.02em;
+}
+.marque:hover { text-decoration: none; color: var(--deep); }
+
+/* ---------- Cadre central ---------- */
+.cadre {
+  padding: 56px 0 72px;
+}
+.carte {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--rayon);
+  padding: 36px 32px;
+  box-shadow: 0 18px 44px rgba(11, 42, 32, .08);
+}
+.oeil {
+  display: inline-block; font-family: var(--titre); font-weight: 700;
+  font-size: .68rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--green); margin-bottom: 14px;
+}
+.chapeau { font-size: 1rem; color: var(--muted); margin-top: 6px; }
+
+/* ---------- Champs ---------- */
+.champ { margin-bottom: 18px; }
+.champ label {
+  display: block; font-family: var(--titre); font-weight: 700; font-size: .78rem;
+  letter-spacing: .04em; text-transform: uppercase; margin-bottom: 7px; color: var(--muted);
+}
+.champ input {
+  width: 100%; padding: 14px 16px; font-family: var(--texte); font-size: 1rem;
+  color: var(--ink); background: var(--cream); border: 2px solid transparent;
+  border-radius: 10px; transition: border-color var(--transition), box-shadow var(--transition);
+}
+.champ input::placeholder { color: rgba(44, 24, 16, .4); }
+.champ input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,169,110,.28); }
+.champ input[aria-invalid="true"] { border-color: var(--red); }
+
+.champ-code input {
+  text-align: center; font-family: var(--titre); font-weight: 800;
+  font-size: 1.6rem; letter-spacing: .35em; padding-left: 10px;
+}
+
+.erreur-champ { display: none; font-size: .86rem; margin-top: 7px; color: var(--red); }
+.erreur-champ.visible { display: block; }
+
+.retour {
+  display: none; margin-top: 18px; padding: 14px 16px; border-radius: 10px;
+  font-size: .95rem; line-height: 1.55;
+  background: rgba(27,107,74,.08); border: 1px solid rgba(27,107,74,.3); color: var(--deep);
+}
+.retour.visible { display: block; }
+.retour.est-erreur { background: rgba(168,69,47,.08); border-color: rgba(168,69,47,.35); color: var(--red); }
+
+/* ---------- Boutons ---------- */
+.bouton {
+  display: inline-block; width: 100%; font-family: var(--titre); font-weight: 700;
+  font-size: 1rem; padding: 15px 28px; border: none; border-radius: 10px;
+  cursor: pointer; text-align: center; line-height: 1.25;
+  transition: background var(--transition), transform var(--transition);
+}
+.bouton:hover { transform: translateY(-1px); }
+.bouton-vert { background: var(--green); color: #fff; }
+.bouton-vert:hover { background: var(--deep); }
+.bouton:disabled { opacity: .6; cursor: progress; transform: none; }
+
+.lien-discret { display: inline-block; margin-top: 16px; font-size: .9rem; color: var(--muted); }
+.lien-discret a { color: var(--green); }
+
+/* ---------- Programme (espace.html) ---------- */
+.semaine-bloc { margin-bottom: 22px; }
+.semaine-titre {
+  font-family: var(--titre); font-weight: 700; font-size: .78rem;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
+}
+.module-carte {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  background: #fff; border: 1px solid var(--line); border-radius: 12px;
+  padding: 18px 20px; margin-bottom: 10px;
+}
+.module-carte.verrouille { background: var(--sand); opacity: .75; }
+.module-nom { font-family: var(--titre); font-weight: 700; font-size: .98rem; }
+.module-etat { font-size: .82rem; color: var(--muted); margin-top: 3px; }
+.module-carte .bouton { width: auto; padding: 10px 18px; font-size: .88rem; }
+.cadenas { flex: 0 0 auto; color: var(--muted); }
+
+.entete-espace { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+.deconnexion { font-size: .85rem; color: var(--muted); cursor: pointer; background: none; border: none; text-decoration: underline; }
+
+@media (max-width: 640px) {
+  .carte { padding: 28px 22px; }
+  .module-carte { flex-direction: column; align-items: flex-start; }
+}

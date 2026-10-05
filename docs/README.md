@@ -32,13 +32,16 @@ landing/                      ← publié
 ├── guide/                    Page de capture du guide gratuit + PDF
 ├── parcours-7f2q.html        Ancien tableau de bord interne (parcours visiteurs), superseded
 ├── suiviparcours/            Lien court vers le tableau de bord live (Apps Script)
+├── membres/                  Espace membres : inscription, connexion par code, modules du cours
 └── assets/                   Polices locales, images, scripts
 
 docs/                         ← jamais publié
 ├── README.md                 Ce fichier
 ├── DEPLOIEMENT.md            Mise en ligne (toujours valable : repo, branche, dossier landing)
 ├── TRANSFERT.md              Passage du projet sur les comptes d'Aurélie
+├── ESPACE-MEMBRES.md         Espace membres : parcours, mise en place côté Google, limites
 └── collecte/                 Ancienne doc de collecte — voir avertissement ci-dessous
+    └── espace-membres-apps-script.gs   Code serveur de l'espace membres, à ajouter au script existant
 ```
 
 ## Reconstruire le site

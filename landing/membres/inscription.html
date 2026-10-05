@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demander un accès — Espace membres | Fluent &amp; Forward</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/polices/polices.css">
+<link rel="stylesheet" href="assets/membres.css">
+</head>
+<body>
+
+<header class="entete">
+  <div class="barre">
+    <a class="marque" href="../index.html">Fluent &amp; Forward</a>
+    <a href="connexion.html" style="font-size:.9rem">J'ai déjà un compte</a>
+  </div>
+</header>
+
+<main class="cadre">
+  <div class="contenu">
+    <div class="carte">
+      <span class="oeil">Espace membres</span>
+      <h1>Demander un accès</h1>
+      <p class="chapeau">
+        Ta demande est transmise à Aurélie, qui la valide manuellement.
+        Une fois validée, tu reçois ton premier code de connexion par
+        email — aucun mot de passe à créer ni à retenir.
+      </p>
+
+      <form id="formulaire-inscription" novalidate style="margin-top:28px">
+        <div class="champ">
+          <label for="prenom">Ton prénom</label>
+          <input type="text" id="prenom" name="prenom" autocomplete="given-name"
+                 placeholder="Ton prénom" required aria-describedby="erreur-prenom">
+          <span class="erreur-champ" id="erreur-prenom">Indique ton prénom.</span>
+        </div>
+        <div class="champ">
+          <label for="email">Ton adresse email</label>
+          <input type="email" id="email" name="email" autocomplete="email"
+                 placeholder="Ton adresse email" required aria-describedby="erreur-email">
+          <span class="erreur-champ" id="erreur-email">Cette adresse email semble incomplète.</span>
+        </div>
+
+        <button type="submit" class="bouton bouton-vert">Envoyer ma demande</button>
+        <p class="retour" role="status"></p>
+      </form>
+
+      <p class="lien-discret">Déjà un compte validé ? <a href="connexion.html">Se connecter</a></p>
+    </div>
+  </div>
+</main>
+
+<script src="assets/membres.js"></script>
+</body>
+</html>

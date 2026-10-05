@@ -4,9 +4,11 @@ Deux choses dans ce dépôt :
 
 | Dossier | Rôle |
 | --- | --- |
-| `landing/` | Le site publié en ligne. **Tout ce qui s'y trouve est public.** |
+| `landing/` | Le site publié en ligne. **Tout ce qui s'y trouve est public**, à l'exception de `landing/membres/` qui n'est pas indexé ni lié publiquement (voir plus bas). |
 | `docs/` | Documentation et collecteurs de prospects. Jamais publié. |
 | `files/` | Supports de cours du Business English Accelerator |
 
-Commencer par [`docs/README.md`](docs/README.md) pour la landing page, et
-[`docs/DEPLOIEMENT.md`](docs/DEPLOIEMENT.md) pour la mise en ligne.
+Commencer par [`docs/README.md`](docs/README.md) pour la landing page,
+[`docs/DEPLOIEMENT.md`](docs/DEPLOIEMENT.md) pour la mise en ligne, et
+[`docs/ESPACE-MEMBRES.md`](docs/ESPACE-MEMBRES.md) pour l'espace membres
+(inscription, connexion par code, déblocage des modules).

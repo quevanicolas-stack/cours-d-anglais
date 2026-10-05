@@ -78,3 +78,10 @@
 
 /suiviparcours/*
   X-Robots-Tag: noindex, nofollow
+
+# Espace membres : réservé aux comptes validés par Aurélie. Comme pour
+# le PDF du guide, l'adresse exacte reste techniquement devinable par
+# qui la connaît déjà — un verrou réel exigerait un hébergement qui
+# exécute du code pour chaque fichier. Non indexé par précaution.
+/membres/*
+  X-Robots-Tag: noindex, nofollow
