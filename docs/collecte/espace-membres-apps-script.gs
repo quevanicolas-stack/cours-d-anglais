@@ -73,7 +73,7 @@ var MEMBRES_OTP_DELAI_SEC    = 60;    // délai minimum entre deux envois de cod
 var MEMBRES_SESSION_J        = 14;    // durée d'une session après connexion réussie
 
 var MEMBRES_EMAIL_AURELIE    = 'contact@fluentandforward.com';
-var MEMBRES_URL_SCRIPT       = 'https://script.google.com/macros/s/AKfycbwg_-N5wG5108h1O2mqxfWmsFOeUDO_cp8XDzdzyCTCBQ3PZn7zTqqC6006yeAm1rh7/exec';
+var MEMBRES_URL_SCRIPT       = 'https://script.google.com/macros/s/AKfycbwK0XxvWhNiwoWVsROAHi7EFQFRMymFOcH5gxV-KSZ3C5F39DPcT1YxSp83iJq9oMbO/exec';
 
 // ---------- Utilitaires communs ----------
 

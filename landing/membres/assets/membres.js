@@ -11,11 +11,12 @@
 
   /* ------------------------------------------------------------------
      RÉGLAGE — le seul bloc à modifier.
-     Même adresse /exec que le reste du site (voir landing/guide/
-     assets/script.js) : c'est le même projet Apps Script, complété
-     par docs/collecte/espace-membres-apps-script.gs.
+     Adresse /exec du script du site (ADRESSE_COLLECTEUR dans
+     source/maquette.tpl.html), complété par docs/collecte/
+     espace-membres-apps-script.gs. Attention : le « collecteur » de
+     landing/guide/assets/script.js est un AUTRE projet Apps Script.
      ------------------------------------------------------------------ */
-  var COLLECTEUR = "https://script.google.com/macros/s/AKfycbwg_-N5wG5108h1O2mqxfWmsFOeUDO_cp8XDzdzyCTCBQ3PZn7zTqqC6006yeAm1rh7/exec";
+  var COLLECTEUR = "https://script.google.com/macros/s/AKfycbwK0XxvWhNiwoWVsROAHi7EFQFRMymFOcH5gxV-KSZ3C5F39DPcT1YxSp83iJq9oMbO/exec";
 
   var CLE_SESSION = "ff_membre_session";
 
