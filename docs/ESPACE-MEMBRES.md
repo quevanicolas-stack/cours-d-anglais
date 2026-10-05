@@ -47,18 +47,37 @@ valable une seule fois.
 une erreur réseau** — c'est attendu, il n'y a rien à corriger dans le
 code pour ça.
 
-## Narration audio des séances 2 et 3
+## Narration audio
 
-Les fichiers intègrent le lecteur de narration (bouton rond en haut à
-droite, anneau de progression). Les fichiers audio sont fournis dans
-`landing/membres/cours/audio/` (et mirroirés dans `files/fluent-forward/
-audio/`) : douze mp3 correspondant aux attributs `data-audio` des
-diapositives 03, 07, 11 et 14 des séances 2 et 3.
+Les audios sont rangés par séance dans `files/fluent-forward/audio/`
+(`module1-seance1/`, `module1-seance2/`, …) : deux séances peuvent ainsi
+avoir chacune leur `page-03.mp3` sans s'écraser.
+
+- Séance 1 : lecteur d'origine (lecture automatique à l'arrivée sur la
+  diapositive, puis bouton de relecture). Nouveaux enregistrements sur
+  les diapositives 02, 03, 05, 06, 08, 11 et 14 ; les diapositives 04 et
+  10, sans nouvel enregistrement, gardent leur ancien son.
+- Séances 2 et 3 : lecteur à bouton rond (anneau de progression), sur
+  les diapositives indiquées par leurs attributs `data-audio`.
+
+## Publier les supports (`source/publier_cours.py`)
+
+Les copies servies aux membres (`landing/membres/cours/`) se fabriquent,
+elles ne se modifient pas à la main :
+
+    python3 source/publier_cours.py
+
+Le script repart des sources de `files/fluent-forward/` et les adapte au
+site : polices du site au lieu de Google Fonts, vidéos intégrées sorties
+en fichiers (`video/`), bouton « retour à mon espace » dans la barre de
+navigation des séances, copie des audios. Sans ces adaptations, la
+politique de sécurité du site bloquerait polices et vidéos.
 
 ## Ajouter un futur module
 
-1. Publier ses fichiers HTML dans `landing/membres/cours/` (commit + push
-   — c'est la seule étape qui touche au code).
+1. Ajouter ses fichiers à la liste `PUBLIES` de `source/publier_cours.py`,
+   lancer le script, puis commit + push — c'est la seule étape qui touche
+   au code.
 2. Ajouter une ligne dans l'onglet « Programme » du classeur : numéro de
    semaine, titre, et dans la colonne « fichiers » la liste
    `nom-du-fichier.html|Libellé affiché` pour chaque fichier, séparés par

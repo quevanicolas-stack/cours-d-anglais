@@ -220,7 +220,7 @@
           if (bloc.debloque) {
             html += '<div class="module-carte"><div><div class="module-nom">' + item.libelle + "</div>" +
               '<div class="module-etat">Disponible</div></div>' +
-              '<a class="bouton bouton-vert" href="cours/' + encodeURIComponent(item.fichier) + '" target="_blank" rel="noopener">Ouvrir</a></div>';
+              '<a class="bouton bouton-vert" href="cours/' + encodeURIComponent(item.fichier) + '">Ouvrir</a></div>';
           } else {
             html += '<div class="module-carte verrouille"><div><div class="module-nom">' + item.libelle + "</div>" +
               '<div class="module-etat">Se débloque en semaine ' + bloc.semaine + "</div></div>" +
