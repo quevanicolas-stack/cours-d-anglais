@@ -99,8 +99,12 @@ de bord. Reste à faire dans Cloudflare :
    `SMTP_MOT_DE_PASSE`, type **Secret**, en Production et en Preview.
 3. **Redéployer** — Deployments → *Retry deployment*.
 
-Le serveur d'envoi (`SMTP_HOTE` dans `wrangler.jsonc`) doit être celui
-qu'indique LWS pour la boîte contact@. Si un email ne part pas, la page
+Le serveur d'envoi (`SMTP_HOTE` dans `wrangler.jsonc`) est
+`mail77.lwspanel.com`, port 465 (SSL) : c'est le nom propre du serveur
+LWS de la boîte contact@, celui que couvre son certificat (l'alias
+`mail.fluentandforward.com` risque d'être refusé par la vérification de
+certificat de Cloudflare). Si LWS déplace la boîte, reprendre le nom
+indiqué dans son panneau, rubrique « Serveur sortant ». Si un email ne part pas, la page
 d'administration affiche l'erreur exacte. « certificat » : mettre dans
 `SMTP_HOTE` le nom de serveur que LWS indique dans son panneau (celui que
 couvre son certificat). « mot de passe refusé » : vérifier le secret.

@@ -19,7 +19,7 @@
 
   // Envoi des emails par la boîte contact@ hébergée chez LWS.
   "vars": {
-    "SMTP_HOTE": "mail.fluentandforward.com",
+    "SMTP_HOTE": "mail77.lwspanel.com",
     "SMTP_PORT": "465",
     "SMTP_UTILISATEUR": "contact@fluentandforward.com",
     "ADMIN_EMAILS": "contact@fluentandforward.com"
