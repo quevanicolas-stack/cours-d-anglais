@@ -26,3 +26,14 @@ jobs:
           }
           echo "::notice title=envois::$(requete "SELECT date, sujet, ok, erreur FROM envois ORDER BY id DESC LIMIT 6")"
           echo "::notice title=comptes::$(requete "SELECT statut, dernier_lien, date_expiration FROM membres ORDER BY id DESC LIMIT 6")"
+      - name: Ce que servent les domaines
+        shell: bash
+        run: |
+          rapport=""
+          for hote in www.fluentandforward.com fluentandforward.com fluentandforward.pages.dev; do
+            session=$(curl -s -m 15 -o /tmp/corps -w "%{http_code}" "https://$hote/api/membres/session"; echo " $(head -c 120 /tmp/corps)")
+            script=$(curl -s -m 15 "https://$hote/membres/assets/membres.js?v=8" | grep -o -m1 -E '/api/membres/|script.google.com' || echo "introuvable")
+            connexion=$(curl -s -m 15 -o /dev/null -w "%{http_code} -> %{redirect_url}" "https://$hote/membres/connexion.html")
+            rapport="${rapport}${hote}%0A  /api/membres/session : ${session}%0A  membres.js appelle : ${script}%0A  connexion.html : ${connexion}%0A"
+          done
+          echo "::notice title=domaines::${rapport}"
