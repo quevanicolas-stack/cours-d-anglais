@@ -17,6 +17,12 @@
     "run_worker_first": ["/api/*", "/membres/cours/*"]
   },
 
+  // Domaines servis par ce Worker (enregistrements DNS créés par Cloudflare).
+  "routes": [
+    { "pattern": "www.fluentandforward.com", "custom_domain": true },
+    { "pattern": "fluentandforward.com", "custom_domain": true }
+  ],
+
   // Base de l'espace membres (schéma : migrations/0001_espace_membres.sql).
   "d1_databases": [
     {
