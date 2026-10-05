@@ -1,4 +1,12 @@
 /* ===================================================================
+   REMPLACÉ — l'espace membres tourne désormais sur Cloudflare (dossier
+   functions/, voir docs/ESPACE-MEMBRES.md). Une fois la bascule faite,
+   supprimer le fichier MembresEspace.gs du projet Apps Script et la ligne
+   « doGetMembres » en haut de doGet dans Code.gs. Les autres formulaires
+   du site restent sur Apps Script.
+   =================================================================== */
+
+/* ===================================================================
    ESPACE MEMBRES — Fluent & Forward
 
    Fichier de SCRIPT (.gs) à placer à côté de Code.gs, dans le projet

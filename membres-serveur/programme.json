@@ -1,0 +1,14 @@
+[
+  {
+    "semaine": 1,
+    "module": "Module 1",
+    "titre": "Think & Speak Like a Business Person",
+    "supports": [
+      { "fichier": "module1-seance1.html", "libelle": "Séance 1 — Why Your Brain Freezes in English" },
+      { "fichier": "module1-seance2.html", "libelle": "Séance 2 — The 3 Pillars of Business English" },
+      { "fichier": "module1-seance3.html", "libelle": "Séance 3 — Structuring Simple Professional Sentences" },
+      { "fichier": "module1-grammaire.html", "libelle": "Grammar — The Present Simple" },
+      { "fichier": "module1-vocabulaire.html", "libelle": "Vocabulary Kit" }
+    ]
+  }
+]

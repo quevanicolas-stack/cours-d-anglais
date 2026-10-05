@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Administration — Espace membres | Fluent &amp; Forward</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/polices/polices.css">
+<link rel="stylesheet" href="assets/membres.css?v=8">
+</head>
+<body>
+
+<header class="entete">
+  <div class="barre">
+    <a class="marque" href="../index.html">Fluent &amp; Forward</a>
+    <a href="espace.html" style="font-size:.9rem">Mon espace</a>
+  </div>
+</header>
+
+<main class="cadre">
+  <div class="contenu contenu-large" id="admin">
+    <span class="oeil">Administration</span>
+    <h1>Membres</h1>
+    <p class="chapeau" id="admin-resume">Chargement…</p>
+
+    <section class="carte admin-bloc">
+      <h2>Ajouter un membre</h2>
+      <p class="chapeau">Le compte est validé tout de suite et la personne reçoit son lien de connexion.</p>
+      <form id="formulaire-ajout" class="ajout" novalidate>
+        <input type="text" name="prenom" placeholder="Prénom" autocomplete="off" required>
+        <input type="email" name="email" placeholder="Adresse email" autocomplete="off" required>
+        <button type="submit" class="bouton bouton-vert">Ajouter</button>
+      </form>
+      <p class="retour" id="retour-ajout" role="status"></p>
+    </section>
+
+    <section class="admin-bloc">
+      <div id="liste-membres"></div>
+    </section>
+
+    <section class="admin-bloc">
+      <h2>Derniers emails envoyés</h2>
+      <div id="liste-envois"></div>
+    </section>
+  </div>
+</main>
+
+<script src="assets/membres.js?v=8"></script>
+</body>
+</html>

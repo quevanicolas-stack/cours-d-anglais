@@ -1,11 +1,36 @@
 {
-  // Site statique Fluent & Forward : aucun code de serveur, seulement des
-  // fichiers à servir tels quels depuis le dossier landing/. Le nom doit
-  // rester exactement "fluentandforward" : c'est lui qui donne l'adresse
-  // fluentandforward.pages.dev / le domaine personnalisé branché dessus.
+  // Site Fluent & Forward sur Cloudflare Workers, compte d'Aurélie,
+  // domaine www.fluentandforward.com. Le nom doit rester exactement celui
+  // du projet Workers dans le tableau de bord.
+  // Le mot de passe de la boîte mail n'y figure jamais : c'est un secret
+  // (projet Workers → Settings → Variables and Secrets → SMTP_MOT_DE_PASSE).
   "name": "fluentandforward",
-  "compatibility_date": "2025-09-05",
+  "main": "./worker/index.js",
+  "compatibility_date": "2026-09-01",
+
+  // Les fichiers du site. Seuls l'API de l'espace membres et les cours
+  // (verrou) passent d'abord par worker/index.js ; tout le reste est servi
+  // directement, avec les en-têtes de landing/_headers.
   "assets": {
-    "directory": "./landing"
+    "directory": "./landing",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*", "/membres/cours/*"]
+  },
+
+  // Base de l'espace membres (schéma : migrations/0001_espace_membres.sql).
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "fluentandforward-membres",
+      "database_id": "cf259dfe-8b75-460f-bb31-c11efd4a071c"
+    }
+  ],
+
+  // Envoi des emails par la boîte contact@ hébergée chez LWS.
+  "vars": {
+    "SMTP_HOTE": "mail77.lwspanel.com",
+    "SMTP_PORT": "465",
+    "SMTP_UTILISATEUR": "contact@fluentandforward.com",
+    "ADMIN_EMAILS": "contact@fluentandforward.com"
   }
 }
