@@ -12,15 +12,21 @@ valable une seule fois.
    « Membres » du classeur, et Aurélie reçoit un email avec deux boutons :
    *Valider* / *Refuser*.
 2. **Décision d'Aurélie** — un clic sur *Valider* envoie à la personne un
-   lien de connexion (valable 3 jours) et fixe la date de validation
-   (point de départ des 180 jours et des semaines). Un clic sur *Refuser*
-   n'envoie rien à la personne.
-3. **Connexion** — le lien ouvre `landing/membres/connexion.html`, qui
-   connecte et redirige vers l'espace. Les fois suivantes, la personne
-   indique son email sur cette même page et reçoit aussitôt un nouveau
-   lien (valable 30 minutes), sans repasser par Aurélie. Une fois connectée,
-   elle le reste jusqu'à la fin de son accès (180 jours) sur cet appareil :
-   la page de connexion l'envoie alors directement dans son espace.
+   lien de connexion et fixe la date de validation (point de départ des
+   180 jours et des semaines). Un clic sur *Refuser* n'envoie rien.
+3. **Connexion** — la personne indique son email sur
+   `landing/membres/connexion.html` et reçoit aussitôt un lien, sans
+   repasser par Aurélie. La page affiche un cercle de chargement et se
+   connecte d'elle-même dès que le lien est ouvert, où que ce soit
+   (application mail, téléphone, autre onglet) : le lien porte un ticket
+   propre à la page qui attend, que le serveur garde six heures en cache.
+   - Un lien vaut 24 heures et peut être rouvert pendant ce temps.
+   - Redemander un lien ne périme pas les précédents : le même lien est
+     renvoyé, sa validité repartant pour 24 heures.
+   - Une fois connectée, la personne le reste sur chaque appareil jusqu'à
+     la fin de son accès ; plusieurs appareils peuvent l'être ensemble.
+     Seuls la fin du compte ou un statut changé par Aurélie dans
+     l'onglet « Membres » déconnectent.
 4. **Espace** — `landing/membres/espace.html`, en trois temps :
    - un écran d'accueil, affiché une fois par visite, le temps que le
      serveur réponde (il met souvent deux à quatre secondes) ;
@@ -111,7 +117,7 @@ politique de sécurité du site bloquerait polices et vidéos.
   l'architecture (voir le choix fait au départ : rester sur le Google
   Apps Script existant plutôt que Cloudflare Workers + base de données).
 - **La session est un jeton dans le navigateur** (`localStorage`), valable
-  jusqu'à l'expiration du compte (réglage `MEMBRES_SESSION_J`). Elle est
+  jusqu'à l'expiration du compte. Elle est
   vérifiée à chaque chargement de `espace.html` contre la feuille
   « Membres ». Quelqu'un qui a accès à l'appareil a donc accès à
   l'espace : « Se déconnecter » efface la session.

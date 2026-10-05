@@ -9,8 +9,11 @@
    - Première fois : la personne demande un accès, Aurélie valide par
      email, et la personne reçoit un lien qui la connecte directement.
    - Ensuite : la personne indique son email sur la page de connexion
-     et reçoit aussitôt un nouveau lien, sans passer par Aurélie.
-   Chaque lien ne sert qu'une fois et expire.
+     et reçoit aussitôt un lien, sans passer par Aurélie. La page attend
+     (cercle de chargement) et se connecte d'elle-même dès que le lien
+     est ouvert, même depuis un autre appareil ou l'application mail.
+   Un lien reste valable 24 heures et peut être rouvert pendant ce temps.
+   Une fois connectée, la personne le reste jusqu'à la fin de son accès.
 
    Marche à suivre :
 
@@ -46,7 +49,7 @@
       points-virgules, chacune sous la forme fichier.html|Libellé. Pour
       la semaine 1 (une seule cellule, à copier telle quelle) :
 
-          module1-seance1.html|Séance 1 — Why Your Brain Freezes in English;module1-seance2.html|Séance 2 — The 3 Pillars of Business English;module1-seance3.html|Séance 3 — Structuring Simple Professional Sentences;module1-vocabulaire.html|Vocabulary Kit;module1-grammaire.html|Grammar — The Present Simple
+          module1-seance1.html|Séance 1 — Why Your Brain Freezes in English;module1-seance2.html|Séance 2 — The 3 Pillars of Business English;module1-seance3.html|Séance 3 — Structuring Simple Professional Sentences;module1-grammaire.html|Grammar — The Present Simple;module1-vocabulaire.html|Vocabulary Kit
 
       Ajouter un module plus tard = ajouter une ligne, sans redéployer.
 
@@ -65,10 +68,10 @@
 var MEMBRES_FEUILLE           = 'Membres';
 var PROGRAMME_FEUILLE         = 'Programme';
 var MEMBRES_DUREE_COMPTE_J    = 180;  // validité d'un compte, en jours
-var MEMBRES_LIEN_PREMIER_H    = 72;   // validité du lien envoyé après validation, en heures
-var MEMBRES_LIEN_VALIDITE_MIN = 30;   // validité des liens suivants, en minutes
-var MEMBRES_LIEN_DELAI_SEC    = 60;   // délai minimum entre deux envois de lien
-var MEMBRES_SESSION_J         = 180;  // durée de connexion sur un appareil (bornée par la fin du compte)
+var MEMBRES_LIEN_VALIDITE_H   = 24;   // validité d'un lien de connexion, en heures
+var MEMBRES_LIEN_DELAI_SEC    = 30;   // délai minimum entre deux envois de lien
+// Une connexion dure jusqu'à la fin du compte : aucune déconnexion
+// automatique tant que l'accès de 180 jours est ouvert.
 
 var MEMBRES_EMAIL_AURELIE     = 'contact@fluentandforward.com';
 // Adresse d'expédition des emails. Google ne l'utilise que si elle est
@@ -188,6 +191,10 @@ function adresseSite(origine) {
   return MEMBRES_SITES.indexOf(String(origine || '')) >= 0 ? origine : MEMBRES_SITES[0];
 }
 
+function ticketValide(ticket) {
+  return /^[A-Za-z0-9]{24,64}$/.test(String(ticket || ''));
+}
+
 function compteExpire(valeursLigne) {
   var exp = valeursLigne[COL.date_expiration - 1];
   return exp && new Date(exp) < new Date();
@@ -223,6 +230,7 @@ function traiterMembres(p) {
     if (op === 'decision')         return membresDecision(p);
     if (op === 'demande_lien')     return membresDemandeLien(p);
     if (op === 'ouvrir_lien')      return membresOuvrirLien(p);
+    if (op === 'attendre_lien')    return membresAttendreLien(p);
     if (op === 'verifier_session') return membresVerifierSession(p);
     return reponseJSON({ ok: false, erreur: 'action_inconnue' });
   } catch (err) {
@@ -305,33 +313,36 @@ function membresDecision(p) {
   f.getRange(m.ligne, COL.date_expiration).setValue(
     new Date(maintenant.getTime() + MEMBRES_DUREE_COMPTE_J * 24 * 3600 * 1000));
 
-  envoyerLien(m.ligne, prenom, email, true, m.valeurs[COL.site - 1]);
+  envoyerLien(m.ligne, prenom, email, true, m.valeurs[COL.site - 1], null);
 
   return reponseHTML('<p>Compte de ' + qui + ' validé. Un lien de connexion vient de lui être envoyé par email.</p>');
 }
 
 // ---------- 3. Envoi d'un lien de connexion ----------
 
-function envoyerLien(ligne, prenom, email, premiereFois, origine) {
+function envoyerLien(ligne, prenom, email, premiereFois, origine, ticket) {
   var f = feuilleMembres();
+  var valeurs = f.getRange(ligne, 1, 1, COL.site).getValues()[0];
   var maintenant = new Date();
-  var dureeMs = premiereFois ? MEMBRES_LIEN_PREMIER_H * 3600 * 1000 : MEMBRES_LIEN_VALIDITE_MIN * 60 * 1000;
-  var jeton = jetonAleatoire(40);
+
+  // Le lien en cours est réutilisé : un email plus ancien reste valable,
+  // cliquer sur l'avant-dernier message ne doit pas échouer.
+  var jeton = String(valeurs[COL.lien_jeton - 1] || '');
+  var expiration = valeurs[COL.lien_expiration - 1];
+  if (jeton.length < 30 || !expiration || new Date(expiration) < maintenant) jeton = jetonAleatoire(40);
 
   f.getRange(ligne, COL.lien_jeton).setValue(jeton);
-  f.getRange(ligne, COL.lien_expiration).setValue(new Date(maintenant.getTime() + dureeMs));
+  f.getRange(ligne, COL.lien_expiration).setValue(new Date(maintenant.getTime() + MEMBRES_LIEN_VALIDITE_H * 3600 * 1000));
   f.getRange(ligne, COL.lien_dernier_envoi).setValue(maintenant);
 
-  var url = adresseSite(origine) + '/membres/connexion.html?lien=' + jeton;
-  var validite = premiereFois
-    ? (MEMBRES_LIEN_PREMIER_H >= 24 ? (MEMBRES_LIEN_PREMIER_H / 24) + ' jours' : MEMBRES_LIEN_PREMIER_H + ' heures')
-    : MEMBRES_LIEN_VALIDITE_MIN + ' minutes';
+  // Le ticket relie ce lien à la page qui attend la connexion.
+  var url = adresseSite(origine) + '/membres/connexion.html?lien=' + jeton + (ticket ? '&t=' + ticket : '');
   var sujet = premiereFois ? 'Ton accès Fluent & Forward est prêt' : 'Ton lien de connexion Fluent & Forward';
   var intro = premiereFois
-    ? 'Ton compte vient d\'être validé. Clique sur le lien ci-dessous pour accéder à ton espace.'
-    : 'Voici ton lien pour accéder à ton espace.';
-  var note = 'Ce lien est valable ' + validite + ' et ne sert qu\'une fois. Pour te reconnecter plus tard, ' +
-    'indique simplement ton email sur la page de connexion : un nouveau lien t\'est envoyé aussitôt.';
+    ? 'Ton compte vient d\'être validé. Clique sur le bouton ci-dessous pour accéder à ton espace.'
+    : 'Clique sur le bouton ci-dessous pour accéder à ton espace.';
+  var note = 'Ce lien est valable ' + MEMBRES_LIEN_VALIDITE_H + ' heures. Une fois connecté, tu le restes sur cet appareil ' +
+    'jusqu\'à la fin de ton accès. Si tu n\'as pas demandé ce lien, ignore simplement cet email.';
 
   envoyerEmail(email, sujet,
     'Bonjour ' + prenom + ',\n\n' + intro + '\n\n' + url + '\n\n' + note + '\n',
@@ -342,6 +353,7 @@ function envoyerLien(ligne, prenom, email, premiereFois, origine) {
 
 function membresDemandeLien(p) {
   var email = String(p.email || '').trim().toLowerCase();
+  var ticket = ticketValide(p.ticket) ? p.ticket : null;
   var m = trouverLigneMembre(email);
 
   // Réponse identique que l'adresse soit membre ou non : un tiers ne
@@ -354,11 +366,12 @@ function membresDemandeLien(p) {
     return reponseJSON({ ok: true, info: 'patienter' });
   }
 
-  envoyerLien(m.ligne, m.valeurs[COL.prenom - 1], email, false, p.origine);
+  if (ticket) CacheService.getScriptCache().put('attente_' + ticket, email, 21600);
+  envoyerLien(m.ligne, m.valeurs[COL.prenom - 1], email, false, p.origine, ticket);
   return reponseJSON({ ok: true });
 }
 
-// ---------- 4. Ouverture du lien : ouvre une session ----------
+// ---------- 4. Ouverture du lien : connecte ce navigateur et la page en attente ----------
 
 function membresOuvrirLien(p) {
   var jeton = String(p.lien || '').trim();
@@ -368,30 +381,43 @@ function membresOuvrirLien(p) {
   if (!m || m.valeurs[COL.statut - 1] !== 'valide') return reponseJSON({ ok: false, erreur: 'lien_invalide' });
   if (compteExpire(m.valeurs)) return reponseJSON({ ok: false, erreur: 'compte_expire' });
 
-  var f = feuilleMembres();
   var expLien = m.valeurs[COL.lien_expiration - 1];
-  if (!expLien || new Date(expLien) < new Date()) {
-    f.getRange(m.ligne, COL.lien_jeton).setValue('');
-    return reponseJSON({ ok: false, erreur: 'lien_expire' });
+  if (!expLien || new Date(expLien) < new Date()) return reponseJSON({ ok: false, erreur: 'lien_expire' });
+
+  // Une seule session par membre, gardée jusqu'à la fin du compte :
+  // se connecter sur un autre appareil ne déconnecte pas le premier.
+  var f = feuilleMembres();
+  var session = String(m.valeurs[COL.session_token - 1] || '');
+  if (session.length < 30) {
+    session = jetonAleatoire(40);
+    f.getRange(m.ligne, COL.session_token).setValue(session);
+  }
+  f.getRange(m.ligne, COL.session_expiration).setValue(new Date(m.valeurs[COL.date_expiration - 1]));
+
+  var ticket = ticketValide(p.t) ? p.t : null;
+  if (ticket) {
+    var cache = CacheService.getScriptCache();
+    var emailAttendu = cache.get('attente_' + ticket);
+    if (emailAttendu && emailAttendu === String(m.valeurs[COL.email - 1]).trim().toLowerCase()) {
+      cache.put('ouvert_' + ticket, session, 21600);
+    }
   }
 
-  var maintenant = new Date();
-  var expCompte = new Date(m.valeurs[COL.date_expiration - 1]);
-  var expSession = new Date(maintenant.getTime() + MEMBRES_SESSION_J * 24 * 3600 * 1000);
-  if (expSession > expCompte) expSession = expCompte;
-
-  // Une session encore valide est reprise plutôt que remplacée : se
-  // connecter sur le téléphone ne déconnecte pas l'ordinateur.
-  var session = String(m.valeurs[COL.session_token - 1] || '');
-  var finSession = m.valeurs[COL.session_expiration - 1];
-  if (!session || !finSession || new Date(finSession) < maintenant) session = jetonAleatoire(40);
-
-  f.getRange(m.ligne, COL.lien_jeton).setValue('');
-  f.getRange(m.ligne, COL.lien_expiration).setValue('');
-  f.getRange(m.ligne, COL.session_token).setValue(session);
-  f.getRange(m.ligne, COL.session_expiration).setValue(expSession);
-
   return reponseJSON({ ok: true, session: session });
+}
+
+// La page de connexion interroge ceci toutes les quelques secondes en
+// attendant que le lien soit ouvert. Aucune lecture du classeur : rapide.
+function membresAttendreLien(p) {
+  if (!ticketValide(p.ticket)) return reponseJSON({ ok: false, erreur: 'ticket_inconnu' });
+  var cache = CacheService.getScriptCache();
+  var session = cache.get('ouvert_' + p.ticket);
+  if (session) {
+    cache.removeAll(['ouvert_' + p.ticket, 'attente_' + p.ticket]);
+    return reponseJSON({ ok: true, session: session });
+  }
+  if (!cache.get('attente_' + p.ticket)) return reponseJSON({ ok: false, erreur: 'ticket_inconnu' });
+  return reponseJSON({ ok: false, erreur: 'en_attente' });
 }
 
 // ---------- 5. Vérification de session + modules débloqués ----------
@@ -400,8 +426,8 @@ function membresVerifierSession(p) {
   var m = trouverLigneParColonne(COL.session_token, String(p.session || '').trim());
   if (!m) return reponseJSON({ ok: false, erreur: 'session_inconnue' });
 
-  var fin = m.valeurs[COL.session_expiration - 1];
-  if (!fin || new Date(fin) < new Date() || compteExpire(m.valeurs)) {
+  // Seuls la fin du compte ou un statut retiré par Aurélie déconnectent.
+  if (m.valeurs[COL.statut - 1] !== 'valide' || compteExpire(m.valeurs)) {
     return reponseJSON({ ok: false, erreur: 'session_expiree' });
   }
 

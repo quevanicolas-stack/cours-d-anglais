@@ -7,7 +7,7 @@
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../assets/polices/polices.css">
-<link rel="stylesheet" href="assets/membres.css?v=4">
+<link rel="stylesheet" href="assets/membres.css?v=5">
 </head>
 <body>
 
@@ -22,15 +22,18 @@
   <div class="contenu">
     <div class="carte">
       <span class="oeil">Espace membres</span>
-      <h1>Connexion</h1>
-      <p class="chapeau">
-        Pas de mot de passe à retenir : indique ton adresse email, et un
-        lien de connexion t'est envoyé aussitôt. Un clic, et tu es dans
-        ton espace.
+      <h1 id="titre-connexion">Connexion</h1>
+      <p class="chapeau" id="chapeau-connexion">
+        Pas de mot de passe à retenir : indique ton adresse email et
+        clique sur le lien reçu. Tu restes ensuite connecté sur cet
+        appareil jusqu'à la fin de ton accès.
       </p>
 
-      <div id="etape-lien" hidden style="margin-top:28px">
-        <p class="chapeau">Connexion en cours…</p>
+      <div id="etape-lien" class="attente" hidden>
+        <span class="cercle" aria-hidden="true"></span>
+        <p class="attente-titre">Connexion en cours…</p>
+        <p class="retour" id="retour-lien" role="status"></p>
+        <button class="bouton bouton-vert" id="reessayer-lien" type="button" hidden>Réessayer</button>
       </div>
 
       <div id="etape-email" style="margin-top:28px">
@@ -46,21 +49,27 @@
         </form>
       </div>
 
-      <div id="etape-envoye" hidden style="margin-top:28px">
+      <div id="etape-envoye" class="attente" hidden>
+        <span class="cercle" aria-hidden="true"></span>
+        <p class="attente-titre" id="attente-titre">En attente de ta connexion…</p>
         <p class="chapeau">
-          Si <strong id="email-affiche"></strong> correspond à un compte
-          validé, un lien de connexion vient de t'être envoyé. Il est
-          valable 30 minutes et ne sert qu'une fois.
+          Ouvre l'email envoyé à <strong id="email-affiche"></strong> et
+          clique sur « Accéder à mon espace ». Cette page s'ouvrira toute
+          seule, même si tu cliques depuis ton téléphone.
         </p>
         <p class="retour" id="retour-envoye" role="status"></p>
-        <p class="lien-discret">Rien reçu ? Regarde dans les indésirables, ou <a href="#" id="renvoyer-lien">renvoie un lien</a>.</p>
+        <button class="bouton bouton-vert" id="reprendre-attente" type="button" hidden>Continuer d'attendre</button>
+        <p class="lien-discret">
+          Rien reçu ? Regarde dans les indésirables, ou <a href="#" id="renvoyer-lien">renvoie le lien</a>
+          · <a href="#" id="changer-email">changer d'adresse</a>
+        </p>
       </div>
 
-      <p class="lien-discret">Pas encore de compte ? <a href="inscription.html">Demander un accès</a></p>
+      <p class="lien-discret" id="lien-inscription">Pas encore de compte ? <a href="inscription.html">Demander un accès</a></p>
     </div>
   </div>
 </main>
 
-<script src="assets/membres.js?v=4"></script>
+<script src="assets/membres.js?v=5"></script>
 </body>
 </html>

@@ -96,6 +96,24 @@
 
   /* ---------- Page connexion.html ---------- */
 
+  function nouveauTicket() {
+    var alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    var octets = new Uint8Array(32);
+    (window.crypto || window.msCrypto).getRandomValues(octets);
+    var s = "";
+    for (var i = 0; i < octets.length; i++) s += alphabet.charAt(octets[i] % alphabet.length);
+    return s;
+  }
+
+  function sessionLocale() {
+    try { return localStorage.getItem(CLE_SESSION); } catch (e) { return null; }
+  }
+
+  function entrer(session) {
+    try { localStorage.setItem(CLE_SESSION, session); } catch (e) {}
+    location.replace("espace.html");
+  }
+
   function initConnexion() {
     var etapeEmail = document.getElementById("etape-email");
     var etapeEnvoye = document.getElementById("etape-envoye");
@@ -108,46 +126,107 @@
     var retourEmail = formEmail.querySelector(".retour");
     var emailAffiche = document.getElementById("email-affiche");
     var retourEnvoye = document.getElementById("retour-envoye");
-    var renvoyer = document.getElementById("renvoyer-lien");
+    var titreAttente = document.getElementById("attente-titre");
+    var reprendre = document.getElementById("reprendre-attente");
+    var cercleAttente = etapeEnvoye.querySelector(".cercle");
+    var chapeau = document.getElementById("chapeau-connexion");
+    var lienInscription = document.getElementById("lien-inscription");
+
     var emailCourant = "";
+    var ticket = null;
+    var attente = null;
 
     function montrer(etape) {
       etapeEmail.hidden = etape !== etapeEmail;
       etapeEnvoye.hidden = etape !== etapeEnvoye;
       etapeLien.hidden = etape !== etapeLien;
+      chapeau.hidden = etape !== etapeEmail;
+      lienInscription.hidden = etape !== etapeEmail;
     }
 
     /* 1. Arrivée par le lien reçu par email */
-    var lien = new URLSearchParams(location.search).get("lien");
+    var params = new URLSearchParams(location.search);
+    var lien = params.get("lien");
+    var ticketLien = params.get("t");
     if (lien) {
-      // Le jeton ne doit pas rester dans l'historique ni dans un favori.
+      // Le jeton ne doit rester ni dans l'historique ni dans un favori ;
+      // il est gardé en mémoire pour pouvoir réessayer.
       history.replaceState(null, "", location.pathname);
+      var retourLien = document.getElementById("retour-lien");
+      var reessayerLien = document.getElementById("reessayer-lien");
+      var ouvrir = function () {
+        reessayerLien.hidden = true;
+        retourLien.classList.remove("visible");
+        var donnees = { lien: lien };
+        if (ticketLien) donnees.t = ticketLien;
+        appeler("ouvrir_lien", donnees).then(function (reponse) {
+          if (reponse.ok && reponse.session) { entrer(reponse.session); return; }
+          if (reponse.erreur === "reseau" || reponse.erreur === "reponse" || reponse.erreur === "serveur") {
+            afficherRetour(retourLien, "Le serveur ne répond pas pour le moment.", true);
+            reessayerLien.hidden = false;
+            return;
+          }
+          var messages = {
+            lien_expire: "Ce lien a dépassé ses 24 heures. Indique ton email pour en recevoir un nouveau.",
+            lien_invalide: "Ce lien n'est plus valable : un lien plus récent l'a peut-être remplacé. Indique ton email pour en recevoir un nouveau.",
+            compte_expire: "Ton accès de 180 jours est terminé. Contacte Aurélie pour le renouveler."
+          };
+          montrer(etapeEmail);
+          afficherRetour(retourEmail, messages[reponse.erreur] || messages.lien_invalide, true);
+        });
+      };
+      reessayerLien.addEventListener("click", ouvrir);
       montrer(etapeLien);
-      appeler("ouvrir_lien", { lien: lien }).then(function (reponse) {
-        if (reponse.ok && reponse.session) {
-          try { localStorage.setItem(CLE_SESSION, reponse.session); } catch (e) {}
-          location.replace("espace.html");
-          return;
-        }
-        var messages = {
-          lien_expire: "Ce lien a expiré. Indique ton email ci-dessous pour en recevoir un nouveau.",
-          lien_invalide: "Ce lien a déjà servi ou n'est plus valable. Indique ton email ci-dessous pour en recevoir un nouveau.",
-          compte_expire: "Ton accès de 180 jours est terminé. Contacte Aurélie pour le renouveler.",
-          reseau: "Connexion impossible pour le moment. Vérifie ta connexion internet et rouvre le lien."
-        };
-        montrer(etapeEmail);
-        afficherRetour(retourEmail, messages[reponse.erreur] || messages.lien_invalide, true);
-      });
-    } else {
+      ouvrir();
+    } else if (sessionLocale()) {
       /* 2. Déjà connecté sur cet appareil : on entre directement. */
-      var session = null;
-      try { session = localStorage.getItem(CLE_SESSION); } catch (e) {}
-      if (session) { location.replace("espace.html"); return; }
+      location.replace("espace.html");
+      return;
     }
 
-    /* 3. Demande d'un lien */
+    /* 3. Attente : la page interroge le serveur jusqu'à ce que le lien
+       soit ouvert, ici ou sur un autre appareil. */
+    function arreterAttente() {
+      if (attente) { clearTimeout(attente.minuteur); attente.actif = false; attente = null; }
+    }
+
+    function finAttente() {
+      arreterAttente();
+      cercleAttente.classList.add("arrete");
+      titreAttente.textContent = "Toujours là quand tu veux";
+      afficherRetour(retourEnvoye, "Le lien reste valable 24 heures : clique dessus quand tu le souhaites, puis reviens sur cette page ou ouvre ton espace depuis l'email.");
+      reprendre.hidden = false;
+    }
+
+    function attendre() {
+      arreterAttente();
+      cercleAttente.classList.remove("arrete");
+      titreAttente.textContent = "En attente de ta connexion…";
+      reprendre.hidden = true;
+      var etat = { actif: true, debut: Date.now(), minuteur: null };
+      attente = etat;
+
+      function tour() {
+        if (!etat.actif) return;
+        var session = sessionLocale();
+        if (session) { entrer(session); return; }  // lien ouvert dans un autre onglet
+        var ecoule = Date.now() - etat.debut;
+        if (ecoule > 20 * 60 * 1000) { finAttente(); return; }
+        appeler("attendre_lien", { ticket: ticket }).then(function (reponse) {
+          if (!etat.actif) return;
+          if (reponse.ok && reponse.session) { entrer(reponse.session); return; }
+          etat.minuteur = setTimeout(tour, ecoule < 2 * 60 * 1000 ? 2500 : 6000);
+        });
+      }
+      etat.minuteur = setTimeout(tour, 2500);
+    }
+
+    window.addEventListener("storage", function (evenement) {
+      if (evenement.key === CLE_SESSION && evenement.newValue && attente) entrer(evenement.newValue);
+    });
+
     function demanderLien() {
-      return appeler("demande_lien", { email: emailCourant, origine: location.origin });
+      return appeler("demande_lien", { email: emailCourant, origine: location.origin, ticket: ticket });
     }
 
     formEmail.addEventListener("submit", function (evenement) {
@@ -157,6 +236,7 @@
       if (invalide) { champEmail.focus(); return; }
 
       emailCourant = champEmail.value.trim();
+      ticket = nouveauTicket();
       boutonEmail.disabled = true;
       boutonEmail.textContent = "Envoi du lien…";
 
@@ -164,7 +244,7 @@
         boutonEmail.disabled = false;
         boutonEmail.textContent = "Recevoir mon lien";
         if (!reponse.ok) {
-          afficherRetour(retourEmail, "Le lien n'a pas pu être envoyé. Réessaie dans un instant.", true);
+          afficherRetour(retourEmail, "Le lien n'a pas pu être envoyé : le serveur ne répond pas. Réessaie dans un instant.", true);
           return;
         }
         if (reponse.info === "compte_expire") {
@@ -174,22 +254,36 @@
         // Même écran que l'adresse soit membre ou non : on ne révèle pas qui a un compte.
         emailAffiche.textContent = emailCourant;
         retourEnvoye.classList.remove("visible");
+        if (reponse.info === "patienter") {
+          afficherRetour(retourEnvoye, "Un lien t'a été envoyé il y a quelques secondes : utilise le dernier email reçu.");
+        }
         montrer(etapeEnvoye);
+        attendre();
       });
     });
 
-    renvoyer.addEventListener("click", function (evenement) {
+    document.getElementById("renvoyer-lien").addEventListener("click", function (evenement) {
       evenement.preventDefault();
       demanderLien().then(function (reponse) {
         if (reponse.info === "patienter") {
-          afficherRetour(retourEnvoye, "Un lien vient d'être envoyé : patiente une minute avant d'en redemander un.");
+          afficherRetour(retourEnvoye, "Un lien vient d'être envoyé : patiente quelques secondes avant d'en redemander un.");
         } else if (reponse.ok) {
-          afficherRetour(retourEnvoye, "Nouveau lien envoyé.");
+          afficherRetour(retourEnvoye, "Nouveau lien envoyé. Les liens précédents restent valables.");
         } else {
           afficherRetour(retourEnvoye, "Le lien n'a pas pu être envoyé. Réessaie dans un instant.", true);
         }
+        attendre();
       });
     });
+
+    document.getElementById("changer-email").addEventListener("click", function (evenement) {
+      evenement.preventDefault();
+      arreterAttente();
+      montrer(etapeEmail);
+      champEmail.focus();
+    });
+
+    reprendre.addEventListener("click", attendre);
   }
 
   /* ---------- Page espace.html ---------- */
