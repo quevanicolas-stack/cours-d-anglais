@@ -1,0 +1,31 @@
+# Publie le site sur Cloudflare Workers (compte d'Aurélie, domaine
+# www.fluentandforward.com) à chaque modification de main, ou à la demande
+# depuis l'onglet Actions. Remplace la connexion Git de Cloudflare.
+#
+# Secret GitHub requis (Settings → Secrets and variables → Actions) :
+#   CLOUDFLARE_API_TOKEN  jeton Cloudflare du compte d'Aurélie, modèle
+#                         « Edit Cloudflare Workers » + D1 : Edit.
+name: Déployer sur Cloudflare
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploiement-cloudflare
+  cancel-in-progress: false
+
+jobs:
+  deployer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Publier le Worker et les fichiers du site
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: a23a6b25645269aa18a75ed494f88d4d
+        run: npx --yes wrangler@4 deploy
