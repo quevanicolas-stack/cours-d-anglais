@@ -35,31 +35,32 @@ régénéré à chaque fois.
   « Programme »), deux lignes à ajouter dans le `doPost`/`doGet`
   existants, deux constantes à renseigner (email d'Aurélie, adresse
   `/exec`).
-- Le module 1 (séances 1 à 3) publié dans `landing/membres/cours/`, et
-  l'onglet « Programme » doit contenir une ligne semaine 1 pointant
-  dessus (détail exact dans le fichier `.gs`).
+- Le module 1 complet publié dans `landing/membres/cours/` : les trois
+  séances (avec narration audio), le Vocabulary Kit et la fiche de
+  grammaire (`module1-vocabulaire.html`, `module1-grammaire.html`).
+  L'onglet « Programme » doit contenir une ligne semaine 1 pointant sur
+  les cinq (détail exact et format dans le fichier `.gs`).
 
-**Tant que le script n'est pas ajouté côté Google, les trois pages
-affichent une erreur réseau** — c'est attendu, il n'y a rien à corriger
-dans le code pour ça.
+**Tant que le script n'est pas ajouté côté Google, les pages affichent
+une erreur réseau** — c'est attendu, il n'y a rien à corriger dans le
+code pour ça.
 
 ## Narration audio des séances 2 et 3
 
-Les fichiers reçus intègrent le lecteur de narration (bouton rond en haut
-à droite, anneau de progression) mais **aucun fichier audio n'est encore
-fourni** : les diapositives 03, 07, 11 et 14 attendent des fichiers dans
-un dossier `audio/` à côté du HTML (`page-03-partie-1.mp3`, etc. — noms
-exacts dans les attributs `data-audio` de chaque diapositive). Sans ces
-fichiers, le bouton s'affiche mais n'a rien à lire. À fournir
-séparément : les diapositives concernées et les durées attendues sont
-déjà posées dans le HTML (`data-durs`).
+Les fichiers intègrent le lecteur de narration (bouton rond en haut à
+droite, anneau de progression). Les fichiers audio sont fournis dans
+`landing/membres/cours/audio/` (et mirroirés dans `files/fluent-forward/
+audio/`) : douze mp3 correspondant aux attributs `data-audio` des
+diapositives 03, 07, 11 et 14 des séances 2 et 3.
 
 ## Ajouter un futur module
 
 1. Publier ses fichiers HTML dans `landing/membres/cours/` (commit + push
    — c'est la seule étape qui touche au code).
 2. Ajouter une ligne dans l'onglet « Programme » du classeur : numéro de
-   semaine, titre, noms de fichiers séparés par des virgules. **Aucun
+   semaine, titre, et dans la colonne « fichiers » la liste
+   `nom-du-fichier.html|Libellé affiché` pour chaque fichier, séparés par
+   des points-virgules (voir l'exemple en tête de `.gs`). **Aucun
    redéploiement de script nécessaire** — Aurélie peut le faire seule,
    directement dans Google Sheets.
 
