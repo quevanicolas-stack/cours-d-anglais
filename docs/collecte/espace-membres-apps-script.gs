@@ -54,8 +54,9 @@
       script, adresses du site).
 
    5. Choisir la fonction autoriserEspaceMembres dans la barre du haut,
-      « Exécuter », accepter la fenêtre d'autorisation Google (une seule
-      fois : l'envoi d'emails l'exige).
+      « Exécuter », accepter la fenêtre d'autorisation Google (à refaire
+      quand le script demande un nouvel accès, ici l'envoi via Gmail).
+      L'email de test indique depuis quelle adresse les emails partent.
 
    6. Déployer → Gérer les déploiements → crayon → Nouvelle version.
    =================================================================== */
@@ -70,6 +71,12 @@ var MEMBRES_LIEN_DELAI_SEC    = 60;   // délai minimum entre deux envois de lie
 var MEMBRES_SESSION_J         = 180;  // durée de connexion sur un appareil (bornée par la fin du compte)
 
 var MEMBRES_EMAIL_AURELIE     = 'contact@fluentandforward.com';
+// Adresse d'expédition des emails. Google ne l'utilise que si elle est
+// déclarée dans le Gmail propriétaire du script (Paramètres → Comptes →
+// « Envoyer des e-mails en tant que »). Sinon, l'email part de ce Gmail,
+// avec « Fluent & Forward » comme nom et cette adresse pour les réponses.
+var MEMBRES_EMAIL_EXPEDITEUR  = 'contact@fluentandforward.com';
+var MEMBRES_NOM_EXPEDITEUR    = 'Fluent & Forward';
 var MEMBRES_URL_SCRIPT        = 'https://script.google.com/macros/s/AKfycbwK0XxvWhNiwoWVsROAHi7EFQFRMymFOcH5gxV-KSZ3C5F39DPcT1YxSp83iJq9oMbO/exec';
 
 // Adresses du site vers lesquelles un lien de connexion peut renvoyer.
@@ -87,9 +94,26 @@ function autoriserEspaceMembres() {
   var classeur = classeurMembres();
   feuilleMembres();
   feuilleProgramme();
-  MailApp.sendEmail(MEMBRES_EMAIL_AURELIE, 'Espace membres — test',
+  var alias = expediteurDisponible();
+  envoyerEmail(MEMBRES_EMAIL_AURELIE, 'Espace membres — test',
     'Si tu lis cet email, l\'espace membres peut envoyer ses messages.\n' +
-    'Classeur relié : ' + classeur.getName());
+    'Classeur relié : ' + classeur.getName() + '\n' +
+    (alias ? 'Expéditeur : ' + MEMBRES_EMAIL_EXPEDITEUR + '.'
+           : 'Expéditeur : ce compte Gmail — ' + MEMBRES_EMAIL_EXPEDITEUR +
+             ' n\'est pas encore déclarée dans « Envoyer des e-mails en tant que ».'), null);
+}
+
+// ---------- Envoi des emails ----------
+
+function expediteurDisponible() {
+  return GmailApp.getAliases().indexOf(MEMBRES_EMAIL_EXPEDITEUR) >= 0;
+}
+
+function envoyerEmail(destinataire, sujet, texte, html) {
+  var options = { name: MEMBRES_NOM_EXPEDITEUR, replyTo: MEMBRES_EMAIL_EXPEDITEUR };
+  if (html) options.htmlBody = html;
+  if (expediteurDisponible()) options.from = MEMBRES_EMAIL_EXPEDITEUR;
+  GmailApp.sendEmail(destinataire, sujet, texte, options);
 }
 
 // ---------- Utilitaires communs ----------
@@ -241,15 +265,14 @@ function membresDemandeCompte(p) {
   }
 
   var lien = MEMBRES_URL_SCRIPT + '?action=decision&token=' + jeton + '&choix=';
-  MailApp.sendEmail(MEMBRES_EMAIL_AURELIE, 'Demande d\'accès — ' + prenom,
+  envoyerEmail(MEMBRES_EMAIL_AURELIE, 'Demande d\'accès — ' + prenom,
     'Nouvelle demande d\'accès à l\'espace membres.\n\n' +
     'Prénom : ' + prenom + '\nEmail  : ' + email + '\n\n' +
     'Valider : ' + lien + 'valider\nRefuser : ' + lien + 'refuser\n',
-    { htmlBody:
       '<p>Nouvelle demande d\'accès à l\'espace membres.</p>' +
       '<p><b>Prénom :</b> ' + echapper(prenom) + '<br><b>Email :</b> ' + echapper(email) + '</p>' +
       '<p><a href="' + lien + 'valider" style="background:#1B6B4A;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold">Valider</a>' +
-      '&nbsp;&nbsp;<a href="' + lien + 'refuser" style="color:#A8452F">Refuser</a></p>' });
+      '&nbsp;&nbsp;<a href="' + lien + 'refuser" style="color:#A8452F">Refuser</a></p>');
 
   return reponseJSON({ ok: true });
 }
@@ -310,12 +333,11 @@ function envoyerLien(ligne, prenom, email, premiereFois, origine) {
   var note = 'Ce lien est valable ' + validite + ' et ne sert qu\'une fois. Pour te reconnecter plus tard, ' +
     'indique simplement ton email sur la page de connexion : un nouveau lien t\'est envoyé aussitôt.';
 
-  MailApp.sendEmail(email, sujet,
+  envoyerEmail(email, sujet,
     'Bonjour ' + prenom + ',\n\n' + intro + '\n\n' + url + '\n\n' + note + '\n',
-    { name: 'Fluent & Forward', htmlBody:
       '<p>Bonjour ' + echapper(prenom) + ',</p><p>' + intro + '</p>' +
       '<p style="margin:26px 0"><a href="' + url + '" style="background:#1B6B4A;color:#fff;padding:13px 26px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Accéder à mon espace</a></p>' +
-      '<p style="color:#777;font-size:13px">' + note + '</p>' });
+      '<p style="color:#777;font-size:13px">' + note + '</p>');
 }
 
 function membresDemandeLien(p) {
