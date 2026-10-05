@@ -35,9 +35,18 @@
       Onglet « Programme » :
         semaine | module_titre | fichiers
 
-      Dans « Programme », ajouter une première ligne :
-        1 | Module 1 — Think & Speak Like a Business Person |
-        module1-seance1.html,module1-seance2.html,module1-seance3.html
+      La colonne « fichiers » liste un ou plusieurs fichiers séparés par
+      des point-virgules, chacun sous la forme nom-du-fichier.html|Libellé
+      affiché. Le libellé est ce que voit le membre sur sa carte ; sans
+      lui (pas de « | »), c'est le nom de fichier qui s'affiche tel quel.
+
+      Dans « Programme », ajouter une première ligne (tout sur une seule
+      cellule pour la colonne fichiers, copier-coller tel quel) :
+
+        semaine : 1
+        module_titre : Module 1 — Think & Speak Like a Business Person
+        fichiers :
+          module1-seance1.html|Séance 1 — Why Your Brain Freezes in English;module1-seance2.html|Séance 2 — The 3 Pillars of Business English;module1-seance3.html|Séance 3 — Structuring Simple Professional Sentences;module1-vocabulaire.html|Vocabulary Kit;module1-grammaire.html|Grammar — The Present Simple
 
       C'est cet onglet qui pilote le déblocage. Pour ajouter un module
       plus tard, il suffit d'ajouter une ligne — aucun redéploiement de
@@ -63,8 +72,8 @@ var MEMBRES_OTP_TENTATIVES   = 5;     // essais autorisés avant d'exiger un nou
 var MEMBRES_OTP_DELAI_SEC    = 60;    // délai minimum entre deux envois de code
 var MEMBRES_SESSION_J        = 14;    // durée d'une session après connexion réussie
 
-var MEMBRES_EMAIL_AURELIE    = 'À COMPLÉTER — email d\'Aurélie qui reçoit les demandes';
-var MEMBRES_URL_SCRIPT       = 'À COMPLÉTER — l\'adresse /exec de CE déploiement';
+var MEMBRES_EMAIL_AURELIE    = 'contact@fluentandforward.com';
+var MEMBRES_URL_SCRIPT       = 'https://script.google.com/macros/s/AKfycbwg_-N5wG5108h1O2mqxfWmsFOeUDO_cp8XDzdzyCTCBQ3PZn7zTqqC6006yeAm1rh7/exec';
 
 // ---------- Utilitaires communs ----------
 
@@ -77,15 +86,24 @@ function essayerLireJSON(e) {
   }
 }
 
+function classeurMembres() {
+  // Même logique que le reste du projet : le classeur fixé par
+  // ID_CLASSEUR (déjà défini dans l'autre fichier) si disponible,
+  // sinon le classeur auquel ce script est rattaché.
+  return (typeof ID_CLASSEUR !== "undefined" && ID_CLASSEUR)
+    ? SpreadsheetApp.openById(ID_CLASSEUR)
+    : SpreadsheetApp.getActiveSpreadsheet();
+}
+
 function feuilleMembres() {
-  var cl = SpreadsheetApp.getActiveSpreadsheet();
+  var cl = classeurMembres();
   var f = cl.getSheetByName(MEMBRES_FEUILLE);
   if (!f) throw new Error('Onglet "Membres" introuvable — voir les instructions en tête de fichier.');
   return f;
 }
 
 function feuilleProgramme() {
-  var cl = SpreadsheetApp.getActiveSpreadsheet();
+  var cl = classeurMembres();
   var f = cl.getSheetByName(PROGRAMME_FEUILLE);
   if (!f) throw new Error('Onglet "Programme" introuvable — voir les instructions en tête de fichier.');
   return f;
@@ -359,10 +377,16 @@ function programmeDebloqueJusqua(semaineCourante) {
   for (var i = 1; i < valeurs.length; i++) {
     var semaine = Number(valeurs[i][0]);
     if (!semaine) continue;
+    var fichiers = String(valeurs[i][2] || '').split(';').map(function (entree) {
+      var parties = entree.split('|');
+      var fichier = (parties[0] || '').trim();
+      var libelle = (parties[1] || fichier).trim();
+      return { fichier: fichier, libelle: libelle };
+    }).filter(function (e) { return e.fichier; });
     resultat.push({
       semaine: semaine,
       titre: valeurs[i][1],
-      fichiers: String(valeurs[i][2] || '').split(',').map(function (s) { return s.trim(); }).filter(Boolean),
+      fichiers: fichiers,
       debloque: semaine <= semaineCourante
     });
   }

@@ -203,13 +203,13 @@
       (reponse.programme || []).forEach(function (bloc) {
         html += '<div class="semaine-bloc">';
         html += '<div class="semaine-titre">Semaine ' + bloc.semaine + "</div>";
-        bloc.fichiers.forEach(function (fichier) {
+        bloc.fichiers.forEach(function (item) {
           if (bloc.debloque) {
-            html += '<div class="module-carte"><div><div class="module-nom">' + bloc.titre + "</div>" +
+            html += '<div class="module-carte"><div><div class="module-nom">' + item.libelle + "</div>" +
               '<div class="module-etat">Disponible</div></div>' +
-              '<a class="bouton bouton-vert" href="cours/' + encodeURIComponent(fichier) + '" target="_blank" rel="noopener">Ouvrir</a></div>';
+              '<a class="bouton bouton-vert" href="cours/' + encodeURIComponent(item.fichier) + '" target="_blank" rel="noopener">Ouvrir</a></div>';
           } else {
-            html += '<div class="module-carte verrouille"><div><div class="module-nom">' + bloc.titre + "</div>" +
+            html += '<div class="module-carte verrouille"><div><div class="module-nom">' + item.libelle + "</div>" +
               '<div class="module-etat">Se débloque en semaine ' + bloc.semaine + "</div></div>" +
               '<span class="cadenas" aria-hidden="true">🔒</span></div>';
           }

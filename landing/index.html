@@ -763,14 +763,8 @@ src="https://www.facebook.com/tr?id=1098827892487740&ev=PageView&noscript=1"/>
       <!-- Connexion -->
       <div class="carte-form" data-reveal>
         <h3>Accéder à mes modules</h3>
-        <p class="aide">L'espace participants ouvre au démarrage de votre session.</p>
-        <!-- Pas de connexion sur le site : aucun compte, aucun mot de passe,
-             aucun code. L'accès est ouvert à la main par Aurélie, après
-             validation de la demande ci-contre. -->
-        <div class="encart-ferme">
-          <b>Vous n'avez pas encore de compte</b>
-          <p>Demandez d'abord un accès avec le formulaire ci-contre. Aurélie valide chaque demande à la main, puis vous transmet la marche à suivre par email.</p>
-        </div>
+        <p class="aide">Vous avez déjà un compte validé par Aurélie&nbsp;? Connectez-vous avec votre adresse email : un code de connexion à usage unique vous est envoyé, sans mot de passe à retenir.</p>
+        <a class="bouton bouton-or" href="membres/connexion.html" style="margin-top:18px">Me connecter</a>
         <p class="aide" style="margin:20px 0 0">Une question sur votre inscription ou votre session&nbsp;? Écrivez-nous directement.</p>
         <a class="bouton bouton-clair" href="#" data-email data-objet="Question sur mon accès participant" style="margin-top:14px">Contactez-nous</a>
       </div>
@@ -778,88 +772,12 @@ src="https://www.facebook.com/tr?id=1098827892487740&ev=PageView&noscript=1"/>
       <!-- Demande d'accès -->
       <div class="carte-form" data-reveal data-d="1">
         <h3>Demander un accès</h3>
-        <p class="aide">Quelques informations suffisent. Aurélie valide la demande, puis envoie les identifiants par email.</p>
-        <form id="form-acces" novalidate>
-          <div class="champ"><label for="a-prenom">Prénom</label><input type="text" id="a-prenom" autocomplete="given-name"></div>
-          <div class="champ"><label for="a-nom">Nom</label><input type="text" id="a-nom" autocomplete="family-name"></div>
-          <div class="champ"><label for="a-email">Adresse email</label><input type="email" id="a-email" autocomplete="email"><span class="note">C'est à cette adresse que les identifiants seront envoyés.</span></div>
-          <div class="champ">
-            <label for="a-tel">Numéro de téléphone</label>
-            <div class="champ-tel">
-              <select id="a-indicatif" aria-label="Indicatif international">
-                <optgroup label="France et Outre-mer">
-                  <option value="+33">France (+33)</option>
-                  <option value="+262" selected>La Réunion (+262)</option>
-                  <option value="+262">Mayotte (+262)</option>
-                  <option value="+590">Guadeloupe (+590)</option>
-                  <option value="+596">Martinique (+596)</option>
-                  <option value="+594">Guyane (+594)</option>
-                  <option value="+590">Saint-Martin (+590)</option>
-                  <option value="+590">Saint-Barthélemy (+590)</option>
-                  <option value="+508">Saint-Pierre-et-Miquelon (+508)</option>
-                  <option value="+687">Nouvelle-Calédonie (+687)</option>
-                  <option value="+689">Polynésie française (+689)</option>
-                  <option value="+681">Wallis-et-Futuna (+681)</option>
-                </optgroup>
-                <optgroup label="Europe">
-                  <option value="+32">Belgique (+32)</option>
-                  <option value="+41">Suisse (+41)</option>
-                  <option value="+352">Luxembourg (+352)</option>
-                  <option value="+44">Royaume-Uni (+44)</option>
-                  <option value="+353">Irlande (+353)</option>
-                  <option value="+49">Allemagne (+49)</option>
-                  <option value="+34">Espagne (+34)</option>
-                  <option value="+39">Italie (+39)</option>
-                  <option value="+351">Portugal (+351)</option>
-                  <option value="+31">Pays-Bas (+31)</option>
-                </optgroup>
-                <optgroup label="Amériques">
-                  <option value="+1">Canada (+1)</option>
-                  <option value="+1">États-Unis (+1)</option>
-                  <option value="+55">Brésil (+55)</option>
-                  <option value="+52">Mexique (+52)</option>
-                </optgroup>
-                <optgroup label="Afrique et océan Indien">
-                  <option value="+230">Maurice (+230)</option>
-                  <option value="+261">Madagascar (+261)</option>
-                  <option value="+269">Comores (+269)</option>
-                  <option value="+248">Seychelles (+248)</option>
-                  <option value="+212">Maroc (+212)</option>
-                  <option value="+213">Algérie (+213)</option>
-                  <option value="+216">Tunisie (+216)</option>
-                  <option value="+221">Sénégal (+221)</option>
-                  <option value="+225">Côte d'Ivoire (+225)</option>
-                  <option value="+237">Cameroun (+237)</option>
-                  <option value="+27">Afrique du Sud (+27)</option>
-                </optgroup>
-                <optgroup label="Asie et Océanie">
-                  <option value="+971">Émirats arabes unis (+971)</option>
-                  <option value="+65">Singapour (+65)</option>
-                  <option value="+86">Chine (+86)</option>
-                  <option value="+91">Inde (+91)</option>
-                  <option value="+81">Japon (+81)</option>
-                  <option value="+61">Australie (+61)</option>
-                </optgroup>
-              </select>
-              <input type="tel" id="a-tel" autocomplete="tel-national" placeholder="692 12 34 56">
-            </div>
-          </div>
-          <div class="champ"><label for="a-besoin">En deux mots, votre besoin (facultatif)</label><textarea id="a-besoin" placeholder="Réunions en anglais, appels clients, présentations…"></textarea></div>
-
-          <!-- Piège à robots : ce champ reste invisible et vide pour un
-               humain. Un automate le remplit et se trahit. -->
-          <div class="piege" aria-hidden="true"><label for="a-site">Site web</label><input type="text" id="a-site" name="site" tabindex="-1" autocomplete="off"></div>
-          <!-- Vérification anti-robots Cloudflare. Reste vide tant que la
-               clé de site n'est pas renseignée dans le script. -->
-          <div id="zone-turnstile"></div>
-          <button type="submit" class="bouton bouton-or">Envoyer ma demande</button>
-          <!-- Cocher une case pour autoriser le traitement de la demande
-               qu'on vient soi-même de rédiger n'apportait rien : envoyer
-               le formulaire est déjà la demande. L'information reste, sous
-               une forme qui ne barre pas le passage. -->
-          <p class="mention-acces">Vos informations servent uniquement à traiter cette demande et à vous répondre. <a href="politique-confidentialite.html" target="_blank" rel="noopener">Vos données</a></p>
-          <div class="retour" id="retour-acces" role="status"></div>
-        </form>
+        <p class="aide">L'espace participants ouvre au démarrage de votre session. Quelques informations suffisent : Aurélie valide votre demande, puis votre premier code de connexion vous est envoyé automatiquement par email.</p>
+        <div class="encart-ferme">
+          <b>Les comptes ne se créent pas tout seuls</b>
+          <p>Chaque demande est validée à la main par Aurélie avant qu'un accès soit ouvert.</p>
+        </div>
+        <a class="bouton bouton-or" href="membres/inscription.html" style="margin-top:18px">Demander un accès</a>
       </div>
     </div>
   </div>
@@ -2232,65 +2150,10 @@ src="https://www.facebook.com/tr?id=1098827892487740&ev=PageView&noscript=1"/>
     document.head.appendChild(s);
   }
 
-  var form=document.getElementById("form-acces"),retour=document.getElementById("retour-acces");
-  if(form){
-    form.addEventListener("submit",function(e){
-      e.preventDefault();
-      var prenom=document.getElementById("a-prenom").value.trim(),
-          nom=document.getElementById("a-nom").value.trim(),
-          email=document.getElementById("a-email").value.trim(),
-          indicatif=document.getElementById("a-indicatif").value,
-          tel=document.getElementById("a-tel").value.trim(),
-          besoin=document.getElementById("a-besoin").value.trim(),
-          piege=document.getElementById("a-site").value;
-
-      /* Filtre 1 : le champ invisible doit rester vide. On ne dit rien,
-         pour ne pas renseigner l'automate sur ce qui l'a trahi. */
-      if(piege){ retour.textContent="Merci, votre demande a bien été envoyée."; form.reset(); return; }
-
-      /* Filtre 2 : un formulaire rempli en moins de trois secondes
-         n'a pas été rempli par une personne. */
-      if(Date.now()-ouvertureFormulaire<3000){
-        retour.textContent="Merci de prendre un instant pour vérifier vos informations avant l'envoi.";
-        return;
-      }
-
-      if(!prenom||!email||!tel){
-        retour.textContent="Merci de renseigner votre prénom, votre email et votre téléphone.";
-        return;
-      }
-      if(CLE_TURNSTILE&&!jetonTurnstile){
-        retour.textContent="Merci de valider la vérification anti-robots juste au-dessus.";
-        return;
-      }
-
-      var telComplet=indicatif+" "+tel;
-
-      if(ADRESSE_COLLECTEUR){
-        /* Voie normale : la demande part dans le tableau d'Aurélie.
-           Le jeton Turnstile l'accompagne ; c'est le collecteur qui le
-           vérifie auprès de Cloudflare avant d'enregistrer la ligne. */
-        fetch(ADRESSE_COLLECTEUR,{method:"POST",mode:"no-cors",
-          headers:{"Content-Type":"text/plain;charset=utf-8"},
-          body:JSON.stringify({prenom:prenom,nom:nom,email:email,
-            telephone:telComplet,besoin:besoin,jeton:jetonTurnstile})});
-        retour.textContent="Merci "+prenom+" ! Votre demande est transmise à Aurélie, qui vous répondra par email.";
-      }else{
-        /* Tant que le collecteur n'est pas branché, la demande part par
-           messagerie plutôt que de disparaître : mieux vaut une étape de
-           plus qu'une demande perdue. */
-        var corps="Bonjour Aurélie,\n\nJe souhaite un accès à l'espace participants.\n\n"+
-                  "Prénom : "+prenom+"\nNom : "+nom+"\nEmail : "+email+"\nTéléphone : "+telComplet+
-                  (besoin?"\nBesoin : "+besoin:"")+"\n\nMerci.";
-        retour.textContent="Merci "+prenom+" ! Votre messagerie s'ouvre avec la demande pré-remplie : il ne reste qu'à l'envoyer.";
-        location.href=adresseMail("Demande d'accès — "+prenom+" "+nom,corps);
-      }
-
-      form.reset();
-      ouvertureFormulaire=Date.now();
-      if(CLE_TURNSTILE&&window.turnstile){ window.turnstile.reset(); jetonTurnstile=""; }
-    });
-  }
+  /* L'ancien formulaire "Demander un accès" (#form-acces) a été
+     remplacé par un lien vers membres/inscription.html, qui gère
+     tout le circuit (demande, validation, premier OTP) de façon
+     automatique. Rien à initialiser ici pour cette carte. */
 
   /* ==================================================================
      Les bulles de format
