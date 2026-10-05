@@ -53,9 +53,16 @@
       script nécessaire. Les fichiers eux-mêmes doivent en revanche être
       publiés dans /membres/cours/ au moment voulu (ça, c'est un commit).
 
-   5. En bas de ce fichier, remplir les deux constantes MEMBRES_EMAIL_
-      AURELIE et MEMBRES_URL_SCRIPT, puis redéployer (Déployer →
-      Gérer les déploiements → crayon → Nouvelle version).
+   5. Vérifier les deux constantes MEMBRES_EMAIL_AURELIE et
+      MEMBRES_URL_SCRIPT (section Réglages).
+
+   6. Dans la barre du haut de l'éditeur, choisir la fonction
+      autoriserEspaceMembres puis cliquer sur « Exécuter » et accepter
+      la fenêtre d'autorisation Google. Sans cette étape, le site reçoit
+      une erreur et aucune exécution n'apparaît dans les journaux.
+
+   7. Redéployer (Déployer → Gérer les déploiements → crayon →
+      Nouvelle version).
 
    Rien n'est stocké en clair de façon permanente : le code OTP est
    effacé de la feuille dès qu'il est utilisé ou remplacé, et aucun mot
@@ -74,6 +81,22 @@ var MEMBRES_SESSION_J        = 14;    // durée d'une session après connexion r
 
 var MEMBRES_EMAIL_AURELIE    = 'contact@fluentandforward.com';
 var MEMBRES_URL_SCRIPT       = 'https://script.google.com/macros/s/AKfycbwK0XxvWhNiwoWVsROAHi7EFQFRMymFOcH5gxV-KSZ3C5F39DPcT1YxSp83iJq9oMbO/exec';
+
+// ---------- Autorisation (à lancer une fois depuis l'éditeur) ----------
+
+// L'envoi d'emails demande une autorisation Google que le script du site
+// n'avait jamais eue. Tant qu'elle n'est pas accordée, Google refuse les
+// visiteurs avant même d'exécuter le script. Lancer cette fonction avec le
+// bouton « Exécuter » ouvre la fenêtre d'autorisation, puis envoie un email
+// de test à MEMBRES_EMAIL_AURELIE pour confirmer que tout fonctionne.
+function autoriserEspaceMembres() {
+  var classeur = classeurMembres();
+  feuilleMembres();
+  feuilleProgramme();
+  MailApp.sendEmail(MEMBRES_EMAIL_AURELIE, 'Espace membres — test',
+    'Si tu lis cet email, l\'espace membres peut envoyer ses messages.\n' +
+    'Classeur relié : ' + classeur.getName());
+}
 
 // ---------- Utilitaires communs ----------
 
