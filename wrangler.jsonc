@@ -1,19 +1,28 @@
 {
-  // Configuration du projet Cloudflare Pages « fluentandforward ».
-  // Ce fichier fait foi : la liaison à la base et les réglages ci-dessous
-  // ne se modifient plus dans le tableau de bord, mais ici.
+  // Site Fluent & Forward sur Cloudflare Workers, compte d'Aurélie,
+  // domaine www.fluentandforward.com. Le nom doit rester exactement celui
+  // du projet Workers dans le tableau de bord.
   // Le mot de passe de la boîte mail n'y figure jamais : c'est un secret
-  // (Settings → Variables and Secrets → SMTP_MOT_DE_PASSE, type Secret).
+  // (projet Workers → Settings → Variables and Secrets → SMTP_MOT_DE_PASSE).
   "name": "fluentandforward",
-  "pages_build_output_dir": "./landing",
+  "main": "./worker/index.js",
   "compatibility_date": "2026-09-01",
+
+  // Les fichiers du site. Seuls l'API de l'espace membres et les cours
+  // (verrou) passent d'abord par worker/index.js ; tout le reste est servi
+  // directement, avec les en-têtes de landing/_headers.
+  "assets": {
+    "directory": "./landing",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*", "/membres/cours/*"]
+  },
 
   // Base de l'espace membres (schéma : migrations/0001_espace_membres.sql).
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "fluentandforward-membres",
-      "database_id": "d14408ac-8023-490e-b3e3-4b5a71f6d4fa"
+      "database_id": "cf259dfe-8b75-460f-bb31-c11efd4a071c"
     }
   ],
 

@@ -4,9 +4,10 @@ Accès aux modules du Business English Accelerator, réservé aux personnes
 dont le compte a été validé par Aurélie. Pas de mot de passe ni de code
 à recopier : on se connecte en cliquant sur un lien reçu par email.
 
-Tout tourne sur Cloudflare Pages, avec le site : le code serveur est dans
-`functions/` (exécuté par Cloudflare à chaque requête), les membres dans
-une base Cloudflare D1, et les emails partent du serveur d'envoi de la
+Tout tourne sur Cloudflare Workers, compte d'Aurélie, domaine
+www.fluentandforward.com : `worker/index.js` sert le site (`landing/`) et
+fait passer l'API de l'espace membres et les cours par les gestionnaires
+de `functions/`, les membres sont dans une base Cloudflare D1, et les emails partent du serveur d'envoi de la
 boîte contact@fluentandforward.com chez LWS. Les autres formulaires du
 site (guide, test de niveau, inscriptions, sessions, parcours) restent sur
 Google Apps Script, inchangés.
@@ -86,43 +87,38 @@ attributs `data-audio`.
 
 ## Mise en route dans Cloudflare (une seule fois)
 
-La liaison à la base et les réglages non secrets sont déclarés dans
-`wrangler.jsonc`, à la racine du dépôt : ce fichier fait foi pour le
-projet Pages `fluentandforward`, ils ne se modifient plus dans le tableau
-de bord. Reste à faire dans Cloudflare :
+Tout est sur le **compte Cloudflare d'Aurélie**, celui qui porte le
+domaine fluentandforward.com. `wrangler.jsonc` déclare le projet Workers
+`fluentandforward`, la base D1 `fluentandforward-membres` et les réglages
+non secrets ; le projet se redéploie à chaque push sur `main`.
 
-1. **Créer les tables** — Storage & databases → D1 SQL database →
-   `fluentandforward-membres` → *Console* : coller tout le contenu de
-   `migrations/0001_espace_membres.sql`, exécuter.
-2. **Mot de passe de la boîte mail** — Workers & Pages → projet Pages
-   `fluentandforward` → Settings → Variables and Secrets : ajouter
-   `SMTP_MOT_DE_PASSE`, type **Secret**, en Production et en Preview.
-3. **Redéployer** — Deployments → *Retry deployment*.
+1. **Base** — D1 → `fluentandforward-membres` → *Console* : coller le
+   contenu de `migrations/0001_espace_membres.sql`, exécuter (déjà fait).
+2. **Projet Workers** — Workers & Pages → *Create* → *Continue with
+   GitHub* → dépôt `cours-d-anglais`, nom `fluentandforward`, branche
+   `main`, commande de build vide, commande de déploiement
+   `npx wrangler deploy`.
+3. **Mot de passe de la boîte mail** — projet Workers → Settings →
+   Variables and Secrets → *Add* : `SMTP_MOT_DE_PASSE`, type **Secret**.
+4. **Domaines** — projet Workers → Settings → Domains & Routes → *Add* →
+   *Custom domain* : `www.fluentandforward.com` et `fluentandforward.com`.
 
-Le serveur d'envoi (`SMTP_HOTE` dans `wrangler.jsonc`) est
-`mail77.lwspanel.com`, port 465 (SSL) : c'est le nom propre du serveur
-LWS de la boîte contact@, celui que couvre son certificat (l'alias
-`mail.fluentandforward.com` risque d'être refusé par la vérification de
-certificat de Cloudflare). Si LWS déplace la boîte, reprendre le nom
-indiqué dans son panneau, rubrique « Serveur sortant ». Si un email ne part pas, la page
-d'administration affiche l'erreur exacte. « certificat » : mettre dans
-`SMTP_HOTE` le nom de serveur que LWS indique dans son panneau (celui que
-couvre son certificat). « mot de passe refusé » : vérifier le secret.
+Si Cloudflare échoue au clonage du dépôt : sur GitHub, Settings →
+Applications → *Cloudflare Workers and Pages* → *Configure* → donner
+accès à `cours-d-anglais`, puis relancer la construction.
 
-**Ancien projet Workers** : le dépôt était aussi déployé par un projet
-*Workers* `fluentandforward` (vestige du premier déploiement, adresse en
-`.workers.dev`). `wrangler.jsonc` étant désormais une configuration Pages,
-ses constructions échouent : c'est attendu. Le supprimer (Workers & Pages
-→ le projet Workers → Settings → Delete) ; il servait d'ailleurs les cours
-sans verrou.
+**Ancien projet Pages** (`fluentandforward.pages.dev`, sur un autre
+compte) : il reçoit toujours le dépôt, mais sans la base, son espace
+membres ne fonctionne pas. Le supprimer une fois www.fluentandforward.com
+en service.
 
 ## Tester en local
 
-    cp -r landing functions membres-serveur migrations wrangler.jsonc /tmp/essai/
+    cp -r landing functions membres-serveur worker migrations wrangler.jsonc /tmp/essai/
     # dans /tmp/essai : remplacer les variables SMTP par celles d'un faux
     # serveur local (SMTP_SECURITE = "aucune"), puis
     npx wrangler d1 execute fluentandforward-membres --local --file migrations/0001_espace_membres.sql
-    npx wrangler pages dev
+    npx wrangler dev
 
 Avec `SMTP_SECURITE = "aucune"`, les emails peuvent être reçus par un
 faux serveur local (par exemple `aiosmtpd`).
