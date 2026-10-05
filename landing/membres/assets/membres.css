@@ -139,27 +139,101 @@ a:hover { color: var(--deep); text-decoration: underline; }
 .lien-discret { display: inline-block; margin-top: 16px; font-size: .9rem; color: var(--muted); }
 .lien-discret a { color: var(--green); }
 
-/* ---------- Programme (espace.html) ---------- */
-.semaine-bloc { margin-bottom: 22px; }
-.semaine-titre {
-  font-family: var(--titre); font-weight: 700; font-size: .78rem;
-  letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
+
+/* ---------- Espace (espace.html) ---------- */
+.deconnexion { font-size: .85rem; color: var(--muted); cursor: pointer; background: none; border: none; text-decoration: underline; font-family: var(--texte); }
+
+/* Écran d'accueil : masque le temps de réponse du serveur */
+.accueil {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  background: radial-gradient(120% 90% at 50% 0%, #1B6B4A 0%, var(--deep) 55%, var(--deeper) 100%);
+  color: #fff; padding: 24px;
+  transition: opacity .5s ease, visibility .5s ease;
 }
-.module-carte {
+.accueil.cache { opacity: 0; visibility: hidden; }
+.accueil-int { max-width: 520px; animation: monter .7s ease both; }
+.accueil-marque { font-family: var(--titre); font-weight: 800; font-size: 1.05rem; color: var(--gold); margin-bottom: 26px; }
+.accueil-oeil {
+  font-family: var(--titre); font-weight: 700; font-size: .7rem; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--muted-clair); margin-bottom: 12px;
+}
+.accueil-titre { font-size: clamp(2rem, 6vw, 3rem); color: #fff; }
+.accueil-sous { margin-top: 14px; color: var(--muted-clair); }
+.accueil-barre {
+  margin: 30px auto 0; width: 180px; height: 3px; border-radius: 3px;
+  background: var(--line-clair); overflow: hidden;
+}
+.accueil-barre span {
+  display: block; width: 40%; height: 100%; border-radius: 3px; background: var(--gold);
+  animation: glisser 1.3s ease-in-out infinite;
+}
+@keyframes monter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes glisser { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+@media (prefers-reduced-motion: reduce) {
+  .accueil-int, .accueil-barre span { animation: none; }
+}
+
+/* Menu des modules */
+.contenu-large { max-width: 920px; }
+#vue-menu > h1, #vue-module > h1 { margin-bottom: 6px; }
+.grille-modules {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 30px;
+}
+.carte-module {
+  position: relative; display: flex; flex-direction: column; gap: 10px;
+  text-align: left; font: inherit; color: inherit; cursor: pointer;
+  background: #fff; border: 1px solid var(--line); border-radius: var(--rayon);
+  padding: 24px 24px 22px; min-height: 170px;
+  box-shadow: 0 10px 30px rgba(11, 42, 32, .06);
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+.carte-module:hover { transform: translateY(-2px); border-color: var(--gold); box-shadow: 0 16px 38px rgba(11, 42, 32, .11); }
+.carte-module .numero {
+  font-family: var(--titre); font-weight: 700; font-size: .7rem; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--green);
+}
+.carte-module .titre { font-family: var(--titre); font-weight: 800; font-size: 1.12rem; line-height: 1.25; padding-right: 26px; }
+.carte-module .meta { margin-top: auto; font-size: .86rem; color: var(--muted); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.pastille-etat {
+  display: inline-block; font-family: var(--titre); font-weight: 700; font-size: .68rem;
+  letter-spacing: .06em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px;
+  background: rgba(27,107,74,.1); color: var(--green);
+}
+.carte-module.verrouille { cursor: default; background: var(--sand); box-shadow: none; }
+.carte-module.verrouille:hover { transform: none; border-color: var(--line); }
+.carte-module.verrouille .numero, .carte-module.verrouille .titre { color: rgba(44,24,16,.5); }
+.carte-module.verrouille .pastille-etat { background: rgba(44,24,16,.08); color: var(--muted); }
+.cadenas { position: absolute; top: 22px; right: 22px; width: 18px; height: 18px; color: var(--muted); }
+
+/* Détail d'un module */
+.retour-menu { display: table; font-size: .9rem; margin-bottom: 22px; }
+.groupe-supports { margin-top: 30px; }
+.groupe-supports h2 {
+  font-family: var(--titre); font-weight: 700; font-size: .78rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+}
+.support {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
   background: #fff; border: 1px solid var(--line); border-radius: 12px;
-  padding: 18px 20px; margin-bottom: 10px;
+  padding: 18px 20px; margin-bottom: 10px; color: var(--ink);
+  transition: border-color var(--transition), transform var(--transition);
 }
-.module-carte.verrouille { background: var(--sand); opacity: .75; }
-.module-nom { font-family: var(--titre); font-weight: 700; font-size: .98rem; }
-.module-etat { font-size: .82rem; color: var(--muted); margin-top: 3px; }
-.module-carte .bouton { width: auto; padding: 10px 18px; font-size: .88rem; }
-.cadenas { flex: 0 0 auto; color: var(--muted); }
+.support:hover { text-decoration: none; color: var(--ink); border-color: var(--gold); transform: translateX(2px); }
+.support .nom, .support .type { display: block; }
+.support .nom { font-family: var(--titre); font-weight: 700; font-size: .98rem; }
+.support .type { font-size: .8rem; color: var(--muted); margin-top: 2px; }
+.support .aller {
+  flex: 0 0 auto; font-family: var(--titre); font-weight: 700; font-size: .85rem;
+  background: var(--green); color: #fff; padding: 9px 16px; border-radius: 9px;
+}
+.vide { color: var(--muted); margin-top: 24px; }
 
-.entete-espace { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
-.deconnexion { font-size: .85rem; color: var(--muted); cursor: pointer; background: none; border: none; text-decoration: underline; }
-
+@media (max-width: 860px) {
+  .grille-modules { grid-template-columns: 1fr; }
+  .carte-module { min-height: 0; }
+}
 @media (max-width: 640px) {
   .carte { padding: 28px 22px; }
-  .module-carte { flex-direction: column; align-items: flex-start; }
+  .cadre { padding-top: 36px; }
 }

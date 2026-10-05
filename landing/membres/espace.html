@@ -7,34 +7,55 @@
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../assets/polices/polices.css">
-<link rel="stylesheet" href="assets/membres.css?v=2">
+<link rel="stylesheet" href="assets/membres.css?v=4">
 </head>
 <body>
+
+<div id="accueil" class="accueil" role="status" aria-live="polite">
+  <div class="accueil-int">
+    <p class="accueil-marque">Fluent &amp; Forward</p>
+    <p class="accueil-oeil">Business English Accelerator</p>
+    <h1 class="accueil-titre">Bienvenue<span id="accueil-prenom"></span></h1>
+    <p class="accueil-sous">On prépare ton programme…</p>
+    <div class="accueil-barre"><span></span></div>
+  </div>
+</div>
 
 <header class="entete">
   <div class="barre">
     <a class="marque" href="../index.html">Fluent &amp; Forward</a>
+    <button class="deconnexion" id="deconnexion" type="button">Se déconnecter</button>
   </div>
 </header>
 
 <main class="cadre">
-  <div class="contenu">
-    <div class="entete-espace">
-      <h1>Bonjour <span id="prenom-membre">…</span></h1>
-      <button class="deconnexion" id="deconnexion">Se déconnecter</button>
-    </div>
+  <div class="contenu contenu-large">
 
-    <p class="chapeau" style="margin-bottom:28px">
-      Les modules se débloquent semaine après semaine à partir de ta
-      date de validation.
-    </p>
+    <section id="vue-menu" hidden>
+      <span class="oeil">Mon espace</span>
+      <h1>Bonjour <span id="prenom-membre"></span></h1>
+      <p class="chapeau" id="resume-parcours"></p>
+      <div id="grille-modules" class="grille-modules"></div>
+    </section>
 
-    <div id="zone-programme">
-      <p class="chapeau">Chargement du programme…</p>
-    </div>
+    <section id="vue-module" hidden>
+      <a class="retour-menu" href="#">← Tous les modules</a>
+      <span class="oeil" id="module-oeil"></span>
+      <h1 id="module-titre"></h1>
+      <div id="supports"></div>
+    </section>
+
+    <section id="vue-erreur" hidden>
+      <div class="carte">
+        <h2>Ton programme n'a pas pu être chargé</h2>
+        <p class="chapeau">Le serveur met parfois quelques secondes à répondre. Tu restes connecté.</p>
+        <button class="bouton bouton-vert" id="reessayer" type="button" style="margin-top:18px">Réessayer</button>
+      </div>
+    </section>
+
   </div>
 </main>
 
-<script src="assets/membres.js?v=3"></script>
+<script src="assets/membres.js?v=4"></script>
 </body>
 </html>

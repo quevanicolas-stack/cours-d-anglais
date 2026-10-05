@@ -194,51 +194,192 @@
 
   /* ---------- Page espace.html ---------- */
 
+  var CLE_CACHE = "ff_membre_cache";
+  var CLE_ACCUEIL_VU = "ff_accueil_vu";
+  var ACCUEIL_MIN_MS = 1600;
+
+  function lireCache() {
+    try { return JSON.parse(localStorage.getItem(CLE_CACHE) || "null"); } catch (e) { return null; }
+  }
+
+  function oublierSession() {
+    try { localStorage.removeItem(CLE_SESSION); localStorage.removeItem(CLE_CACHE); } catch (e) {}
+  }
+
+  function echapper(texte) {
+    return String(texte == null ? "" : texte).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  var CADENAS = '<svg class="cadenas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/>' +
+    '<path d="M8 11V7.5a4 4 0 0 1 8 0V11"/></svg>';
+
+  // « Module 1 — Think & Speak… » → numéro « Module 1 » et titre séparés.
+  function decouperTitre(bloc) {
+    var titre = String(bloc.titre || "");
+    var morceaux = titre.split(/\s+[—–-]\s+/);
+    if (morceaux.length > 1) return { numero: morceaux[0], titre: morceaux.slice(1).join(" — ") };
+    return { numero: "Semaine " + bloc.semaine, titre: titre || "Module " + bloc.semaine };
+  }
+
+  function typeSupport(fichier) {
+    if (/seance|intro/i.test(fichier)) return { groupe: "Séances", libelle: "Séance commentée" };
+    if (/vocabulaire/i.test(fichier)) return { groupe: "Ressources", libelle: "Fiche de vocabulaire" };
+    if (/grammaire/i.test(fichier)) return { groupe: "Ressources", libelle: "Fiche de grammaire" };
+    return { groupe: "Ressources", libelle: "Ressource" };
+  }
+
   function initEspace() {
-    var zone = document.getElementById("zone-programme");
-    if (!zone) return;
+    var vueMenu = document.getElementById("vue-menu");
+    if (!vueMenu) return;
+    var vueModule = document.getElementById("vue-module");
+    var vueErreur = document.getElementById("vue-erreur");
+    var accueil = document.getElementById("accueil");
 
     var jeton = null;
     try { jeton = localStorage.getItem(CLE_SESSION); } catch (e) {}
+    if (!jeton) { location.replace("connexion.html"); return; }
 
-    if (!jeton) { window.location.href = "connexion.html"; return; }
+    var donnees = null;
 
-    appeler("verifier_session", { session: jeton }).then(function (reponse) {
-      if (!reponse.ok) {
-        try { localStorage.removeItem(CLE_SESSION); } catch (e) {}
-        window.location.href = "connexion.html";
-        return;
+    /* L'accueil s'affiche une fois par visite, assez longtemps pour se
+       lire ; en revenant d'un cours, l'espace s'ouvre aussitôt. */
+    var dejaVu = false;
+    try { dejaVu = sessionStorage.getItem(CLE_ACCUEIL_VU) === "1"; } catch (e) {}
+    var finAccueilMin = Date.now() + (dejaVu ? 0 : ACCUEIL_MIN_MS);
+
+    function masquerAccueil() {
+      setTimeout(function () {
+        accueil.classList.add("cache");
+        try { sessionStorage.setItem(CLE_ACCUEIL_VU, "1"); } catch (e) {}
+      }, Math.max(0, finAccueilMin - Date.now()));
+    }
+
+    function montrer(vue) {
+      [vueMenu, vueModule, vueErreur].forEach(function (v) { v.hidden = v !== vue; });
+    }
+
+    function afficherMenu() {
+      document.getElementById("prenom-membre").textContent = donnees.prenom || "";
+      var semaine = Number(donnees.semaine_courante) || 1;
+      var resume = "Tu es en semaine " + semaine + " de ton parcours. Choisis un module pour voir ses séances et ses ressources.";
+      if (donnees.date_expiration) {
+        var fin = new Date(donnees.date_expiration);
+        if (!isNaN(fin)) resume += " Accès ouvert jusqu'au " + fin.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }) + ".";
       }
-
-      document.getElementById("prenom-membre").textContent = reponse.prenom;
+      document.getElementById("resume-parcours").textContent = resume;
 
       var html = "";
-      (reponse.programme || []).forEach(function (bloc) {
-        html += '<div class="semaine-bloc">';
-        html += '<div class="semaine-titre">Semaine ' + bloc.semaine + "</div>";
-        bloc.fichiers.forEach(function (item) {
-          if (bloc.debloque) {
-            html += '<div class="module-carte"><div><div class="module-nom">' + item.libelle + "</div>" +
-              '<div class="module-etat">Disponible</div></div>' +
-              '<a class="bouton bouton-vert" href="cours/' + encodeURIComponent(item.fichier) + '">Ouvrir</a></div>';
-          } else {
-            html += '<div class="module-carte verrouille"><div><div class="module-nom">' + item.libelle + "</div>" +
-              '<div class="module-etat">Se débloque en semaine ' + bloc.semaine + "</div></div>" +
-              '<span class="cadenas" aria-hidden="true">🔒</span></div>';
-          }
-        });
-        html += "</div>";
+      (donnees.programme || []).forEach(function (bloc) {
+        var t = decouperTitre(bloc);
+        var nb = (bloc.fichiers || []).length;
+        var ouvert = bloc.debloque && nb > 0;
+        var etat = ouvert ? "Disponible" : (bloc.debloque ? "Bientôt" : "Semaine " + bloc.semaine);
+        var detail = ouvert ? nb + (nb > 1 ? " supports" : " support")
+          : (bloc.debloque ? "Contenu en préparation" : "Se débloque en semaine " + bloc.semaine);
+        html += (ouvert
+          ? '<a class="carte-module" href="#module-' + encodeURIComponent(bloc.semaine) + '">'
+          : '<div class="carte-module verrouille" aria-disabled="true">' + CADENAS) +
+          '<span class="numero">' + echapper(t.numero) + "</span>" +
+          '<span class="titre">' + echapper(t.titre) + "</span>" +
+          '<span class="meta"><span class="pastille-etat">' + etat + "</span>" + detail + "</span>" +
+          (ouvert ? "</a>" : "</div>");
       });
-      zone.innerHTML = html || "<p>Le programme n'est pas encore disponible.</p>";
-    });
+      document.getElementById("grille-modules").innerHTML =
+        html || '<p class="vide">Le programme n\'est pas encore disponible.</p>';
+      montrer(vueMenu);
+    }
 
-    var boutonDeco = document.getElementById("deconnexion");
-    if (boutonDeco) {
-      boutonDeco.addEventListener("click", function () {
-        try { localStorage.removeItem(CLE_SESSION); } catch (e) {}
-        window.location.href = "connexion.html";
+    function afficherModule(semaine) {
+      var bloc = (donnees.programme || []).filter(function (b) { return String(b.semaine) === semaine; })[0];
+      if (!bloc || !bloc.debloque || !(bloc.fichiers || []).length) { afficherMenu(); return; }
+
+      var t = decouperTitre(bloc);
+      document.getElementById("module-oeil").textContent = t.numero + " · semaine " + bloc.semaine;
+      document.getElementById("module-titre").textContent = t.titre;
+
+      var groupes = { "Séances": "", "Ressources": "" };
+      bloc.fichiers.forEach(function (item) {
+        var type = typeSupport(item.fichier);
+        groupes[type.groupe] += '<a class="support" href="cours/' + encodeURIComponent(item.fichier) + '">' +
+          '<span><span class="nom">' + echapper(item.libelle) + '</span><span class="type">' + type.libelle + "</span></span>" +
+          '<span class="aller">Ouvrir</span></a>';
+      });
+      var html = "";
+      Object.keys(groupes).forEach(function (nom) {
+        if (groupes[nom]) html += '<div class="groupe-supports"><h2>' + nom + "</h2>" + groupes[nom] + "</div>";
+      });
+      document.getElementById("supports").innerHTML = html;
+      montrer(vueModule);
+      window.scrollTo(0, 0);
+    }
+
+    function afficher() {
+      if (!donnees) return;
+      var m = /^#module-(.+)$/.exec(location.hash);
+      if (m) afficherModule(decodeURIComponent(m[1])); else afficherMenu();
+    }
+
+    function charger() {
+      appeler("verifier_session", { session: jeton }).then(function (reponse) {
+        if (reponse.ok) {
+          donnees = reponse;
+          try { localStorage.setItem(CLE_CACHE, JSON.stringify(reponse)); } catch (e) {}
+          afficher();
+          masquerAccueil();
+          return;
+        }
+        // Seul un refus explicite du serveur déconnecte. Une lenteur ou une
+        // panne passagère ne doit jamais faire perdre la session.
+        if (reponse.erreur === "session_inconnue" || reponse.erreur === "session_expiree") {
+          oublierSession();
+          location.replace("connexion.html");
+          return;
+        }
+        if (!donnees) { montrer(vueErreur); masquerAccueil(); }
       });
     }
+
+    /* En revenant d'un cours (bouton maison ou lien de retour), on
+       rouvre le module d'où l'on venait plutôt que le menu. */
+    var dernier = null;
+    try { dernier = sessionStorage.getItem("ff_dernier_module"); } catch (e) {}
+    if (!location.hash && dernier && document.referrer.indexOf("/membres/cours/") !== -1) {
+      history.replaceState(null, "", "#module-" + encodeURIComponent(dernier));
+    }
+    document.getElementById("supports").addEventListener("click", function (evenement) {
+      var m = /^#module-(.+)$/.exec(location.hash);
+      if (m && evenement.target.closest(".support")) {
+        try { sessionStorage.setItem("ff_dernier_module", decodeURIComponent(m[1])); } catch (e) {}
+      }
+    });
+
+    var cache = lireCache();
+    if (cache && cache.prenom) document.getElementById("accueil-prenom").textContent = ", " + cache.prenom;
+    if (cache && cache.programme) {
+      donnees = cache;
+      afficher();
+      masquerAccueil();
+    }
+    charger();
+
+    window.addEventListener("hashchange", afficher);
+    document.querySelector(".retour-menu").addEventListener("click", function (evenement) {
+      evenement.preventDefault();
+      history.pushState(null, "", location.pathname);
+      afficher();
+    });
+    document.getElementById("reessayer").addEventListener("click", function () {
+      accueil.classList.remove("cache");
+      finAccueilMin = Date.now() + 600;
+      charger();
+    });
+    document.getElementById("deconnexion").addEventListener("click", function () {
+      oublierSession();
+      location.href = "connexion.html";
+    });
   }
 
   function initAnnee() {

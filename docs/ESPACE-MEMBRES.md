@@ -19,12 +19,26 @@ valable une seule fois.
    connecte et redirige vers l'espace. Les fois suivantes, la personne
    indique son email sur cette même page et reçoit aussitôt un nouveau
    lien (valable 30 minutes), sans repasser par Aurélie. Une fois connectée,
-   elle le reste 14 jours sur cet appareil : la page de connexion l'envoie
-   alors directement dans son espace.
-4. **Espace** — `landing/membres/espace.html`. Liste les modules,
-   débloqués semaine par semaine à partir de **la date de validation du
-   compte de cette personne** (calendrier individuel, pas une cohorte
-   commune).
+   elle le reste jusqu'à la fin de son accès (180 jours) sur cet appareil :
+   la page de connexion l'envoie alors directement dans son espace.
+4. **Espace** — `landing/membres/espace.html`, en trois temps :
+   - un écran d'accueil, affiché une fois par visite, le temps que le
+     serveur réponde (il met souvent deux à quatre secondes) ;
+   - le menu des modules : une carte par ligne de l'onglet « Programme »,
+     disponible ou verrouillée selon la semaine ;
+   - le détail d'un module : séances puis ressources.
+   Le programme est gardé dans le navigateur : en revenant d'un cours,
+   l'espace s'affiche aussitôt et se met à jour en arrière-plan. Les
+   semaines se comptent à partir de **la date de validation du compte**
+   de chaque personne.
+   Seul un refus explicite du serveur (session inconnue ou expirée)
+   déconnecte : une lenteur ou une panne passagère affiche « Réessayer ».
+
+Pour que le menu montre dès maintenant les modules à venir (verrouillés),
+il suffit d'ajouter leurs lignes dans « Programme » : semaine, titre sous
+la forme `Module 2 — Titre`, et la colonne fichiers laissée vide tant que
+les supports ne sont pas publiés (la carte affiche alors « Bientôt » une
+fois la semaine atteinte).
 
 ## Ce qui a été livré maintenant
 
@@ -97,9 +111,10 @@ politique de sécurité du site bloquerait polices et vidéos.
   l'architecture (voir le choix fait au départ : rester sur le Google
   Apps Script existant plutôt que Cloudflare Workers + base de données).
 - **La session est un jeton dans le navigateur** (`localStorage`), valable
-  14 jours ou jusqu'à l'expiration du compte (180 jours), le plus court
-  des deux l'emportant. Elle est vérifiée à chaque chargement de
-  `espace.html` contre la feuille « Membres ».
+  jusqu'à l'expiration du compte (réglage `MEMBRES_SESSION_J`). Elle est
+  vérifiée à chaque chargement de `espace.html` contre la feuille
+  « Membres ». Quelqu'un qui a accès à l'appareil a donc accès à
+  l'espace : « Se déconnecter » efface la session.
 - **Pas de limite de débit agressive** sur les demandes de code : un
   envoi par minute et par adresse, 5 essais par code. Suffisant contre un
   usage maladroit, pas conçu pour résister à une attaque déterminée — à

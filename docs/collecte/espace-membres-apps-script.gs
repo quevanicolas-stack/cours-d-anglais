@@ -67,7 +67,7 @@ var MEMBRES_DUREE_COMPTE_J    = 180;  // validité d'un compte, en jours
 var MEMBRES_LIEN_PREMIER_H    = 72;   // validité du lien envoyé après validation, en heures
 var MEMBRES_LIEN_VALIDITE_MIN = 30;   // validité des liens suivants, en minutes
 var MEMBRES_LIEN_DELAI_SEC    = 60;   // délai minimum entre deux envois de lien
-var MEMBRES_SESSION_J         = 14;   // durée de connexion sur un appareil
+var MEMBRES_SESSION_J         = 180;  // durée de connexion sur un appareil (bornée par la fin du compte)
 
 var MEMBRES_EMAIL_AURELIE     = 'contact@fluentandforward.com';
 var MEMBRES_URL_SCRIPT        = 'https://script.google.com/macros/s/AKfycbwK0XxvWhNiwoWVsROAHi7EFQFRMymFOcH5gxV-KSZ3C5F39DPcT1YxSp83iJq9oMbO/exec';
