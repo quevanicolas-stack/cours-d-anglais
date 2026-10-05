@@ -160,7 +160,7 @@
         var donnees = { lien: lien };
         if (ticketLien) donnees.t = ticketLien;
         appeler("ouvrir_lien", donnees).then(function (reponse) {
-          if (reponse.ok && reponse.session) { entrer(reponse.session); return; }
+          if (reponse.ok && reponse.session) { try { localStorage.removeItem("ff_membre_attente"); } catch (e) {} entrer(reponse.session); return; }
           if (reponse.erreur === "reseau" || reponse.erreur === "reponse" || reponse.erreur === "serveur") {
             afficherRetour(retourLien, "Le serveur ne répond pas pour le moment.", true);
             reessayerLien.hidden = false;
@@ -185,7 +185,37 @@
     }
 
     /* 3. Attente : la page interroge le serveur jusqu'à ce que le lien
-       soit ouvert, ici ou sur un autre appareil. */
+       soit ouvert, ici ou sur un autre appareil. L'attente est mémorisée :
+       en revenant sur la page (après être allé lire ses emails, ou si le
+       téléphone a rechargé l'onglet), on la retrouve telle quelle. */
+    var CLE_ATTENTE = "ff_membre_attente";
+    var DUREE_TICKET_MS = 6 * 3600 * 1000;      // durée de vie du ticket côté serveur
+    var ATTENTE_ACTIVE_MS = 30 * 60 * 1000;     // au-delà, on arrête d'interroger
+
+    function memoriserAttente() {
+      try {
+        localStorage.setItem(CLE_ATTENTE, JSON.stringify({ email: emailCourant, ticket: ticket, debut: Date.now() }));
+      } catch (e) {}
+    }
+
+    function oublierAttente() {
+      try { localStorage.removeItem(CLE_ATTENTE); } catch (e) {}
+    }
+
+    function attenteMemorisee() {
+      try {
+        var a = JSON.parse(localStorage.getItem(CLE_ATTENTE) || "null");
+        if (a && a.email && a.ticket && Date.now() - a.debut < DUREE_TICKET_MS) return a;
+      } catch (e) {}
+      oublierAttente();
+      return null;
+    }
+
+    function connecter(session) {
+      oublierAttente();
+      entrer(session);
+    }
+
     function arreterAttente() {
       if (attente) { clearTimeout(attente.minuteur); attente.actif = false; attente = null; }
     }
@@ -194,7 +224,7 @@
       arreterAttente();
       cercleAttente.classList.add("arrete");
       titreAttente.textContent = "Toujours là quand tu veux";
-      afficherRetour(retourEnvoye, "Le lien reste valable 24 heures : clique dessus quand tu le souhaites, puis reviens sur cette page ou ouvre ton espace depuis l'email.");
+      afficherRetour(retourEnvoye, "Le lien reste valable 24 heures : clique dessus quand tu le souhaites.");
       reprendre.hidden = false;
     }
 
@@ -209,24 +239,44 @@
       function tour() {
         if (!etat.actif) return;
         var session = sessionLocale();
-        if (session) { entrer(session); return; }  // lien ouvert dans un autre onglet
+        if (session) { connecter(session); return; }  // lien ouvert dans un autre onglet
+        if (document.hidden) { etat.minuteur = setTimeout(tour, 8000); return; }
         var ecoule = Date.now() - etat.debut;
-        if (ecoule > 20 * 60 * 1000) { finAttente(); return; }
+        if (ecoule > ATTENTE_ACTIVE_MS) { finAttente(); return; }
         appeler("attendre_lien", { ticket: ticket }).then(function (reponse) {
           if (!etat.actif) return;
-          if (reponse.ok && reponse.session) { entrer(reponse.session); return; }
-          etat.minuteur = setTimeout(tour, ecoule < 2 * 60 * 1000 ? 2500 : 6000);
+          if (reponse.ok && reponse.session) { connecter(reponse.session); return; }
+          if (reponse.erreur === "ticket_inconnu") {
+            oublierAttente();
+            finAttente();
+            return;
+          }
+          etat.minuteur = setTimeout(tour, ecoule < 2 * 60 * 1000 ? 2500 : 5000);
         });
       }
-      etat.minuteur = setTimeout(tour, 2500);
+      tour();
     }
 
+    // Retour sur l'onglet : on vérifie tout de suite plutôt qu'au prochain tour.
+    document.addEventListener("visibilitychange", function () {
+      if (!document.hidden && attente) attendre();
+    });
+
     window.addEventListener("storage", function (evenement) {
-      if (evenement.key === CLE_SESSION && evenement.newValue && attente) entrer(evenement.newValue);
+      if (evenement.key === CLE_SESSION && evenement.newValue && attente) connecter(evenement.newValue);
     });
 
     function demanderLien() {
       return appeler("demande_lien", { email: emailCourant, origine: location.origin, ticket: ticket });
+    }
+
+    function ecranAttente(texteTitre) {
+      emailAffiche.textContent = emailCourant;
+      retourEnvoye.classList.remove("visible");
+      reprendre.hidden = true;
+      cercleAttente.classList.remove("arrete");
+      titreAttente.textContent = texteTitre;
+      montrer(etapeEnvoye);
     }
 
     formEmail.addEventListener("submit", function (evenement) {
@@ -237,27 +287,24 @@
 
       emailCourant = champEmail.value.trim();
       ticket = nouveauTicket();
-      boutonEmail.disabled = true;
-      boutonEmail.textContent = "Envoi du lien…";
+      ecranAttente("Envoi de ton lien…");   // le cercle tourne dès le clic
 
       demanderLien().then(function (reponse) {
-        boutonEmail.disabled = false;
-        boutonEmail.textContent = "Recevoir mon lien";
         if (!reponse.ok) {
+          montrer(etapeEmail);
           afficherRetour(retourEmail, "Le lien n'a pas pu être envoyé : le serveur ne répond pas. Réessaie dans un instant.", true);
           return;
         }
         if (reponse.info === "compte_expire") {
+          montrer(etapeEmail);
           afficherRetour(retourEmail, "Ton accès de 180 jours est terminé. Contacte Aurélie pour le renouveler.", true);
           return;
         }
         // Même écran que l'adresse soit membre ou non : on ne révèle pas qui a un compte.
-        emailAffiche.textContent = emailCourant;
-        retourEnvoye.classList.remove("visible");
+        memoriserAttente();
         if (reponse.info === "patienter") {
           afficherRetour(retourEnvoye, "Un lien t'a été envoyé il y a quelques secondes : utilise le dernier email reçu.");
         }
-        montrer(etapeEnvoye);
         attendre();
       });
     });
@@ -268,6 +315,7 @@
         if (reponse.info === "patienter") {
           afficherRetour(retourEnvoye, "Un lien vient d'être envoyé : patiente quelques secondes avant d'en redemander un.");
         } else if (reponse.ok) {
+          memoriserAttente();
           afficherRetour(retourEnvoye, "Nouveau lien envoyé. Les liens précédents restent valables.");
         } else {
           afficherRetour(retourEnvoye, "Le lien n'a pas pu être envoyé. Réessaie dans un instant.", true);
@@ -279,12 +327,26 @@
     document.getElementById("changer-email").addEventListener("click", function (evenement) {
       evenement.preventDefault();
       arreterAttente();
+      oublierAttente();
       montrer(etapeEmail);
       champEmail.focus();
     });
 
     reprendre.addEventListener("click", attendre);
+
+    // Une attente en cours ? On la reprend là où on l'avait laissée.
+    if (!lien) {
+      var enCours = attenteMemorisee();
+      if (enCours) {
+        emailCourant = enCours.email;
+        ticket = enCours.ticket;
+        champEmail.value = enCours.email;
+        ecranAttente("En attente de ta connexion…");
+        attendre();
+      }
+    }
   }
+
 
   /* ---------- Page espace.html ---------- */
 
@@ -432,7 +494,16 @@
           location.replace("connexion.html");
           return;
         }
-        if (!donnees) { montrer(vueErreur); masquerAccueil(); }
+        if (!donnees) {
+          document.getElementById("detail-erreur").textContent =
+            "Code : " + (reponse.erreur || "inconnu") + " — " + ({
+              reponse: "Google a renvoyé une page au lieu des données (souvent une autorisation à renouveler dans Apps Script)",
+              reseau: "serveur injoignable ou connexion internet coupée",
+              serveur: "erreur dans le script : " + (reponse.detail || "")
+            }[reponse.erreur] || reponse.detail || "");
+          montrer(vueErreur);
+          masquerAccueil();
+        }
       });
     }
 

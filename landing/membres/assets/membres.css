@@ -253,3 +253,4 @@ a:hover { color: var(--deep); text-decoration: underline; }
 .cercle.arrete { animation: none; border-color: rgba(44,24,16,.15); }
 @keyframes tourner { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .cercle { animation-duration: 2.4s; } }
+.detail-erreur { font-size: .78rem; color: var(--muted); margin-top: 10px; font-family: ui-monospace, Menlo, monospace; word-break: break-word; }
