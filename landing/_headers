@@ -85,3 +85,11 @@
 # exécute du code pour chaque fichier. Non indexé par précaution.
 /membres/*
   X-Robots-Tag: noindex, nofollow
+
+# Le script et le style de l'espace membres évoluent avec lui : le
+# navigateur doit vérifier à chaque visite qu'il a la dernière version.
+# Une copie ancienne gardée en mémoire cassait la connexion par lien.
+# Dans les pages, le « ?v=… » de leur adresse est à augmenter à chaque
+# modification, pour les navigateurs qui les auraient déjà gardés.
+/membres/assets/*
+  Cache-Control: no-cache
