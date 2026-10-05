@@ -85,32 +85,38 @@ module 1 ont le même lecteur à bouton rond (lecture, pause, relecture,
 anneau de progression), sur les diapositives indiquées par leurs
 attributs `data-audio`.
 
-## Mise en route dans Cloudflare (une seule fois)
+## Déploiement et réglages Cloudflare
 
 Tout est sur le **compte Cloudflare d'Aurélie**, celui qui porte le
-domaine fluentandforward.com. `wrangler.jsonc` déclare le projet Workers
-`fluentandforward`, la base D1 `fluentandforward-membres` et les réglages
-non secrets ; le projet se redéploie à chaque push sur `main`.
+domaine fluentandforward.com. `wrangler.jsonc` déclare le Worker
+`fluentandforward`, ses fichiers (`landing/`), ses domaines
+(www.fluentandforward.com et fluentandforward.com), la base D1
+`fluentandforward-membres` et les réglages non secrets.
 
-1. **Base** — D1 → `fluentandforward-membres` → *Console* : coller le
-   contenu de `migrations/0001_espace_membres.sql`, exécuter (déjà fait).
-2. **Projet Workers** — Workers & Pages → *Create* → *Continue with
-   GitHub* → dépôt `cours-d-anglais`, nom `fluentandforward`, branche
-   `main`, commande de build vide, commande de déploiement
-   `npx wrangler deploy`.
-3. **Mot de passe de la boîte mail** — projet Workers → Settings →
-   Variables and Secrets → *Add* : `SMTP_MOT_DE_PASSE`, type **Secret**.
-4. **Domaines** — projet Workers → Settings → Domains & Routes → *Add* →
-   *Custom domain* : `www.fluentandforward.com` et `fluentandforward.com`.
+**Mise en ligne** : `.github/workflows/deployer-cloudflare.yml` publie le
+site à chaque push sur `main` (onglet Actions de GitHub, ou lancement à la
+demande). Il utilise le secret GitHub `CLOUDFLARE_API_TOKEN`, un jeton du
+compte d'Aurélie créé avec le modèle « Modifier les Workers Cloudflare »
+plus D1 : Modifier, limité à la zone fluentandforward.com. En cas
+d'échec, l'erreur de wrangler apparaît en annotation sur l'exécution.
+La connexion Git intégrée à Cloudflare n'est pas utilisée : elle
+n'arrivait pas à cloner le dépôt depuis ce compte.
 
-Si Cloudflare échoue au clonage du dépôt : sur GitHub, Settings →
-Applications → *Cloudflare Workers and Pages* → *Configure* → donner
-accès à `cours-d-anglais`, puis relancer la construction.
+**Secret à saisir dans Cloudflare** : projet Workers `fluentandforward` →
+Paramètres → Variables et secrets → `SMTP_MOT_DE_PASSE`, type Secret (le
+mot de passe de la boîte contact@).
+
+**Base** : schéma dans `migrations/0001_espace_membres.sql`, à exécuter
+dans la console D1 pour toute nouvelle base.
+
+Si un email ne part pas, la page d'administration affiche l'erreur
+exacte. « certificat » : mettre dans `SMTP_HOTE` le nom de serveur que
+LWS indique dans son panneau (aujourd'hui `mail77.lwspanel.com`, port
+465). « mot de passe refusé » : vérifier le secret.
 
 **Ancien projet Pages** (`fluentandforward.pages.dev`, sur un autre
 compte) : il reçoit toujours le dépôt, mais sans la base, son espace
-membres ne fonctionne pas. Le supprimer une fois www.fluentandforward.com
-en service.
+membres ne fonctionne pas. À supprimer.
 
 ## Tester en local
 
